@@ -1,0 +1,11 @@
+Value Filldown NAME (\w+_\w{4,12}_(\w){3,6}|\w{5,8}_\w{4,12}_(\w){3,6}.\S+)
+Value Required ServiceId ([0-9]{1,15})
+Value Type (\S+)
+Value Adm ([uU][pP]|[Dd][oO][wW][nN])
+Value Opr ([uU][pP]|[Dd][oO][wW][nN])
+Value CustomerId ([0-9]{1,15})
+
+Start
+  ^\w:${NAME}# /show service service-using 
+  ^.\w:${NAME}# /show service service-using 
+  ^${ServiceId}\s+${Type}\s+${Adm}\s+${Opr}\s+${CustomerId} -> Record

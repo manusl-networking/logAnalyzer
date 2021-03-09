@@ -1,0 +1,3 @@
+textfsm==1.1.0 
+pandas==1.1.4 
+XlsxWriter==1.3.7

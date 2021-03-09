@@ -1,0 +1,31 @@
+Value Filldown NAME (\w+_\w{4,12}_(\w){3,6}|\w{5,8}_\w{4,12}_(\w){3,6}.\S+)
+Value Required DateAndTime (\S+.\S+.\S+\s\S+.\S+.\S+)
+Value DST_Active (\S+)
+Value Current_Zone (\S+)
+Value Offset_from_UTC (.\S+.\S+|\S+.\S+)
+Value Non_DST_Zone (\S+)
+Value Offset_from_UTC_ (.\S+.\S+|\S+.\S+)
+Value Zone_type (\S+.\S|\S+)
+Value Prefer_Local_Time (\S+)
+Value Selected_Ref (\S+)
+Value Selection_Time (\S+.\S+.\S+\s\S+.\S+.\S+)
+Value time_ref_prior (\S+)
+Value Selected (\S+)
+Value Ref_Type (\S+)
+Value Qualified (\S+)
+Value Ref_Id (\S+)
+
+
+Start
+  ^\w:${NAME}# /show system time
+  ^.\w:${NAME}# /show system time
+  ^Current\sDate\s&\sTime\s:\s${DateAndTime}\s+DST\sActive\s+:\s${DST_Active}
+  ^Current\sZone\s+:\s${Current_Zone}\s+Offset\sfrom\sUTC\s+:\s${Offset_from_UTC}
+  ^Non-DST\sZone\s+:\s${Non_DST_Zone}\s+Offset\sfrom\sUTC\s+:\s${Offset_from_UTC_}
+  ^Zone\stype\s+:\s${Zone_type}
+  ^Prefer\sLocal\sTime\s+:\s${Prefer_Local_Time} -> Record
+  ^Selected\sRef\s+:\s${Selected_Ref}\s+Selection\sTime\s+:\s${Selection_Time}
+  ^time.ref.prior.:\s${time_ref_prior}\s+Selected\s+:\s${Selected}
+  ^Ref\sType\s+:\s${Ref_Type}\s+Qualified\s+:\s${Qualified}
+  ^Ref\sId\s+:\s${Ref_Id} -> Continue.Record
+

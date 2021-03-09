@@ -1,0 +1,7 @@
+Value Filldown NAME (\w+_\w{4,12}_(\w){3,6}|\w{5,8}_\w{4,12}_(\w){3,6}.\S+)
+Value Required Export_Policies (redistribute-loopback0|export-loopback0)
+
+Start
+  ^\w:${NAME}# /show router ldp status
+  ^.\w:${NAME}# /show router ldp status
+  ^\s+\S+\s+${Export_Policies}

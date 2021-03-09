@@ -1,0 +1,41 @@
+Value Filldown NAME (\w+_\w{4,12}_(\w){3,6}|\w{5,8}_\w{4,12}_(\w){3,6}.\S+)
+Value Status_CPM (\S+\s\S+|\S+)
+Value Ref_Input_Mode (\S+)
+Value Quality_Level_Selection (Enabled|Disabled)
+Value Ref_Select (\S+)
+Value Sys_Quality_Level (\S+)
+Value Ref_Order (\S+\s\S+\s\S+|\S+)
+Value Ref_Input (\S+)
+Value Admin_Status ([uU][pP]|[Dd][oO][wW][nN])
+Value Rx_Quality_Level (\S+)
+Value Qualified_For_Use (\S+)
+Value Selected_For_Use (\S+)
+Value Source_Port (\S+.\S+.\S+|\S+)
+Value Source_PTP_Clock (\S+)
+
+Start
+  ^\w:${NAME}# /show system sync-if-timing
+  ^.\w:${NAME}# /show system sync-if-timing
+  ^System\sStatus\sCPM\s\w\s+:\s${Status_CPM}
+  ^\s+Reference\sInput\sMode\s+:\s${Ref_Input_Mode}
+  ^\s+Quality\sLevel\sSelection\s+:\s${Quality_Level_Selection}
+  ^\s+Reference\sSelected\s+:\s${Ref_Select}
+  ^\s+System\sQuality\sLevel\s+:\s${Sys_Quality_Level}
+  ^Reference\sOrder\s+:\s${Ref_Order}
+  ^Reference\sInput\s${Ref_Input} -> Continue
+  ^${Ref_Input}\sReference\sInput -> Continue
+  ^\s+Admin\sStatus\s+:\s${Admin_Status} -> Continue
+  ^\s+Rx\sQuality\sLevel\s+:\s${Rx_Quality_Level} -> Continue
+  ^\s+Qualified\sFor\sUse\s+:\s${Qualified_For_Use} -> Continue
+  ^\s+Selected\sFor\sUse\s+:\s${Selected_For_Use} -> Continue
+  ^\s+Source\sPort\s+:\s${Source_Port} -> Continue
+  ^\s+Source\sPTP\sClock\s+:\s${Source_PTP_Clock} -> Record
+
+
+
+
+
+
+
+
+

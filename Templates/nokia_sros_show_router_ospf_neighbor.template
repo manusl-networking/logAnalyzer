@@ -1,0 +1,22 @@
+Value Filldown NAME (\w+_\w{4,12}_(\w){3,6}|\w{5,8}_\w{4,12}_(\w){3,6}.\S+)
+Value Filldown INSTANCE (\S+)
+Value Required INTERFACE_NAME (\S+)
+Value Required RTR_ID ([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})
+Value Required STATE (\S+)
+Value Required PRI ([0-9]{1,10})
+Value Required RETXQ ([0-9]{1,10})
+Value Required TTL ([0-9]{1,10})
+Value Fillup,Key AREA_ID ([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})
+
+Start
+  ^\w:${NAME}# /show router ospf neighbor -> Continue
+  ^.\w:${NAME}# /show router ospf neighbor -> Continue 
+  ^\w:${NAME}# /show router ospf\s${INSTANCE} neighbor -> Continue
+  ^.\w:${NAME}# /show router ospf\s${INSTANCE} neighbor -> Continue
+  ^Rtr Base OSPFv2 Instance\s${INSTANCE} Neighbors
+  ^OSPFv2 .${INSTANCE}. all neighbors
+  ^${INTERFACE_NAME}\s+${RTR_ID}\s+${STATE}\s+${PRI}\s+${RETXQ}\s+${TTL} -> Continue.Record
+  ^  ${INTERFACE_NAME}\s+${RTR_ID}\s+${STATE}\s+${PRI}\s+${RETXQ}\s+${TTL} -> Continue.Record
+  ^    ${INTERFACE_NAME}\s+${RTR_ID}\s+${STATE}\s+${PRI}\s+${RETXQ}\s+${TTL} -> Continue.Record
+  ^\s+${AREA_ID} -> Continue
+

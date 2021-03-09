@@ -1,0 +1,7 @@
+Value Filldown NAME (\w+_\w{4,12}_(\w){3,6}|\w{5,8}_\w{4,12}_(\w){3,6}.\S+)
+Value Required policy (seamless.+|redistribute.loopback0|export_to_BGP_area.+|aigpImportToBGP.+|export.to.BGP.LU|export.loopback0)
+
+Start
+  ^\w:${NAME}# /show router policy community
+  ^.\w:${NAME}# /show router policy community
+  ^${policy} -> Record

@@ -1,0 +1,12 @@
+Value Filldown NAME (\w+_\w{4,12}_(\w){3,6}|\w{5,8}_\w{4,12}_(\w){3,6}.\S+)
+Value Required id (\S+)
+Value Admin_State ([uU][pP]|[Dd][oO][wW][nN])
+Value Oper_State ([uU][pP]|[Dd][oO][wW][nN])
+Value Required AutoBind (\S+)
+
+Start
+  ^\w:${NAME}# /show service id\s${id} all -> Continue
+  ^.\w:${NAME}# /show service id\s${id} all -> Continue
+  ^Admin\sState\s+:\s${Admin_State}\s+Oper\sState\s+:\s${Oper_State} -> Continue
+  ^Max\sIPv4\sRoutes\s+:\s\S+\sLimit\s+Auto\sBind\s+:\s${AutoBind} -> Continue.Record
+  ^Resolution\s+:\s${AutoBind}  -> Continue.Record

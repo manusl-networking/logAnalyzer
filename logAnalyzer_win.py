@@ -9,6 +9,7 @@
 # but WITHOUT ANY WARRANTY of any kind whatsoever.
 #
 
+
 import textfsm
 import pandas as pd
 import csv
@@ -19,7 +20,7 @@ import argparse
 def readTemplate(fileTemplate):  
 	
 	# Read the list of templates passed by CSV of textFSM and return template read list (read)
-	# list of parsed variable names, list of template names
+	# list of parsed variable names, list of template names 
 	
 	with open(fileTemplate,'r') as fTemplate:
 		reader 	  = csv.reader(fTemplate)
@@ -94,7 +95,7 @@ def parseResults(read_template, index, content, templates, routers): #Build the 
 					parsed_results.append('NOT VALUE')
 
 				parsed_results=[parsed_results]
-
+	
 				dfResult = pd.DataFrame(parsed_results, columns= columnss)
 			else:
 				dfResult = pd.DataFrame(parsed_results, columns= columnss)
@@ -105,7 +106,7 @@ def parseResults(read_template, index, content, templates, routers): #Build the 
 		# the DF with the data of all routers
 
 		datosEquipo[nomTemplate] = dfTemp
-		
+
 		# I added this here because it was already done in main ().
 		# It is cleaner like this ...
 		datosEquipo[nomTemplate].reset_index(level=0, inplace=True)
@@ -119,11 +120,11 @@ def searchDiff(datosEquipoPre, datosEquipoPost):#Makes a new table, in which it 
 
 	for key in datosEquipoPre.keys():
 
-		dfUnion = pd.merge(datosEquipoPre[key], datosEquipoPost[key], how='outer', indicator='Donde').drop_duplicates()
-		dfInter = dfUnion[dfUnion.Donde=='both']
+		dfUnion = pd.merge(datosEquipoPre[key], datosEquipoPost[key], how='outer', indicator='Where').drop_duplicates()
+		dfInter = dfUnion[dfUnion.Where=='both']
 		dfCompl = dfUnion[~(dfUnion.isin(dfInter))].dropna(axis=0, how='all').drop_duplicates()
-		dfCompl['Donde'] = dfCompl['Donde'].str.replace('left_only','antes')
-		dfCompl['Donde'] = dfCompl['Donde'].str.replace('right_only','despues')
+		dfCompl['Where'] = dfCompl['Where'].str.replace('left_only','before')
+		dfCompl['Where'] = dfCompl['Where'].str.replace('right_only','after')
 
 		countDif[key] = dfCompl.sort_values(by=['NAME'])
 
@@ -136,7 +137,7 @@ def findDown(count_dif):#Makes a table from the results of searching for 'Down' 
 
 	for key in count_dif.keys():
 
-		df = count_dif[key][count_dif[key]['Donde']=='despues']
+		df = count_dif[key][count_dif[key]['Where']=='after']
 		if len(df) > 0:
 			df = df[df.apply(lambda r: r.str.contains('down', case=False).any(), axis=1)]
 		else:
@@ -155,7 +156,7 @@ def makeTable(datosEquipoPre, datosEquipoPost):#Sort the table pre and post to p
 
 		datosEquipoPre1[temp]['##']='##'
 
-		df_all[temp] = pd.concat([datosEquipoPre1[temp], datosEquipoPost[temp]], axis=1, keys=('Antes de la Tarea', 'Despues de la tarea'))
+		df_all[temp] = pd.concat([datosEquipoPre1[temp], datosEquipoPost[temp]], axis=1, keys=('Before the Task', 'After the task'))
 
 	return df_all
 
@@ -191,16 +192,16 @@ def constructExcel(df_final, count_dif, searchDown, folderLog):#Sort the data an
 		
 		df_final[temp].to_excel(writer, sheet_name=sheet_name, startrow=0, startcol=0) #creates workbook
 
-		worksheet.merge_range('A'+str(len(df_final[temp])+5)+':'+'H'+str(len(df_final[temp])+5), '#############  CAMBIOS DETECTADOS #############', cell_format)
-		worksheet.merge_range('A'+str((len(df_final[temp])+(len(count_dif[temp])))+9)+':'+'H'+str((len(df_final[temp])+(len(count_dif[temp])))+9), '#############  ESTADOS DOWN DETECTADOS POST TAREA #############', cell_format)
+		worksheet.merge_range('A'+str(len(df_final[temp])+5)+':'+'H'+str(len(df_final[temp])+5), '#############  CHANGES DETECTED #############', cell_format)
+		worksheet.merge_range('A'+str((len(df_final[temp])+(len(count_dif[temp])))+9)+':'+'H'+str((len(df_final[temp])+(len(count_dif[temp])))+9), '#############  DOWN STATES DETECTED POST-TASK #############', cell_format)
 		
 		if len(count_dif[temp]) == 0:
-			worksheet.merge_range('A'+str(len(df_final[temp])+5)+':'+'H'+str(len(df_final[temp])+6), '#############  NO SE DETECTARON CAMBIOS POST-TAREA #############', cell_format)
+			worksheet.merge_range('A'+str(len(df_final[temp])+5)+':'+'H'+str(len(df_final[temp])+6), '#############  NO POST-TASK CHANGES DETECTED #############', cell_format)
 		else:
 			count_dif[temp].to_excel(writer, sheet_name=sheet_name, startrow=len(df_final[temp])+6, startcol=0)
 			
 		if len(searchDown[temp]) == 0:
-			worksheet.merge_range('A'+str((len(df_final[temp])+(len(count_dif[temp])))+10)+':'+'H'+str((len(df_final[temp])+(len(count_dif[temp])))+9), '#############  NO SE ENCONTRARON ESTADOS DOWN #############', cell_format)
+			worksheet.merge_range('A'+str((len(df_final[temp])+(len(count_dif[temp])))+10)+':'+'H'+str((len(df_final[temp])+(len(count_dif[temp])))+9), '#############  NO STATES FOUND DOWN #############', cell_format)
 		else:
 			searchDown[temp].to_excel(writer, sheet_name=sheet_name, startrow=(len(df_final[temp])+(len(count_dif[temp])))+10, startcol=0)
 		print('#')
@@ -210,53 +211,46 @@ def constructExcel(df_final, count_dif, searchDown, folderLog):#Sort the data an
 def main():
 
 	parser1 = argparse.ArgumentParser(description='Log Analysis', prog='PROG', usage='%(prog)s [options]')
-	parser1.add_argument('-pre', '--preFolder',   type=str, required=True, help='Folder with PRE Logs. Debe terminar en "/"',)
-	parser1.add_argument('-post','--postFolder' , type=str, default='',    help='Folder with POST Logs. Debe terminar en "/"',)
-	parser1.add_argument('-csv', '--csvTemplate', type=str, required=True, help='CSV con templates a usar en el parsing.')
-	parser1.add_argument('-job', '--jobType', type=str, required=True, help='Tipo de trabajo de desea realizar, O Captura, 1 Ventana')
+	parser1.add_argument('-pre', '--preFolder',   type=str, required=True, help='Folder with PRE Logs. Must end in "/"',)
+	parser1.add_argument('-post','--postFolder' , type=str, default='',    help='Folder with POST Logs. Must end in "/"',)
+	parser1.add_argument('-csv', '--csvTemplate', type=str, required=True, help='CSV con with templates to use in parsing.')
 
 	args        = parser1.parse_args()
 	preFolder   = args.preFolder
 	postFolder  = args.postFolder
 	csvTemplate = args.csvTemplate
-	jobType     = args.jobType
 
-	if jobType == '0' or jobType == '1':
 
-		results_template, index, templates = readTemplate(csvTemplate)
+	results_template, index, templates = readTemplate(csvTemplate)
 
-		if jobType == '0':
+	if preFolder != '' and postFolder == '':
 
-			contentPre, routers = readLog(preFolder)
-			df_final            = parseResults(results_template, index, contentPre,  templates, routers)
-			count_dif = {}
-			searchDown= {}
-			for key in df_final.keys():
-				count_dif[key]      = pd.DataFrame(columns=df_final[key].columns)
-				searchDown[key]     = pd.DataFrame(columns=df_final[key].columns)
-			constructExcel(df_final, count_dif, searchDown, preFolder)
+		contentPre, routers = readLog(preFolder)
+		df_final            = parseResults(results_template, index, contentPre,  templates, routers)
+		count_dif = {}
+		searchDown= {}
+		for key in df_final.keys():
+			count_dif[key]      = pd.DataFrame(columns=df_final[key].columns)
+			searchDown[key]     = pd.DataFrame(columns=df_final[key].columns)
+		constructExcel(df_final, count_dif, searchDown, preFolder)
 
-		if jobType == '1':
-
-			if postFolder == '':
-				print("No hay postFolder definido. Saliendo...")
-				quit()
+	elif preFolder != '' and postFolder != '':
             
-			contentPre, routersPre   = readLog(preFolder)
-			contentPost, routersPost = readLog(postFolder)
+		contentPre, routersPre   = readLog(preFolder)
+		contentPost, routersPost = readLog(postFolder)
 
-			if routersPre != routersPost:
-				print("No hay misma cantidad de equipos en PRE vs POST. Verificar. Fin")
-				quit()
+		if routersPre != routersPost:
+			print("There is not the same amount of logs in PRE vs POST. Check. Exit")
+			quit()
 			
-			datosEquipoPre  = parseResults(results_template, index, contentPre,  templates, routersPre)
-			datosEquipoPost = parseResults(results_template, index, contentPost, templates, routersPost)
-			count_dif       = searchDiff(datosEquipoPre, datosEquipoPost)
-			searchDown      = findDown(count_dif)
-			df_final        = makeTable(datosEquipoPre, datosEquipoPost)
-			constructExcel(df_final, count_dif, searchDown, postFolder)
+		datosEquipoPre  = parseResults(results_template, index, contentPre,  templates, routersPre)
+		datosEquipoPost = parseResults(results_template, index, contentPost, templates, routersPost)
+		count_dif       = searchDiff(datosEquipoPre, datosEquipoPost)
+		searchDown      = findDown(count_dif)
+		df_final        = makeTable(datosEquipoPre, datosEquipoPost)
+		constructExcel(df_final, count_dif, searchDown, postFolder)
 
-	else:
-		print('Ingrese la opción correcta, 0 o 1, saliendo...')
+	elif preFolder == '':
+		print('Incorrect Folder, Please Verify')
 
 main()

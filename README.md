@@ -39,10 +39,10 @@ The templates are stored in the `Templates` folder. The script reads the CSV and
 
 #### Results
 
-If `logAnalyzer` is invoked with option `jobType=0`, reads the specific content in the log folder for a given command and then saves the results in an Excel report.
+If `logAnalyzer` is invoked with folder `pre` only, reads the specific content in the log folder for a given command and then saves the results in an Excel report.
 
 ```bash
-$ python3 logAnalyzer.py -csv templateExample.csv -pre folderLogs/ -job 0
+$ python3 logAnalyzer.py -csv templateExample.csv -pre folderLogs/
 <_io.TextIOWrapper name='Templates/nokia_sros_show_service_sdp-using.template' mode='r' encoding='UTF-8'>
 #####Plantillas Cargadas Exitosamente#####
 #########Logs Cargados Exitosamente#########
@@ -52,10 +52,10 @@ ROUTER_EXAMPLE_rx.txt nokia_sros_show_service_sdp-using.template
 Guardando
 ```
 
-Otherwise, if `logAnalyzer` is invoked with option `jobType=1`, it compares the content of pre and post log folders, such as if we run checks to see the status of the routers before and after a task, and then saves the results in an Excel report.
+Otherwise, if `logAnalyzer` is invoked with folder `pre` and `post`, it compares the content of pre and post log folders, such as if we run checks to see the status of the routers before and after a task, and then saves the results in an Excel report.
 
 ```bash
-$ python3 logAnalyzer.py -csv templateExample.csv -pre folderLogsBefore/ -post folderLogsAfter/ -job 1
+$ python3 logAnalyzer.py -csv templateExample.csv -pre folderLogsBefore/ -post folderLogsAfter/
 <_io.TextIOWrapper name='Templates/nokia_sros_show_service_sdp-using.template' mode='r' encoding='UTF-8'>
 #####Plantillas Cargadas Exitosamente#####
 #########Logs Cargados Exitosamente#########
@@ -78,13 +78,11 @@ usage: PROG [options]
 Log Analysis
 
 optional arguments:
-  -h, --help            show this help message and exit
-  -pre PREFOLDER, --preFolder PREFOLDER
-                        Folder with PRE Logs. Debe terminar en "/"
-  -post POSTFOLDER, --postFolder POSTFOLDER
-                        Folder with POST Logs. Debe terminar en "/"
-  -csv CSVTEMPLATE, --csvTemplate CSVTEMPLATE
-                        CSV con templates a usar en el parsing.
-  -job JOBTYPE, --jobType JOBTYPE
-                        Tipo de trabajo de desea realizar, O Captura, 1 Ventana
+-h, --help            show this help message and exit
+-pre PREFOLDER, --preFolder PREFOLDER
+                      Folder with PRE Logs. Must end in "/"
+-post POSTFOLDER, --postFolder POSTFOLDER
+                      Folder with POST Logs. Must end in "/"
+-csv CSVTEMPLATE, --csvTemplate CSVTEMPLATE
+                      CSV con with templates to use in parsing.
 ```

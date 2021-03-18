@@ -1,7 +1,7 @@
-Value Fillup NAME (\w+_\w{4,12}_(\w){3,6}|\w{5,8}_\w{4,12}_(\w){3,6}.\S+)
+Value Fillup NAME (\S+)
 Value Required Location (\S+|\S+\s\S+|\S+\s\S+\s\S+|\S+\s\S+\s\S+\s\S+|\S+\s\S+\s\S+\s\S+\s\S+)
 
 Start
-  ^\w:${NAME}# /show system information
-  ^.\w:${NAME}# /show system information
+  ^\w:${NAME}(#|>) /show system information
+  ^.\w:${NAME}(#|>) /show system information
   ^System Location\s+:\s+${Location}

@@ -1,4 +1,4 @@
-Value Filldown NAME (\w+_\w{4,12}_(\w){3,6}|\w{5,8}_\w{4,12}_(\w){3,6}.\S+)
+Value Filldown NAME (\S+)
 Value Required SDP_ID ([0-9]{1,10})
 Value Required ADM_MTU ([0-9]{1,10})
 Value Required OPR_MTU ([0-9]{1,10})
@@ -10,8 +10,8 @@ Value Required LSP (\S+.\S+|\S+)
 Value Required SIG (\S+)
 
 Start
-  ^\w:${NAME}# /show service sdp 
-  ^.\w:${NAME}# /show service sdp 
+  ^\w:${NAME}(#|>) /show service sdp 
+  ^.\w:${NAME}(#|>) /show service sdp 
   ^${SDP_ID}\s+${ADM_MTU}\s+${OPR_MTU}\s+${FAR_END}\s+${ADM_SDP}\s+${OPR_SDP}\s+${DEL}\s+${LSP}\s+${SIG} -> Record
 
 EOF

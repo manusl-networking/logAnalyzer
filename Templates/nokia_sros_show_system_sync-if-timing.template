@@ -1,4 +1,4 @@
-Value Filldown NAME (\w+_\w{4,12}_(\w){3,6}|\w{5,8}_\w{4,12}_(\w){3,6}.\S+)
+Value Filldown NAME (\S+)
 Value Status_CPM (\S+\s\S+|\S+)
 Value Ref_Input_Mode (\S+)
 Value Quality_Level_Selection (Enabled|Disabled)
@@ -14,8 +14,8 @@ Value Source_Port (\S+.\S+.\S+|\S+)
 Value Source_PTP_Clock (\S+)
 
 Start
-  ^\w:${NAME}# /show system sync-if-timing
-  ^.\w:${NAME}# /show system sync-if-timing
+  ^\w:${NAME}(#|>) /show system sync-if-timing
+  ^.\w:${NAME}(#|>) /show system sync-if-timing
   ^System\sStatus\sCPM\s\w\s+:\s${Status_CPM}
   ^\s+Reference\sInput\sMode\s+:\s${Ref_Input_Mode}
   ^\s+Quality\sLevel\sSelection\s+:\s${Quality_Level_Selection}

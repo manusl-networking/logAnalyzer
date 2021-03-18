@@ -1,4 +1,4 @@
-Value Filldown NAME (\w+_\w{4,12}_(\w){3,6}|\w{5,8}_\w{4,12}_(\w){3,6}.\S+)
+Value Filldown NAME (\S+)
 Value Key,Required Service_ID_INIT ([0-9]{1,15})
 Value Type_Local (\S+)
 Value Type_Remote (\S+)
@@ -24,8 +24,8 @@ Value Binding_VC_ID_Remoto (\S+)
 Value Request_Result (.+)
 
 Start
-  ^\w:${NAME}# /environment no more 
-  ^.\w:${NAME}# /environment no more 
+  ^\w:${NAME}(#|>) /environment no more 
+  ^.\w:${NAME}(#|>) /environment no more 
   ^Service-ID:\s${Service_ID_INIT}
   ^\s+Type:\s+${Type_Local}\s+${Type_Remote}
   ^\s+Admin\sState:\s+${Admin_State_Local}\s+${Admin_State_Remoto} -> Continue

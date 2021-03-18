@@ -1,4 +1,4 @@
-Value Filldown NAME (\w+_\w{4,12}_(\w){3,6}|\w{5,8}_\w{4,12}_(\w){3,6}.\S+)
+Value Filldown NAME (\S+)
 Value prefix_list (\S+)
 Value prefix ([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})
 Value communityINTER (\S+.\S+)
@@ -17,8 +17,8 @@ Value next-hop-self (next-hop-self)
 Value default-action (\S+)
 
 Start
-  ^\w:${NAME}# /configure router policy-options
-  ^.\w:${NAME}# /configure router policy-options
+  ^\w:${NAME}(#|>) /configure router policy-options
+  ^.\w:${NAME}(#|>) /configure router policy-options
   ^\s+begin
   ^\s+prefix-list\s${prefix_list}
   ^\s+prefix\s${prefix}/32\sexact

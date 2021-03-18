@@ -1,4 +1,4 @@
-Value Filldown NAME (\w+_\w{4,12}_(\w){3,6}|\w{5,8}_\w{4,12}_(\w){3,6}.\S+)
+Value Filldown NAME (\S+)
 Value Filldown Version (TiMOS\S+)
 Value group (\S+)
 Value family (ipv4)
@@ -19,7 +19,8 @@ Value next_hop (next-hop-self)
 Value bfd_enable (bfd-enable)
 
 Start
-  ^\w:${NAME}# /show version
+  ^\w:${NAME}(#|>) /show version
+  ^.\w:${NAME}(#|>) /show version
   ^${Version}
   ^\s+group\s${group}
   ^\s+family\s${family}

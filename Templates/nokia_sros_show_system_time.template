@@ -1,4 +1,4 @@
-Value Filldown NAME (\w+_\w{4,12}_(\w){3,6}|\w{5,8}_\w{4,12}_(\w){3,6}.\S+)
+Value Filldown NAME (\S+)
 Value Required DateAndTime (\S+.\S+.\S+\s\S+.\S+.\S+)
 Value DST_Active (\S+)
 Value Current_Zone (\S+)
@@ -17,8 +17,8 @@ Value Ref_Id (\S+)
 
 
 Start
-  ^\w:${NAME}# /show system time
-  ^.\w:${NAME}# /show system time
+  ^\w:${NAME}(#|>) /show system time
+  ^.\w:${NAME}(#|>) /show system time
   ^Current\sDate\s&\sTime\s:\s${DateAndTime}\s+DST\sActive\s+:\s${DST_Active}
   ^Current\sZone\s+:\s${Current_Zone}\s+Offset\sfrom\sUTC\s+:\s${Offset_from_UTC}
   ^Non-DST\sZone\s+:\s${Non_DST_Zone}\s+Offset\sfrom\sUTC\s+:\s${Offset_from_UTC_}

@@ -1,4 +1,4 @@
-Value Filldown NAME (\w+_\w{4,12}_(\w){3,6}|\w{5,8}_\w{4,12}_(\w){3,6}.\S+)
+Value Filldown NAME (\S+)
 Value Required Clock_Type (\S+.\S+|\S+)
 Value PTP_Profile (\S+\s\S+)
 Value Admin_State ([uU][pP]|[Dd][oO][wW][nN])
@@ -15,10 +15,10 @@ Value Time_Traceable (\S+)
 Value Time_Source (\S+)
 
 Start
-  ^\w:${NAME}#\s/show\ssystem\sptp
-  ^.\w:${NAME}#\s/show\ssystem\sptp
-  ^\w:${NAME}#\s/show\ssystem\sptp\sclock\scsm
-  ^.\w:${NAME}#\s/show\ssystem\sptp\sclock\scsm
+  ^\w:${NAME}(#|>)\s/show\ssystem\sptp
+  ^.\w:${NAME}(#|>)\s/show\ssystem\sptp
+  ^\w:${NAME}(#|>)\s/show\ssystem\sptp\sclock\scsm
+  ^.\w:${NAME}(#|>)\s/show\ssystem\sptp\sclock\scsm
   ^Clock\sType\s+:\s${Clock_Type}\s+PTP\sProfile\s+:\s${PTP_Profile}
   ^Admin\sState\s+:\s${Admin_State}\s+Oper\sState\s+:\s${Oper_State}
   ^Clock\sId\s+:\s${Clock_id}\s+Clock\sClass\s+:\s${Clock_Class}

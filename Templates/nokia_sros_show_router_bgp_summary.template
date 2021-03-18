@@ -1,4 +1,4 @@
-Value Filldown NAME (\w+_\w{4,12}_(\w){3,6}|\w{5,8}_\w{4,12}_(\w){3,6}.\S+)
+Value Filldown NAME (\S+)
 Value BGP_ROUTER_ID ([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})
 Value BGP_AS ([0-9]{1,1500})
 Value BGP_LOCAL_AS ([0-9]{1,1500})
@@ -12,8 +12,8 @@ Value Required BGP_STATE (\S+)
 Value BGP_STATUS_NEIGHBOR (\S+)
 
 Start
-  ^\w:${NAME}# /show router bgp summary
-  ^.\w:${NAME}# /show router bgp summary
+  ^\w:${NAME}(#|>) /show router bgp summary
+  ^.\w:${NAME}(#|>) /show router bgp summary
   ^\sBGP\sRouter\sID:${BGP_ROUTER_ID}\s+AS:${BGP_AS}\s+Local\sAS:${BGP_LOCAL_AS}
   ^BGP\sAdmin\sState\s+:\s${BGP_ADMIN_STATE}\s+BGP\sOper\sState\s+:\s${BGP_OPER_STATE}
   ^Total\sPeer\sGroups\s+:\s${BGP_TOTAL_PEERS_GROUPS}\s+Total\sPeers\s+:\s${BGP_TOTAL_PEERS}

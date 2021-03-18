@@ -1,9 +1,9 @@
-Value Fillup NAME (\w+_\w{4,12}_(\w){3,6}|\w{5,8}_\w{4,12}_(\w){3,6}.\S+)
+Value Fillup NAME (\S+)
 Value NO_PREFIX_ACTIVE_BINDINGS ([0-9]{0,12})
 Value NO_OF_ROUTES ([0-9]{0,12})
 
 Start
-  ^\w:${NAME}# /show router route-table | match No 
-  ^.\w:${NAME}# /show router route-table | match No 
+  ^\w:${NAME}(#|>) /show router route-table | match No 
+  ^.\w:${NAME}(#|>) /show router route-table | match No 
   ^No.\sof\sPrefix\sActive\sBindings:\s${NO_PREFIX_ACTIVE_BINDINGS}
   ^No.\sof\sRoutes:\s${NO_OF_ROUTES} <- Record

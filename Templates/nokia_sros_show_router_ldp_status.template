@@ -1,3 +1,7 @@
+#Command: /show router ldp status
+#Description: This template is used to see the redistribute and export policies in ldp lsr
+#Variables: Router_Name Export_Policies
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
 Value Filldown NAME (\S+)
 Value Required Export_Policies (redistribute-loopback0|export-loopback0)
 

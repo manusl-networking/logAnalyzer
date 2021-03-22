@@ -1,3 +1,7 @@
+#Command: /show router ldp bindings active | match No
+#Description: This template is used to see number of prefix active ldp bindings
+#Variables: Router_Name NO_PREFIX_ACTIVE_BINDINGS
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
 Value Filldown NAME (\S+)
 Value Required NO_PREFIX_ACTIVE_BINDINGS ([0-9]{0,12})
 

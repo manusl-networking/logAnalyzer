@@ -1,3 +1,7 @@
+#Command: /show service service-using
+#Description: This template is used to see service-using
+#Variables: Router_Name ServiceId Type Adm Opr CustomerId
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
 Value Filldown NAME (\S+)
 Value Required ServiceId ([0-9]{1,15})
 Value Type (\S+)

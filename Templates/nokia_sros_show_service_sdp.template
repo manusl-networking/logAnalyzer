@@ -1,3 +1,7 @@
+#Command: /show service sdp
+#Description: This template is used to see sdp service
+#Variables: Router_Name SDP_ID ADM_MTU OPR_MTU FAR_END ADM_SDP OPR_SDP DEL LSP SIG
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
 Value Filldown NAME (\S+)
 Value Required SDP_ID ([0-9]{1,10})
 Value Required ADM_MTU ([0-9]{1,10})

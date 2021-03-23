@@ -1,3 +1,7 @@
+#Command: /ping
+#Description: This template is used to see the result of ping
+#Variables: Router_Name IP_TO_HOST DATA_BYTES PACKETS_TRANSMITTED PACKETS_RECEIVED PERC_PACKET_LOSS
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
 Value Filldown NAME (\S+)
 Value Required IP_TO_HOST ([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})
 Value Required DATA_BYTES (\w{1,3})

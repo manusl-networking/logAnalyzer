@@ -1,3 +1,7 @@
+#Command: /show system ptp clock 1 detail
+#Description: This template is used to see ptp clock's configuration detail
+#Variables: Router_Name CLOCK_TYPE ADMIN_STATE FREQ_RECOVERY_STATE ADMIN_STATUS OPER_STATUS
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
 Value Filldown NAME (\S+)
 Value Required CLOCK_TYPE (\S+.\S+)
 Value ADMIN_STATE ([uU][pP]|[Dd][oO][wW][nN])

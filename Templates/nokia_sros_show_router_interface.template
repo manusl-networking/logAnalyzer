@@ -1,3 +1,7 @@
+#Command: /show router interface
+#Description: This template is used to see the interfaces over plane Base
+#Variables: Router_Name INTERFACE_NAME PLANE INTERFACE_ADM INTERFACE_OPR_IPV4 INTERFACE_OPR_IPV6 INTERFACE_MODE INTERFACE_PORT INTERFACE_IP
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
 Value Filldown NAME (\S+)
 Value Required INTERFACE_NAME (\S+)
 Value Filldown PLANE (Base)

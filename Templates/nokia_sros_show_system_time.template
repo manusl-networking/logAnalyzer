@@ -1,3 +1,7 @@
+#Command: /show system time
+#Description: This template is used to see system time configuration
+#Variables: Router_Name DateAndTime DST_Active Current_Zone Offset_from_UTC Non_DST_Zone Offset_from_UTC_ Zone_type Prefer_Local_Time Selected_Ref Selection_Time time_ref_prior Selected Ref_Type Qualified Ref_Id
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
 Value Filldown NAME (\S+)
 Value Required DateAndTime (\S+.\S+.\S+\s\S+.\S+.\S+)
 Value DST_Active (\S+)

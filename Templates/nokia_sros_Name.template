@@ -1,3 +1,7 @@
+#Command: /
+#Description: This template is an example to find out the router name
+#Variables: Router_Name 
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
 Value Fillup NAME (\S+)
 
 Start

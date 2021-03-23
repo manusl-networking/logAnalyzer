@@ -1,3 +1,7 @@
+#Command: /show router ldp interface detail 
+#Description: This template is used to see detail of ldp interface
+#Variables: Router_Name Interface Admin_State Oper_State IPv4_Admin_State IPv4_Oper_State Transport_Addr Active_Adjacencies Local_LSR_Type Local_LSR
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
 Value Filldown NAME (\S+)
 Value Key,Required Interface (\S+)
 Value Admin_State ([uU][pP]|[Dd][oO][wW][nN])

@@ -1,3 +1,7 @@
+#Command: /tools dump resource-usage system | match ULbl
+#Description: This template is used to find out the usage of Unicast Labels in 7250 chassis
+#Variables: Router_Name ULbl_R_Total ULbl_R_Allocated ULbl_R_Free
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
 Value Filldown NAME (\S+)
 Value Required ULbl_R_Total (\S+)
 Value ULbl_R_Allocated (\S+)

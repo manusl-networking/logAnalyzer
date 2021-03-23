@@ -1,3 +1,7 @@
+#Command: /show router ospf interface and show router ospf <Instance> interface
+#Description: This template is used to see interface OSPF and interface OSPF over other instance (not only 0)
+#Variables: Router_Name INSTANCE INTERFACE_NAME AREA_ID DESIGNATED_RTR BKUP_DESIG_RTR ADM OPER
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
 Value Filldown NAME (\S+)
 Value Filldown INSTANCE (\S+)
 Value Key,Required INTERFACE_NAME (\S+)

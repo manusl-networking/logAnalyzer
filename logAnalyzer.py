@@ -157,10 +157,9 @@ def findMajor(count_dif):#Makes a table from the results of searching for Major 
 
 	for key in count_dif.keys():
 		if key in majorWords:
+			majorWords[key].append('down')
 			df         = pd.DataFrame()
 			for j in majorWords[key]:
-				if j == '':
-					j = 'down'
 				df1 = count_dif[key][count_dif[key]['Where']=='Post']
 				if len(df1) > 0:
 					df1 = df1[df1.apply(lambda r: r.str.contains(j, case=False).any(), axis=1)]

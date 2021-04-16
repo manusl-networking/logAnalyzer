@@ -1,7 +1,11 @@
-Value Filldown NAME (\w+_\w{4,12}_(\w){3,6}|\w{5,8}_\w{4,12}_(\w){3,6}.\S+)
+#Command: /admin display config | match telnet-server
+#Description: This template is used to find out the telnet option on router's configuration
+#Variables: Router_Name Telnet-Server
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
+Value Filldown NAME (\S+)
 Value telnet_activo (telnet-server)
 
 Start
-  ^\w:${NAME}# echo SCRIPT_NONO_START
-  ^.\w:${NAME}# echo SCRIPT_NONO_START
+  ^\w:${NAME}(#|>) echo SCRIPT_NONO_START
+  ^.\w:${NAME}(#|>) echo SCRIPT_NONO_START
   ^\s+${telnet_activo}

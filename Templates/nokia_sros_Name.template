@@ -1,5 +1,9 @@
-Value Fillup NAME (\w+_\w{4,12}_(\w){3,6}|\w{5,8}_\w{4,12}_(\w){3,6}.\S+)
+#Command: /
+#Description: This template is an example to find out the router name
+#Variables: Router_Name 
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
+Value Fillup NAME (\S+)
 
 Start
-  ^\w:${NAME}# echo SCRIPT_NONO_START
-  ^.\w:${NAME}# echo SCRIPT_NONO_START
+  ^\w:${NAME}(#|>) echo SCRIPT_NONO_START
+  ^.\w:${NAME}(#|>) echo SCRIPT_NONO_START

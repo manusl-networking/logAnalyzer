@@ -1,4 +1,8 @@
-Value Filldown NAME (\w+_\w{4,12}_(\w){3,6}|\w{5,8}_\w{4,12}_(\w){3,6}.\S+)
+#Command: /oam svc-ping far_end service svc local-sdp remote-sdp
+#Description: This template is used to see the result of ping over sdp tunnel
+#Variables: Router_Name Service_ID_INIT Type_Local Type_Remote Admin_State_Local Admin_State_Remoto Oper_State_Local Admin_State_Remoto Service_MTU_Local Service_MTU_Remoto IP_Interface_State Actual_IP_Addr_Local Actual_IP_Addr_Remoto SDP_Path_Used_Local SDP_ID_Local SDP_ID_Remoto SDP_Admin_State_Local SDP_Admin_State_Remoto SDP_Oper_State_Local SDP_Oper_State_Remoto Binding_VC_ID_Local Binding_VC_ID_Remoto Request_Result
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
+Value Filldown NAME (\S+)
 Value Key,Required Service_ID_INIT ([0-9]{1,15})
 Value Type_Local (\S+)
 Value Type_Remote (\S+)
@@ -24,8 +28,8 @@ Value Binding_VC_ID_Remoto (\S+)
 Value Request_Result (.+)
 
 Start
-  ^\w:${NAME}# /environment no more 
-  ^.\w:${NAME}# /environment no more 
+  ^\w:${NAME}(#|>) /environment no more 
+  ^.\w:${NAME}(#|>) /environment no more 
   ^Service-ID:\s${Service_ID_INIT}
   ^\s+Type:\s+${Type_Local}\s+${Type_Remote}
   ^\s+Admin\sState:\s+${Admin_State_Local}\s+${Admin_State_Remoto} -> Continue

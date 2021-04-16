@@ -1,9 +1,13 @@
-Value Filldown NAME (\w+_\w{4,12}_(\w){3,6}|\w{5,8}_\w{4,12}_(\w){3,6}.\S+)
+#Command: /show router route-table | match No.
+#Description: This template is used to see the number of base routes
+#Variables: Router_Name Command NO_OF_ROUTES
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
+Value Filldown NAME (\S+)
 Value Required Command (\srouter\sroute-table)
 Value Required NO_OF_ROUTES ([0-9]{0,10})
 
 Start
-  ^\w:${NAME}# /show${Command}\s.\smatch\sNo
-  ^.\w:${NAME}# /show${Command}\s.\smatch\sNo
+  ^\w:${NAME}(#|>) /show${Command}\s.\smatch\sNo
+  ^.\w:${NAME}(#|>) /show${Command}\s.\smatch\sNo
   ^No.\sof\sRoutes:\s${NO_OF_ROUTES} -> Record
 

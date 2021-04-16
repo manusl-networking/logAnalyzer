@@ -9,24 +9,25 @@
 # but WITHOUT ANY WARRANTY of any kind whatsoever.
 #
 
+
 import textfsm
 import pandas as pd
 import csv
 import xlsxwriter
 import glob
 import argparse
+import yaml
 
-def readTemplate(fileTemplate):  
+def readTemplate(fileTemplate):
 	
 	# Read the list of templates passed by CSV of textFSM and return template read list (read)
-	# list of parsed variable names, list of template names
+	# list of parsed variable names, list of template names 
 	
 	with open(fileTemplate,'r') as fTemplate:
 		reader 	  = csv.reader(fTemplate)
 		templates = list(reader)
 	
 	cantTemplate     = len(templates)
-	results_template = []
 	template         = []
 	var              = []
 	index            = []
@@ -55,8 +56,9 @@ def makeParsed(nomTemplate, routerLog): #Parse through textFSM (reading the file
 def readLog(logFolder): #Reads CSV, and stores router logs in memory for processing
 
 	listContent  = [f for f in glob.glob(logFolder  + '*rx.txt')]
-	routers     = [[f.split("\\")[1]] for f in listContent] # --> For Windows
-	# routers     = [[f.split("/")[1]] for f in listContent] --> For Linuix
+
+	routers     = [[f.split("/")[1]] for f in listContent]
+
 	content        = []
 	
 	for f in listContent:
@@ -67,6 +69,24 @@ def readLog(logFolder): #Reads CSV, and stores router logs in memory for process
 	print('#########Logs Loaded Successfully#########')
 
 	return content, routers
+
+def verifyMajorFile(majorFile):
+	"""We verify the majorFile.yml before moving on.
+
+
+	Returns:
+		[dict]: [Dictionary with words of major information, for templates if have any words additional to down]
+	"""
+
+	try:
+		with open(majorFile,'r') as f:
+			majorMatrix = yaml.load(f, Loader=yaml.FullLoader)
+	except:
+		print("Missing " + majorFile + " file. Quitting..")
+		quit()
+
+
+	return majorMatrix
 
 def parseResults(read_template, index, content, templates, routers): #Build the Dataframe from textFSM filter, index and router log
 
@@ -94,7 +114,7 @@ def parseResults(read_template, index, content, templates, routers): #Build the 
 					parsed_results.append('NOT VALUE')
 
 				parsed_results=[parsed_results]
-
+	
 				dfResult = pd.DataFrame(parsed_results, columns= columnss)
 			else:
 				dfResult = pd.DataFrame(parsed_results, columns= columnss)
@@ -105,7 +125,7 @@ def parseResults(read_template, index, content, templates, routers): #Build the 
 		# the DF with the data of all routers
 
 		datosEquipo[nomTemplate] = dfTemp
-		
+
 		# I added this here because it was already done in main ().
 		# It is cleaner like this ...
 		datosEquipo[nomTemplate].reset_index(level=0, inplace=True)
@@ -119,30 +139,46 @@ def searchDiff(datosEquipoPre, datosEquipoPost):#Makes a new table, in which it 
 
 	for key in datosEquipoPre.keys():
 
-		dfUnion = pd.merge(datosEquipoPre[key], datosEquipoPost[key], how='outer', indicator='Donde').drop_duplicates()
-		dfInter = dfUnion[dfUnion.Donde=='both']
+		dfUnion = pd.merge(datosEquipoPre[key], datosEquipoPost[key], how='outer', indicator='Where').drop_duplicates()
+		dfInter = dfUnion[dfUnion.Where=='both']
 		dfCompl = dfUnion[~(dfUnion.isin(dfInter))].dropna(axis=0, how='all').drop_duplicates()
-		dfCompl['Donde'] = dfCompl['Donde'].str.replace('left_only','antes')
-		dfCompl['Donde'] = dfCompl['Donde'].str.replace('right_only','despues')
+		dfCompl['Where'] = dfCompl['Where'].str.replace('left_only','Pre')
+		dfCompl['Where'] = dfCompl['Where'].str.replace('right_only','Post')
 
 		countDif[key] = dfCompl.sort_values(by=['NAME'])
 
 
 	return countDif
 
-def findDown(count_dif):#Makes a table from the results of searching for 'Down' in the post table, which are not in the Pre table
+def findMajor(count_dif):#Makes a table from the results of searching for Major errors in the post table define in yml file for specific template, or down if is not define the words for the template, which are not in the Pre table
 
-	countDown = {}
+	countDown  = {}
+	majorWords = verifyMajorFile('Templates/majorFile.yml')
 
 	for key in count_dif.keys():
+		if key in majorWords:
+			majorWords[key].append('down')
+			df         = pd.DataFrame()
+			for j in majorWords[key]:
+				df1 = count_dif[key][count_dif[key]['Where']=='Post']
+				if len(df1) > 0:
+					df1 = df1[df1.apply(lambda r: r.str.contains(j, case=False).any(), axis=1)]
 
-		df = count_dif[key][count_dif[key]['Donde']=='despues']
-		if len(df) > 0:
-			df = df[df.apply(lambda r: r.str.contains('down', case=False).any(), axis=1)]
+				else:
+					df1 = pd.DataFrame(columns=count_dif[key].columns)
+
+				df=pd.concat([df, df1])
+
+			countDown[key] = df
+
 		else:
-			df = pd.DataFrame(columns=count_dif[key].columns)
+			df = count_dif[key][count_dif[key]['Where']=='Post']
+			if len(df) > 0:
+				df = df[df.apply(lambda r: r.str.contains('down', case=False).any(), axis=1)]
+			else:
+				df = pd.DataFrame(columns=count_dif[key].columns)
 
-		countDown[key] = df
+			countDown[key] = df
 
 	return countDown
 
@@ -155,11 +191,11 @@ def makeTable(datosEquipoPre, datosEquipoPost):#Sort the table pre and post to p
 
 		datosEquipoPre1[temp]['##']='##'
 
-		df_all[temp] = pd.concat([datosEquipoPre1[temp], datosEquipoPost[temp]], axis=1, keys=('Antes de la Tarea', 'Despues de la tarea'))
+		df_all[temp] = pd.concat([datosEquipoPre1[temp], datosEquipoPost[temp]], axis=1, keys=('Pre-Check', 'Post-Check'))
 
 	return df_all
 
-def constructExcel(df_final, count_dif, searchDown, folderLog):#Sort the data and format creating the Excel
+def constructExcel(df_final, count_dif, searchMajor, folderLog):#Sort the data and format creating the Excel
 
 	fileName  = folderLog[:-1] + ".xlsx"
 
@@ -176,11 +212,11 @@ def constructExcel(df_final, count_dif, searchDown, folderLog):#Sort the data an
 		if len(sheet_name) > 31:
 			sheet_name = sheet_name[:31]
 
-		if len(searchDown[temp]) == 0 and len(count_dif[temp]) == 0:
+		if len(searchMajor[temp]) == 0 and len(count_dif[temp]) == 0:
 			colorTab = 'green'
-		elif len(searchDown[temp]) == 0 and len(count_dif[temp]) != 0:
+		elif len(searchMajor[temp]) == 0 and len(count_dif[temp]) != 0:
 			colorTab = 'yellow'
-		elif len(searchDown[temp]) != 0:
+		elif len(searchMajor[temp]) != 0:
 			colorTab = 'orange'
 
 		worksheet = workbook.add_worksheet(sheet_name)
@@ -191,18 +227,18 @@ def constructExcel(df_final, count_dif, searchDown, folderLog):#Sort the data an
 		
 		df_final[temp].to_excel(writer, sheet_name=sheet_name, startrow=0, startcol=0) #creates workbook
 
-		worksheet.merge_range('A'+str(len(df_final[temp])+5)+':'+'H'+str(len(df_final[temp])+5), '#############  CAMBIOS DETECTADOS #############', cell_format)
-		worksheet.merge_range('A'+str((len(df_final[temp])+(len(count_dif[temp])))+9)+':'+'H'+str((len(df_final[temp])+(len(count_dif[temp])))+9), '#############  ESTADOS DOWN DETECTADOS POST TAREA #############', cell_format)
+		worksheet.merge_range('A'+str(len(df_final[temp])+5)+':'+'H'+str(len(df_final[temp])+5), '#############  CHANGES DETECTED #############', cell_format)
+		worksheet.merge_range('A'+str((len(df_final[temp])+(len(count_dif[temp])))+9)+':'+'H'+str((len(df_final[temp])+(len(count_dif[temp])))+9), '#############  MAJOR ERRORS DETECTED POST-TASK #############', cell_format)
 		
 		if len(count_dif[temp]) == 0:
-			worksheet.merge_range('A'+str(len(df_final[temp])+5)+':'+'H'+str(len(df_final[temp])+6), '#############  NO SE DETECTARON CAMBIOS POST-TAREA #############', cell_format)
+			worksheet.merge_range('A'+str(len(df_final[temp])+5)+':'+'H'+str(len(df_final[temp])+6), '#############  NO POST-TASK CHANGES DETECTED #############', cell_format)
 		else:
 			count_dif[temp].to_excel(writer, sheet_name=sheet_name, startrow=len(df_final[temp])+6, startcol=0)
 			
-		if len(searchDown[temp]) == 0:
-			worksheet.merge_range('A'+str((len(df_final[temp])+(len(count_dif[temp])))+10)+':'+'H'+str((len(df_final[temp])+(len(count_dif[temp])))+9), '#############  NO SE ENCONTRARON ESTADOS DOWN #############', cell_format)
+		if len(searchMajor[temp]) == 0:
+			worksheet.merge_range('A'+str((len(df_final[temp])+(len(count_dif[temp])))+10)+':'+'H'+str((len(df_final[temp])+(len(count_dif[temp])))+9), '#############  NO MAJOR ERRORS FOUND #############', cell_format)
 		else:
-			searchDown[temp].to_excel(writer, sheet_name=sheet_name, startrow=(len(df_final[temp])+(len(count_dif[temp])))+10, startcol=0)
+			searchMajor[temp].to_excel(writer, sheet_name=sheet_name, startrow=(len(df_final[temp])+(len(count_dif[temp])))+10, startcol=0)
 		print('#')
 	
 	writer.save() #saves workbook to file in python file directory
@@ -210,53 +246,46 @@ def constructExcel(df_final, count_dif, searchDown, folderLog):#Sort the data an
 def main():
 
 	parser1 = argparse.ArgumentParser(description='Log Analysis', prog='PROG', usage='%(prog)s [options]')
-	parser1.add_argument('-pre', '--preFolder',   type=str, required=True, help='Folder with PRE Logs. Debe terminar en "/"',)
-	parser1.add_argument('-post','--postFolder' , type=str, default='',    help='Folder with POST Logs. Debe terminar en "/"',)
-	parser1.add_argument('-csv', '--csvTemplate', type=str, required=True, help='CSV con templates a usar en el parsing.')
-	parser1.add_argument('-job', '--jobType', type=str, required=True, help='Tipo de trabajo de desea realizar, O Captura, 1 Ventana')
+	parser1.add_argument('-pre', '--preFolder',   type=str, required=True, help='Folder with PRE Logs. Must end in "/"',)
+	parser1.add_argument('-post','--postFolder' , type=str, default='',    help='Folder with POST Logs. Must end in "/"',)
+	parser1.add_argument('-csv', '--csvTemplate', type=str, required=True, help='CSV con with templates to use in parsing.')
 
 	args        = parser1.parse_args()
 	preFolder   = args.preFolder
 	postFolder  = args.postFolder
 	csvTemplate = args.csvTemplate
-	jobType     = args.jobType
 
-	if jobType == '0' or jobType == '1':
 
-		results_template, index, templates = readTemplate(csvTemplate)
+	results_template, index, templates = readTemplate(csvTemplate)
 
-		if jobType == '0':
+	if preFolder != '' and postFolder == '':
 
-			contentPre, routers = readLog(preFolder)
-			df_final            = parseResults(results_template, index, contentPre,  templates, routers)
-			count_dif = {}
-			searchDown= {}
-			for key in df_final.keys():
-				count_dif[key]      = pd.DataFrame(columns=df_final[key].columns)
-				searchDown[key]     = pd.DataFrame(columns=df_final[key].columns)
-			constructExcel(df_final, count_dif, searchDown, preFolder)
+		contentPre, routers = readLog(preFolder)
+		df_final            = parseResults(results_template, index, contentPre,  templates, routers)
+		count_dif = {}
+		searchMajor= {}
+		for key in df_final.keys():
+			count_dif[key]      = pd.DataFrame(columns=df_final[key].columns)
+			searchMajor[key]     = pd.DataFrame(columns=df_final[key].columns)
+		constructExcel(df_final, count_dif, searchMajor, preFolder)
 
-		if jobType == '1':
-
-			if postFolder == '':
-				print("No hay postFolder definido. Saliendo...")
-				quit()
+	elif preFolder != '' and postFolder != '':
             
-			contentPre, routersPre   = readLog(preFolder)
-			contentPost, routersPost = readLog(postFolder)
+		contentPre, routersPre   = readLog(preFolder)
+		contentPost, routersPost = readLog(postFolder)
 
-			if routersPre != routersPost:
-				print("No hay misma cantidad de equipos en PRE vs POST. Verificar. Fin")
-				quit()
+		if routersPre != routersPost:
+			print("There is not the same amount of logs in PRE vs POST. Check. Exit")
+			quit()
 			
-			datosEquipoPre  = parseResults(results_template, index, contentPre,  templates, routersPre)
-			datosEquipoPost = parseResults(results_template, index, contentPost, templates, routersPost)
-			count_dif       = searchDiff(datosEquipoPre, datosEquipoPost)
-			searchDown      = findDown(count_dif)
-			df_final        = makeTable(datosEquipoPre, datosEquipoPost)
-			constructExcel(df_final, count_dif, searchDown, postFolder)
+		datosEquipoPre  = parseResults(results_template, index, contentPre,  templates, routersPre)
+		datosEquipoPost = parseResults(results_template, index, contentPost, templates, routersPost)
+		count_dif       = searchDiff(datosEquipoPre, datosEquipoPost)
+		searchMajor      = findMajor(count_dif)
+		df_final        = makeTable(datosEquipoPre, datosEquipoPost)
+		constructExcel(df_final, count_dif, searchMajor, postFolder)
 
-	else:
-		print('Ingrese la opción correcta, 0 o 1, saliendo...')
+	elif preFolder == '':
+		print('Incorrect Folder, Please Verify')
 
 main()

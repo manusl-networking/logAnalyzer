@@ -37,6 +37,13 @@ nokia_sros_show_service_sdp.template
 
 The templates are stored in the `Templates` folder. The script reads the CSV and uses the indicated templates to perform the function of parsing.
 
+#### Template Major Errors (V 0.3)
+
+The template majorFile.yml, store de name of template and the key-words of Major errors after the task, if you don't specify the template in te file yml, the program search the word 'down' automatically, for example, the format of file:
+
+nokia_sros_show_router_ldp_session.template: ['down', 'Nonexistent', 'Initialized', 'OpenRecv', 'OpenSent']
+nokia_sros_show_router_bgp_summary.template: ['down', 'connect', 'active']
+
 #### Results
 
 If `logAnalyzer` is invoked with folder `pre` only, reads the specific content in the log folder for a given command and then saves the results in an Excel report.
@@ -84,5 +91,5 @@ optional arguments:
 -post POSTFOLDER, --postFolder POSTFOLDER
                       Folder with POST Logs. Must end in "/"
 -csv CSVTEMPLATE, --csvTemplate CSVTEMPLATE
-                      CSV con with templates to use in parsing.
+                      CSV with templates to use in parsing.
 ```

@@ -39,10 +39,12 @@ The templates are stored in the `Templates` folder. The script reads the CSV and
 
 #### Template Major Errors (V 0.3)
 
-The template majorFile.yml, store de name of template and the key-words of Major errors after the task, if you don't specify the template in te file yml, the program search the word 'down' automatically, for example, the format of file:
+The template `majorFile.yml`, stores the name of a template and the key-words of Major errors after the task, if you don't specify the template in the file yml, the program searches the word 'down' automatically. The format of file is:
 
+```yml
 nokia_sros_show_router_ldp_session.template: ['down', 'Nonexistent', 'Initialized', 'OpenRecv', 'OpenSent']
 nokia_sros_show_router_bgp_summary.template: ['down', 'connect', 'active']
+```
 
 #### Results
 

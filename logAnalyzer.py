@@ -17,6 +17,7 @@ import xlsxwriter
 import glob
 import argparse
 import yaml
+from sys import platform as _platform
 
 def readTemplate(fileTemplate):
 	
@@ -55,9 +56,18 @@ def makeParsed(nomTemplate, routerLog): #Parse through textFSM (reading the file
 
 def readLog(logFolder): #Reads CSV, and stores router logs in memory for processing
 
-	listContent  = [f for f in glob.glob(logFolder  + '*rx.txt')]
+	if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
+    	# linux
 
-	routers     = [[f.split("/")[1]] for f in listContent]
+		listContent  = [f for f in glob.glob(logFolder  + '*rx.txt')]
+		routers     = [[f.split("/")[1]] for f in listContent]
+
+	elif _platform == "win64" or _platform == "win32":
+    	# Windows 64-bit
+
+		listContent  = [f for f in glob.glob(logFolder  + '*rx.txt')]
+		routers     = [[f.split("\\")[1]] for f in listContent]
+	
 
 	content        = []
 	

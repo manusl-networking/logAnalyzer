@@ -6,6 +6,6 @@ Value Filldown NAME (\S+)
 Value telnet_activo (telnet-server)
 
 Start
-  ^\w:${NAME}(#|>) echo SCRIPT_NONO_START
-  ^.\w:${NAME}(#|>) echo SCRIPT_NONO_START
+  ^\w:${NAME}(#|>) /admin display config
+  ^.\w:${NAME}(#|>) /admin display config
   ^\s+${telnet_activo}

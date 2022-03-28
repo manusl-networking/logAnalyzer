@@ -1,0 +1,15 @@
+#Command: /show router <VPRN> route-table | match No.
+#Description: This template is used to see the number of VPRN routes
+#Variables: Router_Name VPRN NO_OF_ROUTES
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
+Value Filldown NAME (\S+)
+Value Required VPRN ([0-9]{1,12})
+Value Required NO_OF_ROUTES ([0-9]{0,10})
+
+Start
+  ^\w:\S+_${NAME}_\S+(#|>)\sshow\srouter\s${VPRN}\sroute-table\s.\smatch\sNo -> Continue
+  ^.\w:\S+_${NAME}_\S+(#|>)\sshow\srouter\s${VPRN}\sroute-table\s.\smatch\sNo -> Continue
+  ^\w:\S+_${NAME}_\S+(#|>)\sshow\srouter\sroute-table\s.\smatch\sNo -> Continue
+  ^.\w:\S+_${NAME}_\S+(#|>)\sshow\srouter\sroute-table\s.\smatch\sNo -> Continue
+  ^No.\sof\sRoutes:\s${NO_OF_ROUTES} -> Record
+

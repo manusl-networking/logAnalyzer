@@ -1,0 +1,15 @@
+#Command: /show router ldp bindings active | match No
+#Description: This template is used to see number of prefix active ldp bindings
+#Variables: Router_Name NO_PREFIX_ACTIVE_BINDINGS
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
+Value Filldown NAME (\S+)
+Value Required NO_PREFIX_ACTIVE_BINDINGS ([0-9]{0,12})
+
+Start
+  ^\w:\S+_${NAME}_\S+(#|>) show router ldp bindings active | match No -> Record
+  ^.\w:\S+_${NAME}_\S+(#|>) show router ldp bindings active | match No -> Continue.Record
+  ^\sNo.\sof\sPrefix\sActive\sBindings:\s${NO_PREFIX_ACTIVE_BINDINGS} 
+  ^No.\sof\sPrefix\sActive\sBindings:\s${NO_PREFIX_ACTIVE_BINDINGS} 
+  ^\sNo.\sof\sIPv4\sPrefix\sActive\sBindings:\s${NO_PREFIX_ACTIVE_BINDINGS}
+  ^No.\sof\sIPv4\sPrefix\sActive\sBindings:\s${NO_PREFIX_ACTIVE_BINDINGS}
+

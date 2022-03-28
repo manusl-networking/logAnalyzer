@@ -1,0 +1,13 @@
+#Command: show router arp
+#Description: This template is used to see the number of base routes
+#Variables: 
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
+Value Filldown NAME (\S+)
+Value ARPTableRouter (\S+)
+Value Required NROARPEntries ([0-9]{0,20})
+
+Start
+  ^\w:\S+_${NAME}_\S+(#|>)
+  ^.\w:\S+_${NAME}_\S+(#|>)
+  ^ARP Table\s.\S+:\s${ARPTableRouter}.
+  ^No. of ARP Entries:\s${NROARPEntries} -> Continue.Record

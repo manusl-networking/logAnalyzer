@@ -3,7 +3,7 @@
 #Variables: Router_Name Policy_Statement entry
 #Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
 Value Filldown NAME (\S+)
-Value Filldown Policy_Statement (.export-to-BGP-LU.|.import-to-BGP-LU.|.export_to_BGP_area_[0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}.|.aigpimportToBGP.|.export_to_BGP_area_[0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}.|export-to-BGP-LU|import-to-BGP-LU|export_to_BGP_area_[0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}|aigpimportToBGP|export_to_BGP_area_[0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})
+Value Filldown Policy_Statement (\S+)
 Value Required entry (\d+)
 
 Start

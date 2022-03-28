@@ -1,0 +1,14 @@
+#Command: /show port x/x/x associations
+#Description: This template is used to see the service associatons with port 
+#Variables: Router_Name 
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
+Value Filldown NAME (\S+)
+Value Filldown Port (\S+)
+Value Required Service (\S+)
+Value Required Name_Service (\S+)
+Value Required Encap_Val (\S+)
+
+Start
+  ^\w:\S+_${NAME}_\S+(#|>)\s+show port ${Port} associations -> Continue
+  ^.\w:\S+_${NAME}_\S+(#|>)\s+show port ${Port} associations -> Continue
+  ^Service:\s${Service}\s+${Name_Service}\s+${Encap_Val} -> Continue.Record

@@ -1,0 +1,18 @@
+#Command: /ping
+#Description: This template is used to see the result of ping
+#Variables: Router_Name IP_TO_HOST DATA_BYTES PACKETS_TRANSMITTED PACKETS_RECEIVED PERC_PACKET_LOSS
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
+Value Filldown NAME (\S+)
+Value Filldown VPRN (\S+)
+Value Required IP_TO_HOST ([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})
+Value PACKETS_TRANSMITTED (\w+)
+Value PACKETS_RECEIVED (\w+)
+Value Required PERC_PACKET_LOSS (\w+.)
+
+Start
+  ^\w:\S+_${NAME}_\S+(#|>) ping router ${VPRN} count \S+ ${IP_TO_HOST} -> Continue.Record
+  ^.\w:\S+_${NAME}_\S+(#|>) ping router ${VPRN} count \S+ ${IP_TO_HOST} -> Continue.Record
+  ^verifpost/\S+_${NAME}_\S+
+  ^verifprev/\S+_${NAME}_\S+
+  ^ping router ${VPRN} count \S+ ${IP_TO_HOST}
+  ^${PACKETS_TRANSMITTED}\spackets\stransmitted.\s${PACKETS_RECEIVED}\spackets\sreceived.\s${PERC_PACKET_LOSS} -> Continue.Record

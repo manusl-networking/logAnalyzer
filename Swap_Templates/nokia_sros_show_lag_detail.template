@@ -1,0 +1,30 @@
+#Command /show router bgp routes <family>
+#Variables Router_Name family IP_Prefix_Mask family AS Local_AS Attributes Network Nexthop Route_Dist VPN_Label Path_Id From Res_Nexthop Local_Pref Interface_Name Aggregator_AS Aggregator Atomic_Aggr MED AIGP_Metric Connector Community Cluster Originator_Id Peer_Router_Id Fwd_Class Priority Flags Route_Source AS_Path Route_Tag Neighbor_AS Orig_Validation Source_Class Dest_Class Add_Paths_Send VPRN_Imported
+#Autor Manuel Saldivar manuelsaldivar@outlook.com.ar
+#Notes: If you try to execute on the same proof family label-ipv4 and vpn-ipv4 maybe will have some errors with the value VPRN_Imported, because label-ipv4 don't have this value, I recommend execute the proof separated, or execute first vpn-ipv4 and then label-ipv4 for best results.
+Value Filldown NAME (\S+)
+Value Filldown Description (\S+)
+Value Required,Filldown LagId (\S+)
+Value Filldown Mode (\S+)
+Value Filldown Adm ([uU][pP]|[Dd][oO][wW][nN])
+Value Filldown Opr ([uU][pP]|[Dd][oO][wW][nN])
+Value Filldown Port_Threshold (\S+)
+Value Required Port (\S+)
+Value port_Adm ([uU][pP]|[Dd][oO][wW][nN])
+Value port_State (\S+)
+Value port_Opr ([uU][pP]|[Dd][oO][wW][nN])
+Value port_Primary (\S+)
+Value sub_group (\S+)
+
+
+Start
+  ^\w:\S+_${NAME}_\S+(#|>)\s+show lag detail -> Continue
+  ^.\w:\S+_${NAME}_\S+(#|>)\s+show lag detail -> Continue
+  ^Description\s+:\s${Description}
+  ^Lag-id\s+:\s${LagId}\s+Mode\s+:\s${Mode}
+  ^Adm\s+:\s${Adm}\s+Opr\s+:\s${Opr}
+  ^Thres. Exceeded Cnt : \S+\s+Port Threshold\s+:\s${Port_Threshold}
+  ^${Port}\s+${port_Adm}\s+${port_State}\s+${port_Opr}\s+${port_Primary}\s+${sub_group}\s+\S+\s+\S+ -> Continue.Record
+
+
+

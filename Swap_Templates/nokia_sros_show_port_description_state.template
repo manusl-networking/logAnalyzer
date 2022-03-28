@@ -1,0 +1,24 @@
+#Command: /show port x/x/x
+#Description: This template is used to see the information about physical port
+#Variables: NAME, port, Description, OperSpeed, ConfigSpeed, AdminState, OperDuplex, OperState, ConfigDuplex, PhysicalLink, MTU, SingleFiberMode, ConfiguredMode, EncapType, AutoNegotiate, MDI_MDX, EgressRate, IngressRate, TransceiverType, ModelNumber, TXLaserWavelength, ConnectorCode, SerialNumber, PartNumber, OpticalCompliance, LinkLengthsupport, SFPSyncECapable, TxOutPwr_dBm_VALUE, TxOutPwr_dBm_HighAlarm, TxOutPwr_dBm_HighWarn, TxOutPwr_dBm_LowWarn, TxOutPwr_dBm_LowAlarm, RxInPwr_dBm_VALUE, RxInPwr_dBm_HighAlarm, RxInPwr_dBm_HighWarn, RxInPwr_dBm_LowWarn, RxInPwr_dBm_LowAlarm
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
+Value Filldown NAME (\S+)
+Value Description (.+)
+Value Required AdminState ([uU][pP]|[Dd][oO][wW][nN])
+Value Required OperState (.+)
+Value PhysicalLink (\S+)
+Value MTU (\S+)
+
+Start
+  ^\w:\S+_${NAME}_\S+(#|>) 
+  ^.\w:\S+_${NAME}_\S+(#|>) 
+  ^Description\s+:\s${Description} -> Continue
+  ^Description\s+:\s${Description}_1G -> Continue
+  ^Description\s+:\s${Description}_10G -> Continue
+  ^Interface\s+:\s\S+\s+Oper\sSpeed\s+:\s.+
+  ^Link.level\s+:\s\S+\s+Config\sSpeed\s+:\s.+
+  ^Admin\sState\s+:\s${AdminState}\s+Oper\sDuplex\s+:\s.+
+  ^Oper\sState\s+:\s${OperState}\s+Config\sDuplex\s+:\s.+
+  ^Physical\sLink\s+:\s${PhysicalLink}\s+MTU\s+:\s${MTU} -> Continue.Record
+
+

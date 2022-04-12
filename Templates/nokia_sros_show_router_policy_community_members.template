@@ -1,4 +1,4 @@
-#Command: /show router policy community <Community_Name>
+#Command: /show router policy community \S+
 #Description: This template is used to see the community members
 #Variables: Router_Name Community Members
 #Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar

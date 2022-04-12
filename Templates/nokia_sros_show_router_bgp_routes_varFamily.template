@@ -1,4 +1,4 @@
-#Command /show router bgp routes <family>
+#Command: /show router bgp routes \S+
 #Variables Router_Name family BGP_Router_ID AS Local_AS Flag Network LocalPref MED Next_Hop Path_id Label As_Path
 #Autor Manuel Saldivar manuelsaldivar@outlook.com.ar
 Value Filldown NAME (\S+)
@@ -16,8 +16,8 @@ Value Label (\S+)
 Value As_Path (\S+\s\S+|\S+)
 
 Start
-  ^\w:${NAME}(#|>)\s/show router bgp routes\s${family} -> Continue
-  ^.\w:${NAME}(#|>)\s/show router bgp routes${family} -> Continue
+  ^\w:${NAME}(#|>)\s/show router bgp routes\s\S+ -> Continue
+  ^.\w:${NAME}(#|>)\s/show router bgp routes\s\S+ -> Continue
   ^\sBGP\sRouter\sID:${BGP_Router_ID}\s+AS:${AS}\s+Local\sAS:${Local_AS} -> Continue.Record
   ^${Flag}\s+${Network}\s+${LocalPref}\s+${MED}
   ^\s+${Next_Hop}\s+${Path_id}\s+${Label}

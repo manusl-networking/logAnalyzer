@@ -1,4 +1,4 @@
-#Command: /show router policy prefix-list <prefix_list>
+#Command: /show router policy prefix-list \S+
 #Description: This template is used to see policies prefix-list for loopback0 and system
 #Variables: Router_Name prefix_list prefix
 #Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar

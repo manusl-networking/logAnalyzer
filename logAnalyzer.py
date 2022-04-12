@@ -18,6 +18,8 @@ import glob
 import argparse
 import yaml
 from sys import platform as _platform
+import json
+import re
 
 def readTemplate(fileTemplate):
 	
@@ -32,6 +34,7 @@ def readTemplate(fileTemplate):
 	template         = []
 	var              = []
 	index            = []
+	commandKey       = []
 	for t in range(cantTemplate):
 		template.append(open('Templates/'+templates[t][0]))
 		print(template[t])
@@ -41,11 +44,15 @@ def readTemplate(fileTemplate):
 		index.append([])
 		for i1 in range(r1):
 			h1 = var[t][i1].find('Value')
+			h2 = var[t][i1].find('#Command:')
 			if h1 != -1:
 				var1 = var[t][i1].split(' ')
 				index[t].append(var1[-2])
+			if h2 != -1:
+				var1 = var[t][i1].split(': ')
+				commandKey.append(var1[1])
 	print('#####Successfully Loaded Templates#####')
-	return template, index, templates
+	return template, index, templates, commandKey
 
 def makeParsed(nomTemplate, routerLog): #Parse through textFSM (reading the file again)
 
@@ -54,7 +61,7 @@ def makeParsed(nomTemplate, routerLog): #Parse through textFSM (reading the file
 	parsed_results   = results_template.ParseText (routerLog)
 	return parsed_results
 
-def readLog(logFolder): #Reads CSV, and stores router logs in memory for processing
+def readLog(logFolder): #Reads txt, and stores router logs in memory for processing
 
 	if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
     	# linux
@@ -80,6 +87,32 @@ def readLog(logFolder): #Reads CSV, and stores router logs in memory for process
 
 	return content, routers
 
+def readLogJson(logFolder): #Reads json files, and stores router logs in memory for processing
+
+	if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
+    	# linux
+
+		listContent  = [f for f in glob.glob(logFolder  + '*rx.json')]
+		routers     = [[f.split("/")[1]] for f in listContent]
+
+	elif _platform == "win64" or _platform == "win32":
+    	# Windows 64-bit
+
+		listContent  = [f for f in glob.glob(logFolder  + '*rx.json')]
+		routers     = [[f.split("\\")[1]] for f in listContent]
+	
+
+	content        = []
+	
+	for f in listContent:
+		with open(f) as file:
+			fopen = json.load(file)
+			content.append(fopen)
+
+	print('#########Logs Loaded Successfully#########')
+
+	return content, routers
+
 def verifyMajorFile(majorFile):
 	"""We verify the majorFile.yml before moving on.
 
@@ -98,7 +131,7 @@ def verifyMajorFile(majorFile):
 
 	return majorMatrix
 
-def parseResults(read_template, index, content, templates, routers): #Build the Dataframe from textFSM filter, index and router log
+def parseResults(read_template, index, content, templates, routers, commandKey): #Build the Dataframe from textFSM filter, index and router log
 
 	datosEquipo  = {}
 	cantTemplate = len(templates)
@@ -108,26 +141,66 @@ def parseResults(read_template, index, content, templates, routers): #Build the 
 		nomTemplate = templates[i][0]
 		columnss    = index[i]
 		dfTemp      = pd.DataFrame(columns=columnss)
+
+		
 		
 		for i1 in range(cantRouters):
 
 			print(routers[i1][0] , nomTemplate)
 
-			routerLog      = content[i1]
-			parsed_results = makeParsed(nomTemplate, routerLog)
+			name = routers[i1][0].split('_')
+
+			routerLog = ' '
+			
+
+			if routers[i1][0].split('.')[1] == 'json': #If text format is json, else, we continue work with rx_txt
+
+				for logs in content[i1].keys():
+
+					prog = re.compile(commandKey[i].strip('\n'))
+
+					searchKey = prog.search(logs)
+
+					if searchKey: #if command(in template) == command(in key of router) then we stores log info in routeLog variable
+						
+						routerLog += 'W:' + name[0] +'_'+ name[1] +'_'+ name[2] + '# ' + logs
+						routerLog += '\n' + content[i1][logs] + '\n'
+						#routerLogTemp.append(logs)
+
+						#print(routerLog)
+
+				#for keysIn in routerLogTemp:
+
+					#routerLog += 'A:' + name[0] +'_'+ name[1] +'_'+ name[2] + '# ' + keysIn
+					#routerLog += 'A:' + name[0] +'_'+ name[1] +'_'+ name[2] + '# ' + keysIn
+
+
+
+				parsed_results = makeParsed(nomTemplate, routerLog)
+
+
+			else:
+
+				routerLog      = content[i1]
+				parsed_results = makeParsed(nomTemplate, routerLog)
 			
 
 			if len(parsed_results) == 0:
 				# if the parse is empty, we save the name of the routers
-				parsed_results = [routers[i1][0]]
+				parsed_results = [name[0] +'_'+ name[1] +'_'+ name[2]]
 				for empty in range(len(columnss)-1):
 					parsed_results.append('NOT VALUE')
 
 				parsed_results=[parsed_results]
 	
 				dfResult = pd.DataFrame(parsed_results, columns= columnss)
+			if routers[i1][0].split('.')[1] == 'json':
+				dfResult = pd.DataFrame(parsed_results, columns= columnss)
+				#dfResult['NAME'] = name[0]+'_'+name[1]+'_'+name[2]
+
 			else:
 				dfResult = pd.DataFrame(parsed_results, columns= columnss)
+
 			
 			dfTemp = pd.concat([dfTemp, dfResult])
 
@@ -259,19 +332,24 @@ def main():
 	parser1.add_argument('-pre', '--preFolder',   type=str, required=True, help='Folder with PRE Logs. Must end in "/"',)
 	parser1.add_argument('-post','--postFolder' , type=str, default='',    help='Folder with POST Logs. Must end in "/"',)
 	parser1.add_argument('-csv', '--csvTemplate', type=str, required=True, help='CSV con with templates to use in parsing.')
+	parser1.add_argument('-json', '--formatJson', type=str, required=True, help='logs in json format yes or no.')
 
 	args        = parser1.parse_args()
 	preFolder   = args.preFolder
 	postFolder  = args.postFolder
 	csvTemplate = args.csvTemplate
+	formatJson  = args.formatJson
 
 
-	results_template, index, templates = readTemplate(csvTemplate)
+	results_template, index, templates, commandKey = readTemplate(csvTemplate)
 
 	if preFolder != '' and postFolder == '':
-
-		contentPre, routers = readLog(preFolder)
-		df_final            = parseResults(results_template, index, contentPre,  templates, routers)
+		
+		if formatJson == 'yes':
+			contentPre, routers = readLogJson(preFolder)
+		else:
+			contentPre, routers = readLog(preFolder)
+		df_final            = parseResults(results_template, index, contentPre,  templates, routers, commandKey)
 		count_dif = {}
 		searchMajor= {}
 		for key in df_final.keys():
@@ -288,8 +366,8 @@ def main():
 			print("There is not the same amount of logs in PRE vs POST. Check. Exit")
 			quit()
 			
-		datosEquipoPre  = parseResults(results_template, index, contentPre,  templates, routersPre)
-		datosEquipoPost = parseResults(results_template, index, contentPost, templates, routersPost)
+		datosEquipoPre  = parseResults(results_template, index, contentPre,  templates, routersPre, commandKey)
+		datosEquipoPost = parseResults(results_template, index, contentPost, templates, routersPost, commandKey)
 		count_dif       = searchDiff(datosEquipoPre, datosEquipoPost)
 		searchMajor      = findMajor(count_dif)
 		df_final        = makeTable(datosEquipoPre, datosEquipoPost)

@@ -358,9 +358,15 @@ def main():
 		constructExcel(df_final, count_dif, searchMajor, preFolder)
 
 	elif preFolder != '' and postFolder != '':
+
+		if formatJson == 'yes':
+			contentPre, routersPre = readLogJson(preFolder)
+			contentPost, routersPost = readLogJson(postFolder)
+
+		else:
             
-		contentPre, routersPre   = readLog(preFolder)
-		contentPost, routersPost = readLog(postFolder)
+			contentPre, routersPre   = readLog(preFolder)
+			contentPost, routersPost = readLog(postFolder)
 
 		if routersPre != routersPost:
 			print("There is not the same amount of logs in PRE vs POST. Check. Exit")

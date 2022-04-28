@@ -1,4 +1,4 @@
-#Command /show router |\d+ bgp neighbor \S+ \S+ received-routes
+#Command: /show router |\d+ bgp neighbor \S+ \S+ received-routes
 #Variables Router_Name VPRN IP_neighbor family BGP_Router_ID AS Local_AS Flag Network LocalPref MED Next_Hop Path_id Label As_Path
 #Autor Manuel Saldivar manuelsaldivar@outlook.com.ar
 Value Filldown NAME (\S+)

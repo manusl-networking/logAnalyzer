@@ -48,23 +48,36 @@ nokia_sros_show_router_bgp_summary.template: ['down', 'connect', 'active']
 
 #### Results
 
-If `logAnalyzer` is invoked with folder `pre` only, reads the specific content in the log folder for a given command and then saves the results in an Excel report.
+If `logAnalyzer` is invoked with folder `pre` only, reads the specific content in the log folder for a given command and then saves the results in an Excel report. We need to specify format of the logs, if format is json then invoke the option -json yes, or -json no, if format of logs is txt.
 
 ```bash
-$ python3 logAnalyzer.py -csv templateExample.csv -pre folderLogs/
+$ python3 logAnalyzer.py -csv templateExample.csv -pre folderLogs/ -json yes
 <_io.TextIOWrapper name='Templates/nokia_sros_show_service_sdp-using.template' mode='r' encoding='UTF-8'>
 #####Plantillas Cargadas Exitosamente#####
 #########Logs Cargados Exitosamente#########
 ROUTER_EXAMPLE_rx.txt nokia_sros_show_service_sdp-using.template
 #
 #
-Guardando
-```
+Saving Excel
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+
 
 Otherwise, if `logAnalyzer` is invoked with folder `pre` and `post`, it compares the content of pre and post log folders, such as if we run checks to see the status of the routers before and after a task, and then saves the results in an Excel report.
 
 ```bash
-$ python3 logAnalyzer.py -csv templateExample.csv -pre folderLogsBefore/ -post folderLogsAfter/
+$ python3 logAnalyzer.py -csv templateExample.csv -pre folderLogsBefore/ -post folderLogsAfter/ -json yes
 <_io.TextIOWrapper name='Templates/nokia_sros_show_service_sdp-using.template' mode='r' encoding='UTF-8'>
 #####Plantillas Cargadas Exitosamente#####
 #########Logs Cargados Exitosamente#########
@@ -73,7 +86,7 @@ ROUTER_EXAMPLE_rx.txt nokia_sros_show_service_sdp-using.template
 ROUTER_EXAMPLE_rx.txt nokia_sros_show_service_sdp-using.template
 #
 #
-Guardando
+Saving Excel
 ```
 
 #### Configuration Options
@@ -87,11 +100,13 @@ usage: PROG [options]
 Log Analysis
 
 optional arguments:
--h, --help            show this help message and exit
--pre PREFOLDER, --preFolder PREFOLDER
-                      Folder with PRE Logs. Must end in "/"
--post POSTFOLDER, --postFolder POSTFOLDER
-                      Folder with POST Logs. Must end in "/"
--csv CSVTEMPLATE, --csvTemplate CSVTEMPLATE
-                      CSV with templates to use in parsing.
+  -h, --help            show this help message and exit
+  -pre PREFOLDER, --preFolder PREFOLDER
+                        Folder with PRE Logs. Must end in "/"
+  -post POSTFOLDER, --postFolder POSTFOLDER
+                        Folder with POST Logs. Must end in "/"
+  -csv CSVTEMPLATE, --csvTemplate CSVTEMPLATE
+                        CSV con with templates to use in parsing.
+  -json FORMATJSON, --formatJson FORMATJSON
+                        logs in json format yes or no.
 ```

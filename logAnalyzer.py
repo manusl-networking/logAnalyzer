@@ -163,26 +163,18 @@ def parseResults(read_template, index, content, templates, routers, commandKey):
 
 					if searchKey: #if command(in template) == command(in key of router) then we stores log info in routeLog variable
 						
-						routerLog += 'W:' + name[0] +'_'+ name[1] +'_'+ name[2] + '# ' + logs
+						#routerLog += 'W:' + name[0] +'_'+ name[1] +'_'+ name[2] + '# ' + logs
 						routerLog += '\n' + content[i1][logs] + '\n'
-						#routerLogTemp.append(logs)
-
-						#print(routerLog)
-
-				#for keysIn in routerLogTemp:
-
-					#routerLog += 'A:' + name[0] +'_'+ name[1] +'_'+ name[2] + '# ' + keysIn
-					#routerLog += 'A:' + name[0] +'_'+ name[1] +'_'+ name[2] + '# ' + keysIn
 
 
 
-				parsed_results = makeParsed(nomTemplate, routerLog)
+				parsed_results    = makeParsed(nomTemplate, routerLog)
 
 
 			else:
 
-				routerLog      = content[i1]
-				parsed_results = makeParsed(nomTemplate, routerLog)
+				routerLog         = content[i1]
+				parsed_results    = makeParsed(nomTemplate, routerLog)
 			
 
 			if len(parsed_results) == 0:
@@ -196,10 +188,11 @@ def parseResults(read_template, index, content, templates, routers, commandKey):
 				dfResult = pd.DataFrame(parsed_results, columns= columnss)
 			if routers[i1][0].split('.')[1] == 'json':
 				dfResult = pd.DataFrame(parsed_results, columns= columnss)
-				#dfResult['NAME'] = name[0]+'_'+name[1]+'_'+name[2]
+				dfResult['NAME'] = content[i1]['name']
 
 			else:
 				dfResult = pd.DataFrame(parsed_results, columns= columnss)
+				dfResult['NAME'] = name[0] +'_'+ name[1] +'_'+ name[2]
 
 			
 			dfTemp = pd.concat([dfTemp, dfResult])

@@ -1,4 +1,4 @@
-#Command: /configure router policy-options/info
+#Command: /configure router policy-options
 #Description: This template is used to find out seamless policy configuration, this template was created for a specific configuration
 #Variables: Router_Name Prefix-list Prefix Community_Inter Community_Area 
 #Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar

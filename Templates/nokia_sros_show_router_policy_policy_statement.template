@@ -1,4 +1,4 @@
-#Command: /show router policy <Policy_Statement>
+#Command: /show router policy \S+
 #Description: This template is used to see entry of policy statement, this template was created for specific configuration
 #Variables: Router_Name Policy_Statement entry
 #Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar

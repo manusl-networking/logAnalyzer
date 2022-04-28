@@ -1,4 +1,4 @@
-#Command: /show router <Base or VPRN> route-table
+#Command: /show router \S+ route-table
 #Description: This template is used to see routes Base and VPRN
 #Variables: Router_Name Service Dest_Prefix Type Proto Age Pref Next_Hop NO_OF_ROUTES
 #Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar

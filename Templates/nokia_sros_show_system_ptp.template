@@ -1,4 +1,4 @@
-#Command: /show system ptp (ABR) and /show system ptp clock csm (CSR)
+#Command: /show system ptp | /show system ptp clock csm
 #Description: This template is used to see ptp's phase configuration 
 #Variables: Router_Name Clock_Type PTP_Profile Admin_State Oper_State Clock_id Clock_Class PTP_Recovery_State Last_Changed Frequency_Offset GM_Clock_Id GM_Clock_Class Frequency_Traceable Time_Traceable Time_Source
 #Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar

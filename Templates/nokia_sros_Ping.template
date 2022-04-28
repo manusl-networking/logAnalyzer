@@ -1,4 +1,4 @@
-#Command: /ping
+#Command: /ping \S+
 #Description: This template is used to see the result of ping
 #Variables: Router_Name IP_TO_HOST DATA_BYTES PACKETS_TRANSMITTED PACKETS_RECEIVED PERC_PACKET_LOSS
 #Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar

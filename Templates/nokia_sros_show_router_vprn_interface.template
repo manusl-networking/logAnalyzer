@@ -1,4 +1,4 @@
-#Command: /show router <VPRN> interface
+#Command: /show router \S+ interface
 #Description: This template is used to see VPRN interfaces
 #Variables: Router_Name INTERFACE_NAME VPRN INTERFACE_ADM INTERFACE_OPR_IPV4 INTERFACE_OPR_IPV6 INTERFACE_MODE INTERFACE_PORT INTERFACE_IP
 #Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar

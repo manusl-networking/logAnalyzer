@@ -1,4 +1,4 @@
-#Command: /show system ptp clock <Nro_Clock>
+#Command: /show system ptp clock \S+
 #Description: This template is used to see ptp clock's configuration
 #Variables: Router_Name Nro_Clock Clock_Type Admin_State PTP_Profile Freq_Recovery_State Port Peer Slave Port_State
 #Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar

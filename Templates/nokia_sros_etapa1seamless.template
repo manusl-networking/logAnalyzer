@@ -1,4 +1,4 @@
-#Command: /show version and /configure router bgp/info
+#Command: /show version | /configure router bgp
 #Description: This template is used to find out version of TiMOS and BGP configuration, this template was created for a specific BGP configuration
 #Variables: Router_Name Version group family type import export bfd_7250 peer_as add_paths add_paths_conf add_paths_conf1 aigp neighbor description advertise_label family_label next_hop bfd_enable
 #Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar

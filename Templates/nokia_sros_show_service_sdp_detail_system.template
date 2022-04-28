@@ -1,4 +1,4 @@
-#Command: /show router interface | match system postlines 1 and /show service sdp detail
+#Command: /show router interface | match system postlines 1 | /show service sdp detail
 #Description: This template is used to see the detail of sdp service and take the system IP, this template was created for specific task
 #Variables: System Router_Name sdp_id Far_End LSP_Types Admin_State Oper_State Signaling Mixed_LSP_Mode Active_LSP_Type
 #Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar

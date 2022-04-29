@@ -1,4 +1,4 @@
-#Command: /show router \S+ route-table
+#Command: /show router |\S+ route-table | match No.
 #Description: This template is used to see the number of routes Base and VPRN
 #Variables: Router_Name Service NO_OF_ROUTES
 #Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
@@ -7,8 +7,8 @@ Value Required Service ([0-9]{1,12}|Base)
 Value Required NO_OF_ROUTES ([0-9]{0,10})
 
 Start
-  ^\w:${NAME}(#|>) /show\srouter\s\S+\sroute-table -> Continue.Record
-  ^.\w:${NAME}(#|>) /show\srouter\s\S+\sroute-table -> Continue.Record
+  ^\w:${NAME}(#|>) /show\srouter\s|\S+\sroute-table | match No. -> Continue.Record
+  ^.\w:${NAME}(#|>) /show\srouter\s|\S+\sroute-table | match No. -> Continue.Record
   ^Route\sTable\s.(Service:|Router:)\s${Service}.
   ^No.\sof\sRoutes:\s${NO_OF_ROUTES} -> Record
 

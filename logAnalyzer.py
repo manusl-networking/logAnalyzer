@@ -163,7 +163,7 @@ def parseResults(read_template, index, content, templates, routers, commandKey):
 
 					if searchKey: #if command(in template) == command(in key of router) then we stores log info in routeLog variable
 						
-						#routerLog += 'W:' + name[0] +'_'+ name[1] +'_'+ name[2] + '# ' + logs
+						routerLog += logs
 						routerLog += '\n' + content[i1][logs] + '\n'
 
 

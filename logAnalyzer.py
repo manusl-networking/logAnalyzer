@@ -148,7 +148,7 @@ def parseResults(read_template, index, content, templates, routers, commandKey):
 
 			print(routers[i1][0] , nomTemplate)
 
-			name = routers[i1][0].split('_')
+			name = routers[i1][0].split('_rx')
 
 			routerLog = ' '
 			
@@ -179,7 +179,7 @@ def parseResults(read_template, index, content, templates, routers, commandKey):
 
 			if len(parsed_results) == 0:
 				# if the parse is empty, we save the name of the routers
-				parsed_results = [name[0] +'_'+ name[1] +'_'+ name[2]]
+				parsed_results = [name[0]]
 				for empty in range(len(columnss)-1):
 					parsed_results.append('NOT VALUE')
 
@@ -192,7 +192,7 @@ def parseResults(read_template, index, content, templates, routers, commandKey):
 
 			else:
 				dfResult = pd.DataFrame(parsed_results, columns= columnss)
-				dfResult['NAME'] = name[0] +'_'+ name[1] +'_'+ name[2]
+				dfResult['NAME'] = name[0]
 
 			
 			dfTemp = pd.concat([dfTemp, dfResult])

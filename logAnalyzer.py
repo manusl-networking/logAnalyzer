@@ -54,7 +54,17 @@ def readTemplate(fileTemplate):
 	print('#####Successfully Loaded Templates#####')
 	return template, index, templates, commandKey
 
-def makeParsed(nomTemplate, routerLog): #Parse through textFSM (reading the file again)
+def makeParsed(nomTemplate, routerLog):
+	"""
+	Parse through textFSM (reading the file again)
+
+	Args:
+		nomTemplate (string): name of file containgin the textFSM template
+		routerLog (string):   logs of router
+
+	Returns:
+		list with results
+	"""
 
 	template         = open('Templates/'+nomTemplate)
 	results_template = textfsm.TextFSM(template)
@@ -93,16 +103,16 @@ def readLogJson(logFolder): #Reads json files, and stores router logs in memory 
     	# linux
 
 		listContent  = [f for f in glob.glob(logFolder  + '*rx.json')]
-		routers     = [[f.split("/")[1]] for f in listContent]
+		routers      = [[f.split("/")[1]] for f in listContent]
 
 	elif _platform == "win64" or _platform == "win32":
     	# Windows 64-bit
 
 		listContent  = [f for f in glob.glob(logFolder  + '*rx.json')]
-		routers     = [[f.split("\\")[1]] for f in listContent]
+		routers      = [[f.split("\\")[1]] for f in listContent]
 	
 
-	content        = []
+	content          = []
 	
 	for f in listContent:
 		with open(f) as file:
@@ -131,75 +141,107 @@ def verifyMajorFile(majorFile):
 
 	return majorMatrix
 
-def parseResults(read_template, index, content, templates, routers, commandKey): #Build the Dataframe from textFSM filter, index and router log
+def parseResults(index, content, templates, routers, commandKey):
+	"""
+	Build the Dataframe from textFSM filter, index and router log
+
+	Args:
+		index (list):           names of the variables inside the textFSM template
+		content (list):         each ith element of the list, corresonds to the logs of the ith router
+		templates (_type_):     list of template names
+		routers (_type_):       _description_
+		commandKey (_type_):    _description_
+
+	Returns:
+		_type_: _description_
+	"""
 
 	datosEquipo  = {}
-	cantTemplate = len(templates)
-	cantRouters  = len(content)
 
-	for i in range(cantTemplate):
+	for i in range(len(templates)):
+
 		nomTemplate = templates[i][0]
 		columnss    = index[i]
 		dfTemp      = pd.DataFrame(columns=columnss)
 
-		
-		
-		for i1 in range(cantRouters):
+		for i1 in range(len(content)):
 
 			print(routers[i1][0] , nomTemplate)
 
-			name = routers[i1][0].split('_')
+			routerLog  = ' '
+			fileType   = routers[i1][0].split('.')[1]
 
-			routerLog = ' '
-			
+			if fileType == 'json': 
+				# If text format is json, else, we continue work with rx_txt
 
-			if routers[i1][0].split('.')[1] == 'json': #If text format is json, else, we continue work with rx_txt
+				routerName = content[i1]['name']
 
+				# logs es cada comando que se ejecuto en el router, dentro del json file.
 				for logs in content[i1].keys():
 
+					# prog es el nombre del comando en cada template file
 					prog = re.compile(commandKey[i].strip('\n'))
 
-					searchKey = prog.search(logs)
+					# searchKey es el regex match entre logs y prog
+					match = prog.search(logs)
 
-					if searchKey: #if command(in template) == command(in key of router) then we stores log info in routeLog variable
-						
-						routerLog += logs
-						routerLog += '\n' + content[i1][logs] + '\n'
+					if match: #if command(in template) == command(in key of router) then we stores log info in routeLog variable
 
+						# significa que el comando se ejecutó en el router y existe un template
+						# para ese comando.
 
+						# {
+						# 	'logs1':'output1',
+						# 	'logs2':'output2',
+						# 	'logsN':'outputN',
+						# }
 
-				parsed_results    = makeParsed(nomTemplate, routerLog)
+						# "/show router 4001 route-table | match No": "No. of Routes: 566",
+						# "/show router 4002 route-table | match No": "MINOR: CLI Invalid router \"4002\".\u0007",
+						# "/show router route-table | match No": "No. of Routes: 3337",						
 
+						content[i1][logs]
+
+						routerLog = logs + '\n' + content[i1][logs] + '\n'
+
+						# We parse results from the key:value association
+						# A list is returnd with results
+						parsed_results = makeParsed(nomTemplate, routerLog)
+
+						# With list of results, we build a Pandas DataFrame
+						dfResult = pd.DataFrame(parsed_results, columns= columnss)
+						dfResult['NAME'] = routerName
+
+						dfTemp = pd.concat([dfTemp, dfResult])
 
 			else:
+				# if here, we analyze plain text Files
 
-				routerLog         = content[i1]
-				parsed_results    = makeParsed(nomTemplate, routerLog)
-			
+				routerName = routers[i1][0].replace('_rx.txt','')
+				routerLog  = content[i1]
 
-			if len(parsed_results) == 0:
-				# if the parse is empty, we save the name of the routers
-				parsed_results = [name[0] +'_'+ name[1] +'_'+ name[2]]
-				for empty in range(len(columnss)-1):
-					parsed_results.append('NOT VALUE')
+				# "/show router 4001 route-table | match No": "No. of Routes: 566",
+				# "/show router 4002 route-table | match No": "MINOR: CLI Invalid router \"4002\".\u0007",
+				# "/show router route-table | match No": "No. of Routes: 3337",	
 
-				parsed_results=[parsed_results]
-	
-				dfResult = pd.DataFrame(parsed_results, columns= columnss)
-			if routers[i1][0].split('.')[1] == 'json':
-				dfResult = pd.DataFrame(parsed_results, columns= columnss)
-				dfResult['NAME'] = content[i1]['name']
+				parsed_results = makeParsed(nomTemplate, routerLog)
 
-			else:
-				dfResult = pd.DataFrame(parsed_results, columns= columnss)
-				dfResult['NAME'] = name[0] +'_'+ name[1] +'_'+ name[2]
+				if len(parsed_results) == 0:
+					# if the parse is empty, we save the name of the routers
+					parsed_results = [routerName]
+					for empty in range(len(columnss)-1):
+						parsed_results.append('NOT VALUE')
 
-			
-			dfTemp = pd.concat([dfTemp, dfResult])
+					parsed_results = [parsed_results]
+					dfResult = pd.DataFrame(parsed_results, columns= columnss)
+				else:
+					dfResult = pd.DataFrame(parsed_results, columns= columnss)
+					dfResult['NAME'] = routerName
+
+				dfTemp = pd.concat([dfTemp, dfResult])
 
 		# It is stored in the dataEquipment dictionary with the key nomTemplate
 		# the DF with the data of all routers
-
 		datosEquipo[nomTemplate] = dfTemp
 
 		# I added this here because it was already done in main ().
@@ -211,7 +253,7 @@ def parseResults(read_template, index, content, templates, routers, commandKey):
 
 def searchDiff(datosEquipoPre, datosEquipoPost):#Makes a new table, in which it brings the differences between two tables (post-pre)
 
-	countDif        = {}	
+	countDif = {}	
 
 	for key in datosEquipoPre.keys():
 
@@ -333,7 +375,6 @@ def main():
 	csvTemplate = args.csvTemplate
 	formatJson  = args.formatJson
 
-
 	results_template, index, templates, commandKey = readTemplate(csvTemplate)
 
 	if preFolder != '' and postFolder == '':
@@ -342,12 +383,15 @@ def main():
 			contentPre, routers = readLogJson(preFolder)
 		else:
 			contentPre, routers = readLog(preFolder)
-		df_final            = parseResults(results_template, index, contentPre,  templates, routers, commandKey)
-		count_dif = {}
-		searchMajor= {}
+
+		df_final    = parseResults(index, contentPre,  templates, routers, commandKey)
+		count_dif   = {}
+		searchMajor = {}
+
 		for key in df_final.keys():
-			count_dif[key]      = pd.DataFrame(columns=df_final[key].columns)
-			searchMajor[key]     = pd.DataFrame(columns=df_final[key].columns)
+			count_dif[key]   = pd.DataFrame(columns=df_final[key].columns)
+			searchMajor[key] = pd.DataFrame(columns=df_final[key].columns)
+
 		constructExcel(df_final, count_dif, searchMajor, preFolder)
 
 	elif preFolder != '' and postFolder != '':
@@ -365,11 +409,12 @@ def main():
 			print("There is not the same amount of logs in PRE vs POST. Check. Exit")
 			quit()
 			
-		datosEquipoPre  = parseResults(results_template, index, contentPre,  templates, routersPre, commandKey)
-		datosEquipoPost = parseResults(results_template, index, contentPost, templates, routersPost, commandKey)
+		datosEquipoPre  = parseResults(index, contentPre,  templates, routersPre, commandKey)
+		datosEquipoPost = parseResults(index, contentPost, templates, routersPost, commandKey)
 		count_dif       = searchDiff(datosEquipoPre, datosEquipoPost)
-		searchMajor      = findMajor(count_dif)
+		searchMajor     = findMajor(count_dif)
 		df_final        = makeTable(datosEquipoPre, datosEquipoPost)
+
 		constructExcel(df_final, count_dif, searchMajor, postFolder)
 
 	elif preFolder == '':

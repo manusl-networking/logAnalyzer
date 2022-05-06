@@ -35,7 +35,9 @@ def readTemplate(fileTemplate):
 	var              = []
 	index            = []
 	commandKey       = []
+
 	for t in range(cantTemplate):
+
 		template.append(open('Templates/'+templates[t][0]))
 		print(template[t])
 		var.append(template[t].readlines())
@@ -51,8 +53,9 @@ def readTemplate(fileTemplate):
 			if h2 != -1:
 				var1 = var[t][i1].split(': ')
 				commandKey.append(var1[1])
+
 	print('#####Successfully Loaded Templates#####')
-	return template, index, templates, commandKey
+	return index, templates, commandKey
 
 def makeParsed(nomTemplate, routerLog):
 	"""
@@ -71,53 +74,54 @@ def makeParsed(nomTemplate, routerLog):
 	parsed_results   = results_template.ParseText (routerLog)
 	return parsed_results
 
-def readLog(logFolder): #Reads txt, and stores router logs in memory for processing
+def readLog(logFolder, formatJson):
+	"""
+	Reads logs, and stores router logs in memory for processing
+
+	Args:
+		logFolder (string):  name of folder
+		formatJson (string): "yes" or "no"
+	"""
+
+	if formatJson == 'yes':
+
+		ending = '*rx.json'
+
+	else:
+
+		ending = '*rx.txt'
 
 	if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
     	# linux
 
-		listContent  = [f for f in glob.glob(logFolder  + '*rx.txt')]
+		listContent  = [f for f in glob.glob(logFolder  + ending)]
 		routers     = [[f.split("/")[1]] for f in listContent]
 
 	elif _platform == "win64" or _platform == "win32":
     	# Windows 64-bit
 
-		listContent  = [f for f in glob.glob(logFolder  + '*rx.txt')]
+		listContent  = [f for f in glob.glob(logFolder  + ending)]
 		routers     = [[f.split("\\")[1]] for f in listContent]
+	else:
+		print(str(_platform) + ": not a valid platform. Quitting....")
+		quit()
 	
 
-	content        = []
+	content = []
+
+	if formatJson == 'yes':
+
+		for f in listContent:
+			with open(f) as file:
+				fopen = json.load(file)
+				content.append(fopen)
+
+	else:
 	
-	for f in listContent:
-		fopen = open(f,'r')
-		content.append(fopen.read())
-		fopen.close()
-
-	print('#########Logs Loaded Successfully#########')
-
-	return content, routers
-
-def readLogJson(logFolder): #Reads json files, and stores router logs in memory for processing
-
-	if _platform == "linux" or _platform == "linux2" or _platform == "darwin":
-    	# linux
-
-		listContent  = [f for f in glob.glob(logFolder  + '*rx.json')]
-		routers      = [[f.split("/")[1]] for f in listContent]
-
-	elif _platform == "win64" or _platform == "win32":
-    	# Windows 64-bit
-
-		listContent  = [f for f in glob.glob(logFolder  + '*rx.json')]
-		routers      = [[f.split("\\")[1]] for f in listContent]
-	
-
-	content          = []
-	
-	for f in listContent:
-		with open(f) as file:
-			fopen = json.load(file)
-			content.append(fopen)
+		for f in listContent:
+			fopen = open(f,'r')
+			content.append(fopen.read())
+			fopen.close()
 
 	print('#########Logs Loaded Successfully#########')
 
@@ -125,8 +129,6 @@ def readLogJson(logFolder): #Reads json files, and stores router logs in memory 
 
 def verifyMajorFile(majorFile):
 	"""We verify the majorFile.yml before moving on.
-
-
 	Returns:
 		[dict]: [Dictionary with words of major information, for templates if have any words additional to down]
 	"""
@@ -137,7 +139,6 @@ def verifyMajorFile(majorFile):
 	except:
 		print("Missing " + majorFile + " file. Quitting..")
 		quit()
-
 
 	return majorMatrix
 
@@ -199,8 +200,6 @@ def parseResults(index, content, templates, routers, commandKey):
 						# "/show router 4001 route-table | match No": "No. of Routes: 566",
 						# "/show router 4002 route-table | match No": "MINOR: CLI Invalid router \"4002\".\u0007",
 						# "/show router route-table | match No": "No. of Routes: 3337",						
-
-						content[i1][logs]
 
 						routerLog = logs + '\n' + content[i1][logs] + '\n'
 
@@ -264,7 +263,6 @@ def searchDiff(datosEquipoPre, datosEquipoPost):#Makes a new table, in which it 
 		dfCompl['Where'] = dfCompl['Where'].str.replace('right_only','Post')
 
 		countDif[key] = dfCompl.sort_values(by=['NAME'])
-
 
 	return countDif
 
@@ -375,14 +373,11 @@ def main():
 	csvTemplate = args.csvTemplate
 	formatJson  = args.formatJson
 
-	results_template, index, templates, commandKey = readTemplate(csvTemplate)
+	index, templates, commandKey = readTemplate(csvTemplate)
 
 	if preFolder != '' and postFolder == '':
 		
-		if formatJson == 'yes':
-			contentPre, routers = readLogJson(preFolder)
-		else:
-			contentPre, routers = readLog(preFolder)
+		contentPre, routers = readLog(preFolder, formatJson)
 
 		df_final    = parseResults(index, contentPre,  templates, routers, commandKey)
 		count_dif   = {}
@@ -396,14 +391,8 @@ def main():
 
 	elif preFolder != '' and postFolder != '':
 
-		if formatJson == 'yes':
-			contentPre, routersPre = readLogJson(preFolder)
-			contentPost, routersPost = readLogJson(postFolder)
-
-		else:
-            
-			contentPre, routersPre   = readLog(preFolder)
-			contentPost, routersPost = readLog(postFolder)
+		contentPre, routersPre   = readLog(preFolder, formatJson)
+		contentPost, routersPost = readLog(postFolder, formatJson)
 
 		if routersPre != routersPost:
 			print("There is not the same amount of logs in PRE vs POST. Check. Exit")

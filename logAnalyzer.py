@@ -141,32 +141,30 @@ def verifyMajorFile(majorFile):
 
 	return majorMatrix
 
-def parseResults(read_template, index, content, templates, routers, commandKey): #Build the Dataframe from textFSM filter, index and router log
-	"""_summary_
+def parseResults(index, content, templates, routers, commandKey):
+	"""
+	Build the Dataframe from textFSM filter, index and router log
 
 	Args:
-		read_template (_type_): _description_
-		index (list): nombres de variables del template textFSM
-		content (list): cada elemento de la lista, es un log por equipo
-		templates (_type_): _description_
-		routers (_type_): _description_
-		commandKey (_type_): _description_
+		index (list):           names of the variables inside the textFSM template
+		content (list):         each ith element of the list, corresonds to the logs of the ith router
+		templates (_type_):     list of template names
+		routers (_type_):       _description_
+		commandKey (_type_):    _description_
 
 	Returns:
 		_type_: _description_
 	"""
 
 	datosEquipo  = {}
-	cantTemplate = len(templates)
-	cantRouters  = len(content)
 
-	for i in range(cantTemplate):
+	for i in range(len(templates)):
 
 		nomTemplate = templates[i][0]
 		columnss    = index[i]
 		dfTemp      = pd.DataFrame(columns=columnss)
 
-		for i1 in range(cantRouters):
+		for i1 in range(len(content)):
 
 			print(routers[i1][0] , nomTemplate)
 
@@ -244,7 +242,6 @@ def parseResults(read_template, index, content, templates, routers, commandKey):
 
 		# It is stored in the dataEquipment dictionary with the key nomTemplate
 		# the DF with the data of all routers
-
 		datosEquipo[nomTemplate] = dfTemp
 
 		# I added this here because it was already done in main ().
@@ -256,7 +253,7 @@ def parseResults(read_template, index, content, templates, routers, commandKey):
 
 def searchDiff(datosEquipoPre, datosEquipoPost):#Makes a new table, in which it brings the differences between two tables (post-pre)
 
-	countDif        = {}	
+	countDif = {}	
 
 	for key in datosEquipoPre.keys():
 
@@ -387,7 +384,7 @@ def main():
 		else:
 			contentPre, routers = readLog(preFolder)
 
-		df_final    = parseResults(results_template, index, contentPre,  templates, routers, commandKey)
+		df_final    = parseResults(index, contentPre,  templates, routers, commandKey)
 		count_dif   = {}
 		searchMajor = {}
 
@@ -412,8 +409,8 @@ def main():
 			print("There is not the same amount of logs in PRE vs POST. Check. Exit")
 			quit()
 			
-		datosEquipoPre  = parseResults(results_template, index, contentPre,  templates, routersPre, commandKey)
-		datosEquipoPost = parseResults(results_template, index, contentPost, templates, routersPost, commandKey)
+		datosEquipoPre  = parseResults(index, contentPre,  templates, routersPre, commandKey)
+		datosEquipoPost = parseResults(index, contentPost, templates, routersPost, commandKey)
 		count_dif       = searchDiff(datosEquipoPre, datosEquipoPost)
 		searchMajor     = findMajor(count_dif)
 		df_final        = makeTable(datosEquipoPre, datosEquipoPost)

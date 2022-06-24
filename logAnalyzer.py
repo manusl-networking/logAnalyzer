@@ -312,49 +312,106 @@ def makeTable(datosEquipoPre, datosEquipoPost):#Sort the table pre and post to p
 	return df_all
 
 def constructExcel(df_final, count_dif, searchMajor, folderLog):#Sort the data and format creating the Excel
+	"""_summary_
+
+	Args:
+		df_final (pandas): DataFrame with pre and post data
+		count_dif (pandas): DataFrame with only differences
+		searchMajor (pandas): DataFrame with only errors
+		folderLog (string): name of the folder
+	"""
 
 	fileName  = folderLog[:-1] + ".xlsx"
 
 	writer    = pd.ExcelWriter(fileName, engine='xlsxwriter') #creates instance of an excel workbook
 	workbook  = writer.book
-	namesheet = []
 
 	print('Saving Excel')
 	
-	for temp in df_final.keys():
+	# Create index tab
+	indexSheet = workbook.add_worksheet('index')
 
-		sheet_name = temp.replace('nokia_sros_show_','').replace('.template','')
+	for idx,template in enumerate(df_final.keys()):
+
+		dfData  = df_final[template]
+		dfDiff  = count_dif[template]
+		dfMajor = searchMajor[template]
+
+		sheet_name = template.replace('nokia_sros_show_','').replace('.template','')
 
 		if len(sheet_name) > 31:
 			sheet_name = sheet_name[:31]
 
-		if len(searchMajor[temp]) == 0 and len(count_dif[temp]) == 0:
-			colorTab = 'green'
-		elif len(searchMajor[temp]) == 0 and len(count_dif[temp]) != 0:
-			colorTab = 'yellow'
-		elif len(searchMajor[temp]) != 0:
-			colorTab = 'orange'
+		# Selecting Tab's color and error messages
+		if len(dfData) == 0:
+			output = 'blue'
+		elif len(dfMajor) == 0 and len(dfDiff) == 0:
+			output = 'green'
+		elif len(dfMajor) == 0 and len(dfDiff) != 0:
+			output = 'yellow'
+		elif len(dfMajor) != 0:
+			output = 'orange'
 
+		d = dict(
+			blue = dict(
+				colorTab = 'blue',
+				warnText = '####### NO Parsing Detected ###############',
+				errText  = '####### NO Parsing Detected ###############',
+				shortText = 'no parsing',
+				),		
+			green = dict(
+				colorTab = 'green',
+				warnText = '####### NO POST-TASK CHANGES DETECTED #####',
+				errText  = '####### NO MAJOR ERRORS FOUND #############',
+				shortText = 'ok',
+				),
+			yellow = dict(
+				colorTab = 'yellow',
+				warnText = '####### CHANGES DETECTED ##################',
+				errText  = '####### NO MAJOR ERRORS FOUND #############',
+				shortText = 'warning',
+				),
+			orange = dict(
+				colorTab = 'orange',
+				warnText = '####### CHANGES DETECTED ##################',
+				errText  = '####### MAJOR ERRORS DETECTED POST-TASK ###',
+				shortText = 'error',
+			)
+		)
+
+		# cell format
+		cell_format  = workbook.add_format({'color': 'red', 'font_size': 14, 'fg_color': d[output]['colorTab'], 'align': 'center', 'border': 1 })
+
+		# Building index
+		srcCol   = 'A'+str(idx+1)
+		indexSheet.write_url(srcCol, 'internal:'+sheet_name+'!A1', string=sheet_name)
+		indexSheet.write(idx,1, d[output]['shortText'], cell_format)
+
+		# Creating Tab
 		worksheet = workbook.add_worksheet(sheet_name)
-		worksheet.set_tab_color(colorTab)
+		worksheet.set_tab_color(d[output]['colorTab'])
 		writer.sheets[sheet_name] = worksheet
-
-		cell_format = workbook.add_format({'color': 'red', 'font_size': 14, 'fg_color': 'yellow', 'align': 'center', 'border': 1 })
+		dfData.to_excel(writer, sheet_name=sheet_name, startrow=0, startcol=0) #creates Excel File
+		worksheet.write_url('A1', 'internal:index!A1', string='Index')
 		
-		df_final[temp].to_excel(writer, sheet_name=sheet_name, startrow=0, startcol=0) #creates workbook
+		### Changes Section
+		srcCol   = 'A'+str(len(dfData)+5)
+		dstCol   = 'H'+str(len(dfData)+5)
+		colRange = srcCol + ':' + dstCol
+		warnTex  = d[output]['warnText']
+		worksheet.merge_range(colRange, warnTex, cell_format)
+		if len(dfDiff) > 0:
+			dfDiff.to_excel(writer, sheet_name=sheet_name, startrow=len(dfData)+6, startcol=0)
 
-		worksheet.merge_range('A'+str(len(df_final[temp])+5)+':'+'H'+str(len(df_final[temp])+5), '#############  CHANGES DETECTED #############', cell_format)
-		worksheet.merge_range('A'+str((len(df_final[temp])+(len(count_dif[temp])))+9)+':'+'H'+str((len(df_final[temp])+(len(count_dif[temp])))+9), '#############  MAJOR ERRORS DETECTED POST-TASK #############', cell_format)
+		### Major Error Section
+		srcCol   = 'A'+str((len(dfData)+(len(dfDiff)))+9)
+		dstCol   = 'H'+str((len(dfData)+(len(dfDiff)))+9)
+		colRange = srcCol + ':' + dstCol
+		errText   = warnTex  = d[output]['errText']
+		worksheet.merge_range(colRange, errText, cell_format)
+		if len(dfMajor) > 0:
+			dfMajor.to_excel(writer, sheet_name=sheet_name, startrow=(len(dfData)+(len(dfDiff)))+10, startcol=0)
 		
-		if len(count_dif[temp]) == 0:
-			worksheet.merge_range('A'+str(len(df_final[temp])+5)+':'+'H'+str(len(df_final[temp])+6), '#############  NO POST-TASK CHANGES DETECTED #############', cell_format)
-		else:
-			count_dif[temp].to_excel(writer, sheet_name=sheet_name, startrow=len(df_final[temp])+6, startcol=0)
-			
-		if len(searchMajor[temp]) == 0:
-			worksheet.merge_range('A'+str((len(df_final[temp])+(len(count_dif[temp])))+10)+':'+'H'+str((len(df_final[temp])+(len(count_dif[temp])))+9), '#############  NO MAJOR ERRORS FOUND #############', cell_format)
-		else:
-			searchMajor[temp].to_excel(writer, sheet_name=sheet_name, startrow=(len(df_final[temp])+(len(count_dif[temp])))+10, startcol=0)
 		print('#')
 	
 	writer.save() #saves workbook to file in python file directory
@@ -366,6 +423,7 @@ def main():
 	parser1.add_argument('-post','--postFolder' , type=str, default='',    help='Folder with POST Logs. Must end in "/"',)
 	parser1.add_argument('-csv', '--csvTemplate', type=str, required=True, help='CSV con with templates to use in parsing.')
 	parser1.add_argument('-json', '--formatJson', type=str, required=True, help='logs in json format yes or no.')
+	parser1.add_argument('-v'  ,'--version',     help='Version', action='version', version='Saldivar/Aimaretto - (c)2022 - Version: 2.0.0' )
 
 	args        = parser1.parse_args()
 	preFolder   = args.preFolder

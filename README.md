@@ -97,4 +97,5 @@ optional arguments:
                         CSV con with templates to use in parsing.
   -json FORMATJSON, --formatJson FORMATJSON
                         logs in json format yes or no.
+  -v, --version         Version
 ```

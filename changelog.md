@@ -1,3 +1,7 @@
+[3.0.0 - 2022-07-01]
+
+- ReWrite of functions `readTemplate()` , `readLog()` and `parseResults()`.
+
 [2.0.0 - 2022-06-24]
 
 - Starting major version `2.0.0`.

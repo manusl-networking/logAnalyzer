@@ -1,0 +1,14 @@
+#Command: /show router bgp routes hunt ipv4 | match IP_CSR post-lines 5 | match Nexthop
+#Description: This template is used to see bgp routes ipv4 to CSR nexthop
+#Variables: Router_Name IP_CSR Nexthop Res_Nexhop  
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
+Value Filldown NAME (\S+)
+Value Filldown IP_CSR ([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})
+Value Required Nexthop ([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})
+Value Res_Nexhop ([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})
+
+Start
+  ^\w:${NAME}(#|>)\s/show\srouter\sbgp\sroutes\shunt\sipv4\s.\smatch\s${IP_CSR}\spost-lines\s5\s|\smatch\sNexthop
+  ^.\w:${NAME}(#|>)\s/show\srouter\sbgp\sroutes\shunt\sipv4\s.\smatch\s${IP_CSR}\spost-lines\s5\s|\smatch\sNexthop
+  ^Nexthop\s+:\s${Nexthop} -> Continue
+  ^Res.\sNexthop\s+:\s${Res_Nexhop} -> Continue.Record

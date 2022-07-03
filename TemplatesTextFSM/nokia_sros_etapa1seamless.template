@@ -1,0 +1,47 @@
+#Command: /show version | /configure router bgp
+#Description: This template is used to find out version of TiMOS and BGP configuration, this template was created for a specific BGP configuration
+#Variables: Router_Name Version group family type import export bfd_7250 peer_as add_paths add_paths_conf add_paths_conf1 aigp neighbor description advertise_label family_label next_hop bfd_enable
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
+Value Filldown NAME (\S+)
+Value Filldown Version (TiMOS\S+)
+Value group (\S+)
+Value family (ipv4)
+Value type (internal)
+Value import (\S+)
+Value export (\S+)
+Value bfd_7250 (bfd-enable)
+Value peer_as ([0-9]{1,6})
+Value add_paths (add-paths)
+Value add_paths_conf ([0-9]{1,2}\s\S+)
+Value add_paths_conf1 (\S+\s[0-9]{1,2}\s\S+)
+Value aigp (aigp)
+Value Required neighbor ([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})
+Value Required description (\S+)
+Value advertise_label (advertise-label\sipv4)
+Value family_label (label-ipv4)
+Value next_hop (next-hop-self)
+Value bfd_enable (bfd-enable)
+
+Start
+  ^\w:${NAME}(#|>) /show version
+  ^.\w:${NAME}(#|>) /show version
+  ^${Version}
+  ^\s+group\s${group}
+  ^\s+family\s${family}
+  ^\s+type\s${type} -> Continue
+  ^\s+import\s${import}
+  ^\s+export\s${export}
+  ^\s+${bfd_7250} -> Continue
+  ^\s+peer-as\s${peer_as}
+  ^\s+${add_paths}
+  ^\s+ipv4\ssend\s${add_paths_conf}
+  ^\s+label-ipv4\s${add_paths_conf1}
+  ^\s+${aigp}
+  ^\s+neighbor\s${neighbor} -> Continue
+  ^\s+description\s${description} -> Continue.Record
+  ^\s+{advertise_label} -> Continue
+  ^\s+family\s${family_label} -> Continue
+  ^\s+${next_hop} -> Continue
+  ^\s+${bfd_enable} -> Continue
+  ^\w:${NAME}#>config>router>bgp# exit -> Record
+

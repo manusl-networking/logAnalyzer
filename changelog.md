@@ -1,3 +1,11 @@
+[3.1.0 - 2022-07-03]
+
+- The folder of the templates can now be specified by the parameter `--templateFolder`. The default is `TemplatesTextFSM/`.
+- The file `--csvTemplate` is now optional. If omitted, then all the templates under the folder `--templateFolder` will be considered for parsing.
+- Templates can be of type `textFSM` or `ttp`. To choose, use the parameter `-te/--templateEngine`.
+    - Be sure to point to the correct folder of templates, when changing the engine.
+
+
 [3.0.0 - 2022-07-01]
 
 - ReWrite of functions `readTemplate()` , `readLog()` and `parseResults()`.

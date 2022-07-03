@@ -1,0 +1,12 @@
+#Command: /show router policy community \S+
+#Description: This template is used to see the community members
+#Variables: Router_Name Community Members
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
+Value Filldown NAME (\S+)
+Value Required Community (.+)
+Value Required Members (.+)
+
+Start
+  ^\w:${NAME}(#|>)\s/show router policy community\s\S+ -> Continue.Record
+  ^.\w:${NAME}(#|>)\s/show router policy community\s\S+ -> Continue.Record
+  ^community\s"${Community}"\smembers\s"${Members}" -> Continue.Record

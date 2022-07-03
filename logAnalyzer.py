@@ -9,7 +9,6 @@
 # but WITHOUT ANY WARRANTY of any kind whatsoever.
 #
 
-
 import textfsm
 import pandas as pd
 import csv
@@ -22,13 +21,17 @@ import json
 import re
 from ttp import ttp
 
-def readTemplate(fileTemplate, templateFolder):
+def readTemplate(fileTemplate, templateFolder, templateEngine):
 	
 	# Read the list of templates passed by CSV of textFSM and return template read list (read)
 	# list of parsed variable names, list of template names 
+	# If fileTemplate is omitted, then all the templates inside the folder are considered.
 	
-	with open(fileTemplate,'r') as f:
-		templates = f.read().split('\n')[:-1]
+	if fileTemplate != '':
+		with open(fileTemplate,'r') as f:
+			templates = f.read().split('\n')[:-1]
+	else:
+		templates = [f.replace(templateFolder,'') for f in glob.glob(templateFolder + '*') if 'majorFile.yml' not in f]
 
 	d = {}
 
@@ -40,44 +43,80 @@ def readTemplate(fileTemplate, templateFolder):
 		}	
 
 		fName = templateFolder+tmpltName
-		print(fName)
+
 		with open(fName) as f:
 			tmpltLines = f.readlines()
 
 		for line in tmpltLines:
 
-			h1 = line.find('Value')
-			h2 = line.find('#Command:')
-			
-			if h1 != -1:
-				col = line.split(' ')[-2]
-				#listOfcolumns[i].append(col)
-				d[tmpltName]['listOfcolumns'].append(col)
-			
-			if h2 != -1:
-				cmd = line.split(': ')[1]
-				#commandKey[i].append(cmd)
-				d[tmpltName]['commandKey'] = cmd
+			if templateEngine == 'textFSM':
+
+				h1 = line.find('Value')
+				h2 = line.find('#Command:')
+				
+				if h1 != -1:
+					col = line.split(' ')[-2]
+					#listOfcolumns[i].append(col)
+					d[tmpltName]['listOfcolumns'].append(col)
+				
+				if h2 != -1:
+					cmd = line.split(': ')[1].strip('\n')
+					#commandKey[i].append(cmd)
+					d[tmpltName]['commandKey'] = cmd
+
+			if templateEngine == 'ttp':
+
+				h1 = line.find('Columns: ')
+				h2 = line.find('Command: ')
+				
+				if h1 != -1:
+					col = line.split(': ')[1].strip('\n').split(",")
+					#listOfcolumns[i].append(col)
+					d[tmpltName]['listOfcolumns'] = col
+				
+				if h2 != -1:
+					cmd = line.split(': ')[1].strip('\n')
+					#commandKey[i].append(cmd)
+					d[tmpltName]['commandKey'] = cmd				
 
 	print('#####Successfully Loaded Templates#####')
-	#return listOfcolumns, templates, commandKey
 	return d 
 
-def makeParsed(nomTemplate, routerLog):
+def makeParsed(nomTemplate, routerLog, templateFolder, templateEngine, columnss):
 	"""
 	Parse through textFSM (reading the file again)
 
 	Args:
 		nomTemplate (string): name of file containgin the textFSM template
 		routerLog (string):   logs of router
+		tmpltFolder
 
 	Returns:
 		list with results
 	"""
 
-	template         = open('Templates/'+nomTemplate)
-	results_template = textfsm.TextFSM(template)
-	parsed_results   = results_template.ParseText (routerLog)
+	if templateEngine == 'textFSM':
+
+		template         = open(templateFolder + nomTemplate)
+		results_template = textfsm.TextFSM(template)
+		parsed_results   = results_template.ParseText (routerLog)
+
+		# With list of results, we build a Pandas DataFrame
+		parsed_results = pd.DataFrame(parsed_results, columns= columnss)
+
+	if templateEngine == 'ttp':
+
+		with open(templateFolder + nomTemplate) as f:
+			template = f.read()
+
+		parser = ttp(data=routerLog, template=template)
+		parser.parse()
+
+		output = parser.result(format='table')
+		parsed_results = output[0][1][0]
+
+		parsed_results = pd.DataFrame(parsed_results, columns= columnss)
+
 	return parsed_results
 
 def readLog(logFolder, formatJson):
@@ -143,15 +182,14 @@ def verifyMajorFile(majorFile):
 
 	return majorMatrix
 
-def parseResults(dTmpl, dLog):
+def parseResults(dTmpl, dLog, templateFolder, templateEngine):
 	"""
 	Build the Dataframe from textFSM filter, index and router log
 
 	Args:
-		content (list):      each ith element of the list, corresonds to the logs of the ith router
-		templates (_type_):  list of template names
 		dTmpl (dict):        dictionary with info from templates.
 		dLog (dict):         dicitonary with logs. Each key is the fileName; the value, is the content of the log.
+		templateFolder (str):   folder of templates
 
 	Returns:
 		_type_: _description_
@@ -162,7 +200,7 @@ def parseResults(dTmpl, dLog):
 	for tmpltName in dTmpl.keys():
 
 		columnss    = dTmpl[tmpltName]['listOfcolumns']
-		commandKey  = dTmpl[tmpltName]['commandKey'].strip('\n')
+		commandKey  = dTmpl[tmpltName]['commandKey']
 		dfTemp      = pd.DataFrame(columns=columnss)
 
 		for routerLogKey in dLog.keys():
@@ -205,10 +243,8 @@ def parseResults(dTmpl, dLog):
 
 						# We parse results from the key:value association
 						# A list is returnd with results
-						parsed_results = makeParsed(tmpltName, routerLog)
+						dfResult = makeParsed(tmpltName, routerLog, templateFolder, templateEngine, columnss)
 
-						# With list of results, we build a Pandas DataFrame
-						dfResult = pd.DataFrame(parsed_results, columns= columnss)
 						dfResult['NAME'] = routerName
 
 						dfTemp = pd.concat([dfTemp, dfResult])
@@ -266,10 +302,11 @@ def searchDiff(datosEquipoPre, datosEquipoPost):#Makes a new table, in which it 
 
 	return countDif
 
-def findMajor(count_dif):#Makes a table from the results of searching for Major errors in the post table define in yml file for specific template, or down if is not define the words for the template, which are not in the Pre table
+def findMajor(count_dif, templateFolder):
+	#Makes a table from the results of searching for Major errors in the post table define in yml file for specific template, or down if is not define the words for the template, which are not in the Pre table
 
 	countDown  = {}
-	majorWords = verifyMajorFile('Templates/majorFile.yml')
+	majorWords = verifyMajorFile(templateFolder + 'majorFile.yml')
 
 	for key in count_dif.keys():
 		if key in majorWords:
@@ -337,7 +374,10 @@ def constructExcel(df_final, count_dif, searchMajor, folderLog):#Sort the data a
 		dfDiff  = count_dif[template]
 		dfMajor = searchMajor[template]
 
-		sheet_name = template.replace('nokia_sros_show_','').replace('.template','')
+		sheet_name = template.replace('nokia_sros_','')
+		sheet_name = template.replace('.template','')
+		sheet_name = template.replace('.ttp','')
+		sheet_name = template.replace('.','_')
 
 		if len(sheet_name) > 31:
 			sheet_name = sheet_name[:31]
@@ -421,11 +461,11 @@ def main():
 	parser1 = argparse.ArgumentParser(description='Log Analysis', prog='PROG', usage='%(prog)s [options]')
 	parser1.add_argument('-pre', '--preFolder',     type=str, required=True, help='Folder with PRE Logs. Must end in "/"',)
 	parser1.add_argument('-post','--postFolder' ,   type=str, default='',    help='Folder with POST Logs. Must end in "/"',)
-	parser1.add_argument('-csv', '--csvTemplate',   type=str, required=True, help='CSV con with templates to use in parsing.')
-	parser1.add_argument('-json', '--formatJson',   type=str, required=True, choices=['yes','no'], help='logs in json format yes or no.')
-	parser1.add_argument('-tf', '--templateFolder', type=str, default='Templates/', help='Folder where templates reside.')
+	parser1.add_argument('-csv', '--csvTemplate',   type=str, default='', help='CSV with list of templates names to be used in parsing. If the file is omitted, then all the templates inside --templateFolder, will be considered for parsing. Default=None.')
+	parser1.add_argument('-json', '--formatJson',   type=str, required=True, choices=['yes','no'], help='logs in json format: yes or no.')
+	parser1.add_argument('-tf', '--templateFolder', type=str, default='TemplatesTextFSM/', help='Folder where templates reside. Default=TemplatesTextFSM/')
 	parser1.add_argument('-te', '--templateEngine', choices=['ttp','textFSM'], default='textFSM', type=str, help='Engine for parsing.')
-	parser1.add_argument('-v'  ,'--version',        help='Version', action='version', version='Saldivar/Aimaretto - (c)2022 - Version: 3.0.0' )
+	parser1.add_argument('-v'  ,'--version',        help='Version', action='version', version='Saldivar/Aimaretto - (c)2022 - Version: 3.1.0' )
 
 	args           = parser1.parse_args()
 	preFolder      = args.preFolder
@@ -435,14 +475,13 @@ def main():
 	templateFolder = args.templateFolder
 	templateEngine = args.templateEngine
 
-	if templateEngine == 'textFSM':
-		dTmplt = readTemplate(csvTemplate, templateFolder)
+	dTmplt = readTemplate(csvTemplate, templateFolder, templateEngine)
 
 	if preFolder != '' and postFolder == '':
 		
 		dLog = readLog(preFolder, formatJson)
 
-		df_final    = parseResults(dTmplt, dLog)
+		df_final    = parseResults(dTmplt, dLog, templateFolder, templateEngine)
 		count_dif   = {}
 		searchMajor = {}
 
@@ -457,10 +496,11 @@ def main():
 		dLogPre  = readLog(preFolder, formatJson)
 		dLogPost = readLog(postFolder, formatJson)
 			
-		datosEquipoPre  = parseResults(dTmplt, dLogPre)
-		datosEquipoPost = parseResults(dTmplt, dLogPost)
+		datosEquipoPre  = parseResults(dTmplt, dLogPre, templateFolder, templateEngine)
+		datosEquipoPost = parseResults(dTmplt, dLogPost, templateFolder, templateEngine)
+
 		count_dif       = searchDiff(datosEquipoPre, datosEquipoPost)
-		searchMajor     = findMajor(count_dif)
+		searchMajor     = findMajor(count_dif, templateFolder)
 		df_final        = makeTable(datosEquipoPre, datosEquipoPost)
 
 		constructExcel(df_final, count_dif, searchMajor, postFolder)

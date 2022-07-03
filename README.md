@@ -19,39 +19,45 @@ python3 -m nuitka logAnalizer.py
 ```
 Compiling has been tested succesfully under Ubuntu. Don't know if this is directly supported under Windows. If it fails, let me know. Nevertheless, as mentioned, you can run `logAnalyzer_win` directly from the CLI using Python
 
-## Usage ##
+## Usage
 
-The program needs three inputs: a) CSV file with the list of parsing templates to be considered for the analysis; b) a folder, named `Templates`, which contains the parsing templates; and c) a folder, which contains the logs from `taskAutom`.
+The program needs two mandatory inputs:
+  - a folder which contains the parsing templates, either in `textFSM` or `ttp` format;
+  - a folder, which contains the logs obtained a router, via [`taskAutom`](https://github.com/laimaretto/taskAutom). Though not mandatory, `taskAutom` is suggested as a way of obtaining the logs, because these can be stored in a json file.
 
-#### CSV
-
-The CSV file must have in its first column, the name of templates created for the specific commands
-
-```csv
-nokia_sros_show_router_bgp_summary.template
-nokia_sros_show_router_interface.template
-nokia_sros_show_service_sdp.template
-```
-
-#### Templates
+### Templates
 
 The templates are stored in the `Templates` folder. The script reads the CSV and uses the indicated templates to perform the function of parsing.
 
-#### Template Major Errors (V 0.3)
+##### CSV
 
-The template `majorFile.yml`, stores the name of a template and the key-words of Major errors after the task, if you don't specify the template in the file yml, the program searches the word 'down' automatically. The format of file is:
+It is possible to use a CSV file, that includes the specific templates to be used in the analysys.
+
+```csv
+show_router_bgp_summary.template
+show_router_interface.template
+show_service_sdp.template
+```
+If omitted, all the templates insisde the templates folder, will be used.
+
+##### Template Major Errors (V 0.3)
+
+The file `majorFile.yml`, stores the name of a template and the key-words of Major errors after the task, if you don't specify the template in the file yml, the program searches the word 'down' automatically. The file must be present under the folder of the templates.
+
+The format of file is:
 
 ```yml
-nokia_sros_show_router_ldp_session.template: ['down', 'Nonexistent', 'Initialized', 'OpenRecv', 'OpenSent']
-nokia_sros_show_router_bgp_summary.template: ['down', 'connect', 'active']
+show_router_ldp_session.template: ['down', 'Nonexistent', 'Initialized', 'OpenRecv', 'OpenSent']
+show_router_bgp_summary.template: ['down', 'connect', 'active']
 ```
 
-#### Results
+## Results
 
-If `logAnalyzer` is invoked only with folder `pre`, reads the specific content in the log folder for a given command and then saves the results in an Excel report. We need to specify format of the logs, if format is `json` then invoke the option `-json yes`; otherwise `-json no`.
+If `logAnalyzer` is invoked only with option `-pre`, reads the specific content in the log folder for a given command and then saves the results in an Excel report. We need to specify format of the logs, either `-json yes|no` and also the parsing engine, either `-te textFSM|ttp`. Also, the folder where the templates are located, with `-tf Folder`.
 
 ```bash
-$ python3 logAnalyzer.py -csv templateExample.csv -pre folderLogs/ -json yes
+$ python3 logAnalyzer.py -csv templateExample.csv -pre folderLogs/ -json yes -te ttp -tf TemplatesTTP/
+
 <_io.TextIOWrapper name='Templates/nokia_sros_show_service_sdp-using.template' mode='r' encoding='UTF-8'>
 #####Plantillas Cargadas Exitosamente#####
 #########Logs Cargados Exitosamente#########
@@ -61,10 +67,11 @@ ROUTER_EXAMPLE_rx.txt nokia_sros_show_service_sdp-using.template
 Saving Excel
 #
 ```
-On the other hand, if `logAnalyzer` is invoked with folder `pre` and `post`, it compares the content of pre and post log folders, such as if we run checks to see the status of the routers before and after a task, and then saves the results in an Excel report.
+On the other hand, if `logAnalyzer` is invoked with folder `-pre` and `-post`, it compares the content of pre and post log folders, such as if we run checks to see the status of the routers before and after a task, and then saves the results in an Excel report.
 
 ```bash
-$ python3 logAnalyzer.py -csv templateExample.csv -pre folderLogsBefore/ -post folderLogsAfter/ -json yes
+$ python3 logAnalyzer.py -csv templateExample.csv -pre folderLogsBefore/ -post folderLogsAfter/ -json yes --te textFSM -tf TemplatesFSM/
+
 <_io.TextIOWrapper name='Templates/nokia_sros_show_service_sdp-using.template' mode='r' encoding='UTF-8'>
 #####Plantillas Cargadas Exitosamente#####
 #########Logs Cargados Exitosamente#########
@@ -77,7 +84,7 @@ Saving Excel
 #
 ```
 
-#### Configuration Options
+## Configuration Options
 
 `logAnalyzer` can be configured through CLI as shown below.
 
@@ -94,8 +101,13 @@ optional arguments:
   -post POSTFOLDER, --postFolder POSTFOLDER
                         Folder with POST Logs. Must end in "/"
   -csv CSVTEMPLATE, --csvTemplate CSVTEMPLATE
-                        CSV con with templates to use in parsing.
-  -json FORMATJSON, --formatJson FORMATJSON
-                        logs in json format yes or no.
+                        CSV with list of templates names to be used in parsing. If the file is omitted, then all the templates inside --templateFolder, will be considered for parsing. Default=None.
+  -json {yes,no}, --formatJson {yes,no}
+                        logs in json format: yes or no.
+  -tf TEMPLATEFOLDER, --templateFolder TEMPLATEFOLDER
+                        Folder where templates reside. Default=TemplatesTextFSM/
+  -te {ttp,textFSM}, --templateEngine {ttp,textFSM}
+                        Engine for parsing.
   -v, --version         Version
+
 ```

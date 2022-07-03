@@ -1,0 +1,17 @@
+#Command: /show service id \d+ all
+#Description: This template is used to see the state of service id and auto-bind resolution configuration
+#Variables: Router_Name Service_ID_INIT Type_Local Type_Remote Admin_State_Local Admin_State_Remoto Oper_State_Local Admin_State_Remoto Service_MTU_Local Service_MTU_Remoto IP_Interface_State Actual_IP_Addr_Local Actual_IP_Addr_Remoto SDP_Path_Used_Local SDP_ID_Local SDP_ID_Remoto SDP_Admin_State_Local SDP_Admin_State_Remoto SDP_Oper_State_Local SDP_Oper_State_Remoto Binding_VC_ID_Local Binding_VC_ID_Remoto Request_Result
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
+Value Filldown NAME (\S+)
+Value Required id (\S+)
+Value Admin_State ([uU][pP]|[Dd][oO][wW][nN])
+Value Oper_State ([uU][pP]|[Dd][oO][wW][nN])
+Value Required AutoBind (\S+)
+
+Start
+  ^\w:${NAME}(#|>) /show service id\s\S+ all -> Continue
+  ^.\w:${NAME}(#|>) /show service id\s\S+ all -> Continue
+  ^Service\sId\s+:\s${id}
+  ^Admin\sState\s+:\s${Admin_State}\s+Oper\sState\s+:\s${Oper_State} -> Continue
+  ^Max\sIPv4\sRoutes\s+:\s\S+\sLimit\s+Auto\sBind\s+:\s${AutoBind} -> Continue.Record
+  ^Resolution\s+:\s${AutoBind}  -> Continue.Record

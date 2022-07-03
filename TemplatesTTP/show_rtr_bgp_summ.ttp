@@ -1,0 +1,18 @@
+<doc>
+Command: /show router bgp summary
+Columns: Neighbor,Description,AS,Family,Prefixes
+</doc>
+
+<vars>
+UPDOWN = "up|Up|down|Down"
+</vars>
+
+<group name = 'bgp-summary'>
+{{ Neighbor | IP }}
+{{ Description | ORPHRASE }} 
+ {{ AS | re("\d+") }} {{ pktRx | re("\d+") }} {{ InQ | re("\d+") }} {{ UpDown | re("\S+") }} {{Prefixes | re("\S+") }} ({{Family}})
+ {{ pkTx | re("\d+") }} {{ OutQ }}
+{{ Neighbor | IP }}
+ {{ AS | re("\d+") }} {{ pktRx | re("\d+") }} {{ InQ | re("\d+") }} {{ UpDown | re("\S+") }} {{Prefixes | re("\S+") }} ({{Family}})
+ {{ pkTx | re("\d+") }} {{ OutQ | re("\d+") }}
+</group>

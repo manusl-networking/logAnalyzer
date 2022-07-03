@@ -1,0 +1,67 @@
+#Command: /show port \S+
+#Description: This template is used to see the information about physical port
+#Variables: NAME, port, Description, OperSpeed, ConfigSpeed, AdminState, OperDuplex, OperState, ConfigDuplex, PhysicalLink, MTU, SingleFiberMode, ConfiguredMode, EncapType, AutoNegotiate, MDI_MDX, EgressRate, IngressRate, TransceiverType, ModelNumber, TXLaserWavelength, ConnectorCode, SerialNumber, PartNumber, OpticalCompliance, LinkLengthsupport, SFPSyncECapable, TxOutPwr_dBm_VALUE, TxOutPwr_dBm_HighAlarm, TxOutPwr_dBm_HighWarn, TxOutPwr_dBm_LowWarn, TxOutPwr_dBm_LowAlarm, RxInPwr_dBm_VALUE, RxInPwr_dBm_HighAlarm, RxInPwr_dBm_HighWarn, RxInPwr_dBm_LowWarn, RxInPwr_dBm_LowAlarm
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
+Value Filldown NAME (\S+)
+Value Required port (\S+)
+Value Description (.+)
+Value OperSpeed (.+)
+Value ConfigSpeed (.+)
+Value Required AdminState ([uU][pP]|[Dd][oO][wW][nN])
+Value OperDuplex (.+)
+Value Required OperState (.+)
+Value Required ConfigDuplex (.+)
+Value PhysicalLink (\S+)
+Value MTU (\S+)
+Value SingleFiberMode (\S+)
+Value ConfiguredMode (\S+)
+Value EncapType (\S+)
+Value AutoNegotiate (\S+)
+Value MDI_MDX (\S+)
+Value EgressRate (\S+)
+Value IngressRate (\S+)
+Value TransceiverType (\S+)
+Value ModelNumber (.+)
+Value TXLaserWavelength (\S+\s\S+)
+Value ConnectorCode (\S+)
+Value SerialNumber (\S+)
+Value PartNumber (.+)
+Value OpticalCompliance (.+)
+Value LinkLengthsupport (.+)
+Value SFPSyncECapable (\S+)
+Value TxOutPwr_dBm_VALUE (\S+)
+Value TxOutPwr_dBm_HighAlarm (\S+)
+Value TxOutPwr_dBm_HighWarn (\S+)
+Value TxOutPwr_dBm_LowWarn (\S+)
+Value TxOutPwr_dBm_LowAlarm (\S+)
+Value RxInPwr_dBm_VALUE (\S+)
+Value RxInPwr_dBm_HighAlarm (\S+)
+Value RxInPwr_dBm_HighWarn (\S+)
+Value RxInPwr_dBm_LowWarn (\S+)
+Value RxInPwr_dBm_LowAlarm (\S+)
+
+Start
+  ^\w:${NAME}(#|>) /show port \S+
+  ^.\w:${NAME}(#|>) /show port \S+ 
+  ^Description\s+:\s${Description}
+  ^Interface\s+:\s${port}\s+Oper\sSpeed\s+:\s${OperSpeed}
+  ^Link.level\s+:\s\S+\s+Config\sSpeed\s+:\s${ConfigSpeed}
+  ^Admin\sState\s+:\s${AdminState}\s+Oper\sDuplex\s+:\s${OperDuplex}
+  ^Oper\sState\s+:\s${OperState}\s+Config\sDuplex\s+:\s${ConfigDuplex}
+  ^Physical\sLink\s+:\s${PhysicalLink}\s+MTU\s+:\s${MTU}
+  ^Single\sFiber\sMode\s+:\s${SingleFiberMode}
+  ^Configured\sMode\s+:\s${ConfiguredMode}\s+Encap\sType\s+:\s${EncapType}
+  ^Auto-negotiate\s+:\s${AutoNegotiate}\s+MDI/MDX\s+:\s${MDI_MDX}                   
+  ^Egress\sRate\s+:\s${EgressRate}\s+Ingress\sRate\s+:\s${IngressRate}
+  ^Transceiver\sType\s+:\s${TransceiverType}
+  ^Model\sNumber\s+:\s${ModelNumber}
+  ^TX\sLaser\sWavelength:\s${TXLaserWavelength}
+  ^Connector\sCode\s+:\s${ConnectorCode}
+  ^Serial\sNumber\s+:\s${SerialNumber}      
+  ^Part\sNumber\s+:\s${PartNumber}
+  ^Optical\sCompliance\s:\s${OpticalCompliance}
+  ^Link\sLength\ssupport:\s${LinkLengthsupport}
+  ^SFP\sSync-E\sCapable\s:\s${SFPSyncECapable} 
+  ^Tx\sOutput\sPower\s.dBm.\s+${TxOutPwr_dBm_VALUE}\s+${TxOutPwr_dBm_HighAlarm}\s+${TxOutPwr_dBm_HighWarn}\s+${TxOutPwr_dBm_LowWarn}\s+${TxOutPwr_dBm_LowAlarm}
+  ^Rx\sOptical\sPower\s.avg dBm.\s+${RxInPwr_dBm_VALUE}\s+${RxInPwr_dBm_HighAlarm}\s+${RxInPwr_dBm_HighWarn}\s+${RxInPwr_dBm_LowWarn}\s+${RxInPwr_dBm_LowAlarm} -> Record
+

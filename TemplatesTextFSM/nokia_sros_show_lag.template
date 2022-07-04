@@ -1,0 +1,10 @@
+#Command: /show lag
+Value NAME (\S+)
+Value Required Lag_ID (\S+)
+Value Adm ([uU][pP]|[Dd][oO]?[wW][nN])
+Value Opr ([uU][pP]|[Dd][oO]?[wW][nN])
+
+Start
+  ^\w:${NAME}(#|>) /show lag
+  ^.?\w:${NAME}(#|>) /?show lag
+  ^${Lag_ID}\s+${Adm}\s+${Opr}\s+\S+\s+\S+\s+\S+\s+\S+ -> Record

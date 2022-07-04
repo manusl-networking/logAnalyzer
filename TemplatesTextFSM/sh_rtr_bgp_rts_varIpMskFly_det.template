@@ -1,0 +1,76 @@
+#Command: /show router bgp routes \S+
+#Variables Router_Name family IP_Prefix_Mask family AS Local_AS Attributes Network Nexthop Route_Dist VPN_Label Path_Id From Res_Nexthop Local_Pref Interface_Name Aggregator_AS Aggregator Atomic_Aggr MED AIGP_Metric Connector Community Cluster Originator_Id Peer_Router_Id Fwd_Class Priority Flags Route_Source AS_Path Route_Tag Neighbor_AS Orig_Validation Source_Class Dest_Class Add_Paths_Send VPRN_Imported
+#Autor Manuel Saldivar manuelsaldivar@outlook.com.ar
+#Notes: If you try to execute on the same proof family label-ipv4 and vpn-ipv4 maybe will have some errors with the value VPRN_Imported, because label-ipv4 don't have this value, I recommend execute the proof separated, or execute first vpn-ipv4 and then label-ipv4 for best results.
+Value Filldown NAME (\S+)
+Value Filldown IP_Prefix_Mask ([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}/[0-9]{1,2})
+Value Filldown family (\S+)
+Value Filldown BGP_Router_ID ([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})
+Value Filldown AS (\S+)
+Value Filldown Local_AS (\S+)
+Value Filldown,Required Attributes (Original|Modified)
+Value Required Network ([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}/[0-9]{1,2})
+Value Nexthop ([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})
+Value Route_Dist (\S+)
+Value VPN_Label (\S+)
+Value Path_Id (\S+)
+Value From ([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}\s+.\S+.|[0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}|\S+)
+Value Res_Nexthop (\S+\s\S+|\S+|[0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}\s+.\S+.|[0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})
+Value Local_Pref (\S+)
+Value Interface_Name (\S+)
+Value Aggregator_AS (\S+)
+Value Aggregator (\S+)
+Value Atomic_Aggr (\S+\s\S+|\S+)
+Value MED (\S+)
+Value AIGP_Metric (\S+)
+Value Connector (\S+)
+Value Community (.+)
+Value Cluster (.+)
+Value Originator_Id ([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})
+Value Peer_Router_Id ([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})
+Value Fwd_Class (\S+)
+Value Priority (\S+)
+Value Flags (.+)
+Value Route_Source (\S+)
+Value AS_Path (.+)
+Value Route_Tag (\S+)
+Value Neighbor_AS (\S+)
+Value Orig_Validation (\S+)
+Value Source_Class (\S+)
+Value Dest_Class (\S+)
+Value Add_Paths_Send (\S+)
+Value Fillup,Key VPRN_Imported (\S+)
+
+
+Start
+  ^\w:${NAME}(#|>)\s/show router bgp routes\s${IP_Prefix_Mask}\s${family}\sdetail -> Continue
+  ^.\w:${NAME}(#|>)\s/show router bgp routes\s${IP_Prefix_Mask}\s${family}\sdetail -> Continue
+  ^\s+BGP\sRouter\sID:${BGP_Router_ID}\s+AS:${AS}\s+Local\sAS:${Local_AS}
+  ^${Attributes}
+  ^Network\s+:\s${Network}
+  ^Nexthop\s+:\s+${Nexthop}
+  ^Route\sDist.\s+:\s${Route_Dist}\s+VPN\sLabel\s+:\s${VPN_Label}
+  ^Path\sId\s+:\s${Path_Id}
+  ^From\s+:\s+${From}
+  ^Res.\sNexthop\s+:\s${Res_Nexthop}
+  ^Local\sPref.\s+:\s+${Local_Pref}\s+Interface\sName\s:\s${Interface_Name}
+  ^Aggregator\sAS\s+:\s${Aggregator_AS}\s+Aggregator\s+:\s${Aggregator}
+  ^Atomic\sAggr.\s+:\s${Atomic_Aggr}\s+MED\s+:\s${MED}
+  ^AIGP\sMetric\s+:\s${AIGP_Metric}
+  ^Connector\s+:\s${Connector}
+  ^Community\s+:\s${Community}
+  ^Cluster\s+:\s${Cluster}
+  ^Originator\sId\s+:\s${Originator_Id}\s+Peer\sRouter\sId\s:\s${Peer_Router_Id}
+  ^Fwd\sClass\s+:\s${Fwd_Class}\s+Priority\s+:\s${Priority}
+  ^Flags\s+:\s${Flags}
+  ^Route\sSource\s+:\s${Route_Source}
+  ^AS-Path\s+:\s${AS_Path}
+  ^Route\sTag\s+:\s${Route_Tag}
+  ^Neighbor-AS\s+:\s${Neighbor_AS}
+  ^Orig\sValidation:\s${Orig_Validation}
+  ^Source\sClass\s+:\s${Source_Class}\s+Dest\sClass\s+:\s${Dest_Class}
+  ^Add\sPaths\sSend\s:\s${Add_Paths_Send} -> Continue.Record
+  ^Last\sModified\s+:\s\S+|VPRN\sImported\s+:\s+${VPRN_Imported} -> Continue.Record
+
+
+

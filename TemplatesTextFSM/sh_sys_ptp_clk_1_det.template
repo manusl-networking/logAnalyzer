@@ -1,0 +1,20 @@
+#Command: /show system ptp clock 1 detail
+#Description: This template is used to see ptp clock's configuration detail
+#Variables: Router_Name CLOCK_TYPE ADMIN_STATE FREQ_RECOVERY_STATE ADMIN_STATUS OPER_STATUS
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
+Value Filldown NAME (\S+)
+Value Required CLOCK_TYPE (\S+.\S+)
+Value ADMIN_STATE ([uU][pP]|[Dd][oO][wW][nN])
+Value FREQ_RECOVERY_STATE (\S+)
+Value ADMIN_STATUS ([uU][pP]|[Dd][oO][wW][nN])
+Value OPER_STATUS (\S+)
+
+Start
+  ^\w:${NAME}(#|>) /show system ptp clock 1 detail 
+  ^.\w:${NAME}(#|>) /show system ptp clock 1 detail 
+  ^Clock\sType\s+:\s${CLOCK_TYPE}\s+Admin\sState\s+:\s${ADMIN_STATE} -> Continue
+  ^Freq\sRecovery\sState\s+:\s${FREQ_RECOVERY_STATE} -> Continue
+  ^Admin\sStatus\s+:\s${ADMIN_STATUS}\s+Qualified\sFor\sUse\s+:\s${OPER_STATUS} -> Record
+  ^Admin\sStatus\s+:\s${ADMIN_STATUS}\s+Oper\sStatus\s+:\s${OPER_STATUS} -> Continue.Record
+
+EOF

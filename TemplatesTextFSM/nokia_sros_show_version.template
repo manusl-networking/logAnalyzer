@@ -1,0 +1,7 @@
+#Command: /show version
+Value NAME (\S+)
+Value Version (TiMOS\S+)
+
+Start
+  ^.?\w:${NAME}(#|>) show version
+  ^(.+)?${Version}

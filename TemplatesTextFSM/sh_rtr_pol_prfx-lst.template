@@ -1,0 +1,12 @@
+#Command: /show router policy prefix-list \S+
+#Description: This template is used to see policies prefix-list for loopback0 and system
+#Variables: Router_Name prefix_list prefix
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
+Value Filldown NAME (\S+)
+Value Required prefix_list (loopback0|system)
+Value prefix ([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}/[0-9]{1,2})
+
+Start
+  ^\w:${NAME}(#|>)\s/show\srouter\spolicy\sprefix-list\s${prefix_list}
+  ^.\w:${NAME}(#|>)\s/show\srouter\spolicy\sprefix-list\s${prefix_list}
+  ^prefix\s${prefix}\sexact -> Record

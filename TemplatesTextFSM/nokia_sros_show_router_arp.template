@@ -1,0 +1,13 @@
+#Command: /show router arp
+Value Filldown NAME (\S+)
+Value Filldown,Required Router (\S+)
+Value Required IP_Addr (\d+\.\d+\.\d+\.\d+)
+Value MAC_Addr (\S{2}:\S{2}:\S{2}:\S{2}:\S{2}:\S{2})
+Value Type (\S+)
+Value Interface (\S+)
+
+Start
+  ^\w:${NAME}(#|>) /show router arp
+  ^.?\w:${NAME}(#|>) /?show router arp
+  ^ARP Table .Router. ${Router}.
+  ^${IP_Addr}\s+${MAC_Addr}\s+\S+\s+${Type}\s+${Interface} -> Continue.Record

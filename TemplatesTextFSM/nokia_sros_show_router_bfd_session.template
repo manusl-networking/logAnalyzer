@@ -1,0 +1,16 @@
+#Command: /show router bfd session
+Value NAME (\S+)
+Value Required Session_ID (\S+)
+Value State ([uU][pP]|[Dd][oO]?[wW][nN])
+Value Required Rem (\d+\.\d+\.\d+\.\d+)
+Value Multipl (\d+)
+Value Tx_Intvl (\d+)
+Value Rx_Intvl (\d+)
+Value Protocols ((\S+\s)+)
+
+Start
+  ^\w:${NAME}(#|>) /show router bfd session
+  ^.?\w:${NAME}(#|>) /?show router bfd session
+  ^${Session_ID}\s+${State}\s+\S+\s+\S+
+  ^  ${Rem}\s+${Multipl}\s+${Tx_Intvl}\s+${Rx_Intvl}
+  ^  ${Protocols}\s+\S+\s+\S+\s+\S+ -> Continue.Record

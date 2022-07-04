@@ -1,0 +1,15 @@
+#Command: /show router bgp neighbor
+Value NAME (\S+)
+Value Peer (\d+\.\d+\.\d+\.\d+)
+Value Description (.+)
+Value Group (.+)
+Value State (\S+)
+Value Last_State (\S+)
+
+Start
+  ^\w:${NAME}(#|>) /show router bgp neighbor
+  ^.?\w:${NAME}(#|>) /?show router bgp neighbor
+  ^Peer\s+.\s${Peer}
+  ^Description\s+.\s${Description}
+  ^Group\s+.\s${Group}
+  ^State\s+.\s${State}\s+Last State\s+.\s${Last_State} -> Continue.Record

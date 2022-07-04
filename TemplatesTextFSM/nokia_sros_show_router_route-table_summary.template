@@ -1,0 +1,74 @@
+#Command: /show router route-table summary
+Value Filldown NAME (\S+)
+Value Required Router (\S+)
+Value Act_Aggregate (\d+)
+Value Av_Aggregate (\d+)
+Value Act_APR_ND (\d+)
+Value Av_APR_ND (\d+)
+Value Act_BGP (\d+)
+Value Av_BGP (\d+)
+Value Act_BGP_backup (\d+)
+Value Av_BGP_backup (\d+)
+Value Act_BGP_label (\d+)
+Value Av_BGP_label (\d+)
+Value Act_Direct (\d+)
+Value Av_Direct (\d+)
+Value Act_Host (\d+)
+Value Av_Host (\d+)
+Value Act_ISIS (\d+)
+Value Av_ISIS (\d+)
+Value Act_ISIS_LFA (\d+)
+Value Av_ISIS_LFA (\d+)
+Value Act_LDP (\d+)
+Value Av_LDP (\d+)
+Value Act_Managed (\d+)
+Value Av_Managed (\d+)
+Value Act_NAT (\d+)
+Value Av_NAT (\d+)
+Value Act_OSPF (\d+)
+Value Av_OSPF (\d+)
+Value Act_OSPF_LFA (\d+)
+Value Av_OSPF_LFA (\d+)
+Value Act_OSPFv3 (\d+)
+Value Av_OSPFv3 (\d+)
+Value Act_OSPFv3_LFA (\d+)
+Value Av_OSPFv3_LFA (\d+)
+Value Act_Periodic (\d+)
+Value Av_Periodic (\d+)
+Value Act_RIB_API (\d+)
+Value Av_RIB_API (\d+)
+Value Act_RIP (\d+)
+Value Av_RIP (\d+)
+Value Act_Static (\d+)
+Value Av_Static (\d+)
+Value Act_Sub_Mgmt (\d+)
+Value Av_Sub_Mgmt (\d+)
+Value Act_VPN_Leak (\d+)
+Value Av_VPN_Leak (\d+)
+
+Start
+  ^\w:${NAME}(#|>) /show router route-table summary
+  ^.?\w:${NAME}(#|>) /?show router route.table summary
+  ^Route Table Summary .Router. ${Router}.
+  ^Aggregate\s+${Act_Aggregate}\s+${Av_Aggregate}
+  ^ARP-ND\s+${Act_APR_ND}\s+${Av_APR_ND}
+  ^BGP\s+${Act_BGP}\s+${Av_BGP}
+  ^BGP \(Backup\)\s+${Act_BGP_backup}\s+${Av_BGP_backup}
+  ^BGP_LABEL\s+${Act_BGP_label}\s+${Av_BGP_label}
+  ^Direct\s+${Act_Direct}\s+${Av_Direct}
+  ^Host\s+${Act_Host}\s+${Av_Host}
+  ^ISIS\s+${Act_ISIS}\s+${Av_ISIS}
+  ^ISIS\s\(LFA\)\s+${Act_ISIS_LFA}\s+${Av_ISIS_LFA}
+  ^LDP\s+${Act_LDP}\s+${Av_LDP}
+  ^Managed\s+${Act_Managed}\s+${Av_Managed}
+  ^NAT\s+${Act_NAT}\s+${Av_NAT}
+  ^OSPF\s+${Act_OSPF}\s+${Av_OSPF}
+  ^OSPF\s\(LFA\)\s+${Act_OSPF_LFA}\s+${Av_OSPF_LFA}
+  ^OSPFv3\s+${Act_OSPFv3}\s+${Av_OSPFv3}
+  ^OSPFv3\s\(LFA\)\s+${Act_OSPFv3_LFA}\s+${Av_OSPFv3_LFA}
+  ^Periodic\s+${Act_Periodic}\s+${Av_Periodic}
+  ^RIB.API\s+${Act_RIB_API}\s+${Av_RIB_API}
+  ^RIP\s+${Act_RIP}\s+${Av_RIP}
+  ^Static\s+${Act_Static}\s+${Av_Static}
+  ^Sub\sMgmt\s+${Act_Sub_Mgmt}\s+${Av_Sub_Mgmt}
+  ^VPN\sLeak\s+${Act_VPN_Leak}\s+${Av_VPN_Leak}

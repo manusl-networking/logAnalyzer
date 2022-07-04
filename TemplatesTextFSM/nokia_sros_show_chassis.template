@@ -1,0 +1,10 @@
+#Command: /show chassis
+Value NAME (\S+)
+Value Type (.+)
+Value MAC (\S+)
+
+Start
+  ^.?\w:${NAME}(#|>) /show chassis
+  ^\s+Name\s+:\s+${NAME}
+  ^\s+Type\s+:\s+${Type}
+  ^\s+Base MAC address\s+:\s+${MAC}

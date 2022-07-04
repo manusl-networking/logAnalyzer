@@ -1,0 +1,13 @@
+#Command: /show router \S+ ospf neighbor
+#Interface-Name, Rtr Id, State
+Value Filldown NAME (\S+)
+Value Filldown Serv (\S+)
+Value If_Name (.+)
+Value Rtr_Id (\d+\.\d+\.\d+\.\d+)
+Value Required State (\S+)
+
+Start
+  ^\w:${NAME}(#|>) /show router \S+ ospf neighbor
+  ^.?\w:${NAME}(#|>) /?show router \S+ ospf neighbor
+  ^Rtr ${Serv}.+
+  ^${If_Name}\s+${Rtr_Id}\s+${State}.+ -> Continue.Record

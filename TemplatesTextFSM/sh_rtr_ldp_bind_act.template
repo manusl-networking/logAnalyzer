@@ -1,0 +1,19 @@
+#Command: /show router ldp bindings active
+Value Filldown NAME (\S+)
+Value Filldown,Required LDP (.+)
+Value Required Prefix (\d+\.\d+\.\d+\.\d+/\d+)
+Value Required Op (\w+)
+Value IngLbl (\d\w+)
+Value EgrLbl (\w+)
+Value EgrNextHop (\d+\.\d+\.\d+\.\d+)
+Value EgrIf_LspId (.+)
+ 
+Start
+  ^\w:${NAME}(#|>) /show router ldp bindings active
+  ^.?\w:${NAME}(#|>) /?show router ldp bindings active
+  ^LDP ${LDP}
+  ^${Prefix}\s+${Op}
+  ^  .. +${EgrLbl}
+  ^${IngLbl}\s+${EgrLbl}
+  ^${EgrNextHop}\s+${EgrIf_LspId}
+  ^\s+ -> Continue.Record

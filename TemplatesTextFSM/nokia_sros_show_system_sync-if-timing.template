@@ -1,7 +1,4 @@
 #Command: /show system sync-if-timing
-#Description: This template is used to see the system sync if timing
-#Variables: Router_Name Status_CPM Ref_Input_Mode Quality_Level_Selection Ref_Select Sys_Quality_Level Ref_Order Ref_Order Ref_Input Admin_Status Rx_Quality_Level Qualified_For_Use Selected_For_Use Source_Port Source_PTP_Clock
-#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
 Value Filldown NAME (\S+)
 Value Status_CPM (\S+\s\S+|\S+)
 Value Ref_Input_Mode (\S+)
@@ -31,9 +28,9 @@ Start
   ^\s+Quality\sLevel\sSelection\s+:\s${Quality_Level_Selection}
   ^\s+Reference\sSelected\s+:\s${Ref_Select}
   ^\s+System\sQuality\sLevel\s+:\s${Sys_Quality_Level}
-  ^Current\sFrequency\sOffset\s.ppm.\s:\s${Current_Freq_Offset_ppm}
-  ^Input\sMinimum\sQuality\sLevel\s+:\s${Input_Minimum_Quality_Level}
-  ^Wait\sto\sRestore\sTimer\s+:\s${WaitToRestore_Timer}
+  ^\s+Current\sFrequency\sOffset\s.ppm.\s:\s${Current_Freq_Offset_ppm}
+  ^\s+Input\sMinimum\sQuality\sLevel\s+:\s${Input_Minimum_Quality_Level}
+  ^\s+Wait\sto\sRestore\sTimer\s+:\s${WaitToRestore_Timer}
   ^Reference\sOrder\s+:\s${Ref_Order}
   ^${Ref_Input}\sReference\sInput -> Continue
   ^Reference\s${Ref_Input} -> Continue

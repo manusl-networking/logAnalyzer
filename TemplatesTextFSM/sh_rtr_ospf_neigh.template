@@ -1,0 +1,26 @@
+#Command: /show router ospf |\d+ neighbor
+#Description: This template is used to see OSPF's neighbor in all instance if you invoke instance from command
+#Variables: Router_Name INSTANCE INTERFACE_NAME RTR_ID STATE PRI RETXQ TTL AREA_ID
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
+Value Filldown NAME (\S+)
+Value Filldown INSTANCE (\S+)
+Value Required INTERFACE_NAME (\S+)
+Value Required RTR_ID ([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})
+Value Required STATE (\S+)
+Value Required PRI ([0-9]{1,10})
+Value Required RETXQ ([0-9]{1,10})
+Value Required TTL ([0-9]{1,10})
+Value AREA_ID ([0][.][0][.][0-9]{1,3}[.][0-9]{1,3})
+
+Start
+  ^\w:${NAME}(#|>) /show router ospf neighbor
+  ^.\w:${NAME}(#|>) /show router ospf neighbor 
+  ^\w:${NAME}(#|>) /show router ospf\s${INSTANCE} neighbor
+  ^.\w:${NAME}(#|>) /show router ospf\s${INSTANCE} neighbor
+  ^Rtr Base OSPFv2 Instance\s${INSTANCE} Neighbors
+  ^OSPFv2 .${INSTANCE}. all neighbors
+  ^${INTERFACE_NAME}\s+${RTR_ID}\s+${STATE}\s+${PRI}\s+${RETXQ}\s+${TTL} -> Continue
+  ^  ${INTERFACE_NAME}\s+${RTR_ID}\s+${STATE}\s+${PRI}\s+${RETXQ}\s+${TTL} -> Continue
+  ^    ${INTERFACE_NAME}\s+${RTR_ID}\s+${STATE}\s+${PRI}\s+${RETXQ}\s+${TTL} -> Continue
+  ^\s+${AREA_ID} -> Record
+

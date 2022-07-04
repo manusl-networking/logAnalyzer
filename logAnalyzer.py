@@ -375,9 +375,10 @@ def constructExcel(df_final, count_dif, searchMajor, folderLog):#Sort the data a
 		dfMajor = searchMajor[template]
 
 		sheet_name = template.replace('nokia_sros_','')
-		sheet_name = template.replace('.template','')
-		sheet_name = template.replace('.ttp','')
-		sheet_name = template.replace('.','_')
+		sheet_name = sheet_name.replace('.template','')
+		sheet_name = sheet_name.replace('_template','')
+		sheet_name = sheet_name.replace('.ttp','')
+		sheet_name = sheet_name.replace('.','_')
 
 		if len(sheet_name) > 31:
 			sheet_name = sheet_name[:31]

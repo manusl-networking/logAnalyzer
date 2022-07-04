@@ -1,0 +1,14 @@
+#Command: /show router mpls lsp
+Value NAME (\S+)
+Value Required LSP_name (\S+)
+Value Required Adm ([uU][pP]|[Dd][oO]?[wW][nN])
+Value Required Opr ([uU][pP]|[Dd][oO]?[wW][nN])
+Value To (\d+\.\d+\.\d+\.\d+)
+
+
+Start
+  ^\w:${NAME}(#|>) /show router mpls lsp
+  ^.?\w:${NAME}(#|>) /?show router mpls lsp
+  ^${LSP_name}\s+${To}\s+\S+\s+\S+\s+${Adm}\s+${Opr} -> Continue.Record
+  ^${LSP_name}\s+\S+\s+\S+\s+${Adm}\s+${Opr}
+  ^\s+${To}.+ -> Continue.Record

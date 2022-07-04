@@ -1,0 +1,14 @@
+#Command: /show router isis \S+ adjacency
+Value NAME (\S+)
+Value Required,Filldown Instance (\S+)
+Value Required System_ID (\S+)
+Value Usage (\S+)
+Value State ([uU][pP]|[Dd][oO]?[wW][nN])
+Value Hold (\S+)
+Value Interface (\S+)
+
+Start
+  ^\w:${NAME}(#|>) /show router isis \S+ adjacency
+  ^.?\w:${NAME}(#|>) /?show router isis \S+ adjacency
+  ^Rtr.+Instance\s${Instance}.+
+  ^${System_ID}\s+${Usage}\s+${State}\s+${Hold}\s+${Interface}(\s+\S+)? -> Continue.Record

@@ -1,3 +1,9 @@
+[3.1.1 - 2022-07-04]
+- Parameter `-json` with default = yes.
+- Updates on when platform is windows (equal to win64 or win32), to handle with paths correctly:
+    - In function `readLog()`: update of listContent.
+    - In function `main()`: condition to replace `/` in templateFolder
+
 [3.1.0 - 2022-07-03]
 
 - The folder of the templates can now be specified by the parameter `--templateFolder`. The default is `TemplatesTextFSM/`.

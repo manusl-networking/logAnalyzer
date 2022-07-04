@@ -1,0 +1,34 @@
+#Command: /show system ptp | /show system ptp clock csm
+#Description: This template is used to see ptp's phase configuration 
+#Variables: Router_Name Clock_Type PTP_Profile Admin_State Oper_State Clock_id Clock_Class PTP_Recovery_State Last_Changed Frequency_Offset GM_Clock_Id GM_Clock_Class Frequency_Traceable Time_Traceable Time_Source
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
+Value Filldown NAME (\S+)
+Value Required Clock_Type (\S+.\S+|\S+)
+Value PTP_Profile (\S+\s\S+)
+Value Admin_State ([uU][pP]|[Dd][oO][wW][nN])
+Value Oper_State ([uU][pP]|[Dd][oO][wW][nN])
+Value Clock_id (\S+)
+Value Clock_Class (\S+\s.\S+.|\S+)
+Value PTP_Recovery_State (\S+)
+Value Last_Changed (\S+.\S+.\S+\s\S+.\S+.\S+)
+Value Required Frequency_Offset (\S+\s\S+)
+Value GM_Clock_Id (\S+)
+Value GM_Clock_Class (\S+)
+Value Frequency_Traceable (\S+)
+Value Time_Traceable (\S+)
+Value Time_Source (\S+)
+
+Start
+  ^\w:${NAME}(#|>)\s/show\ssystem\sptp
+  ^.\w:${NAME}(#|>)\s/show\ssystem\sptp
+  ^\w:${NAME}(#|>)\s/show\ssystem\sptp\sclock\scsm
+  ^.\w:${NAME}(#|>)\s/show\ssystem\sptp\sclock\scsm
+  ^Clock\sType\s+:\s${Clock_Type}\s+PTP\sProfile\s+:\s${PTP_Profile}
+  ^Admin\sState\s+:\s${Admin_State}\s+Oper\sState\s+:\s${Oper_State}
+  ^Clock\sId\s+:\s${Clock_id}\s+Clock\sClass\s+:\s${Clock_Class}
+  ^PTP\sRecovery\sState:\s${PTP_Recovery_State}\s+Last\sChanged\s+:\s${Last_Changed}
+  ^Frequency\sOffset\s+:\s${Frequency_Offset}
+  ^GM\sClock\sId\s+:\s${GM_Clock_Id}\s+GM\sClock\sClass\s+:\s${GM_Clock_Class}
+  ^Frequency\sTraceable\s:\s${Frequency_Traceable}
+  ^Time\sTraceable\s+:\s${Time_Traceable}
+  ^Time\sSource\s+:\s${Time_Source} -> Record

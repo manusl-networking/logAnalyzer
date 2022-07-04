@@ -1,0 +1,7 @@
+<doc>
+Command: /show service sap-using
+Columns: PortId,SvcId,InQos,InFilter,EgQos,EgFilter,Adm,Opr
+</doc>
+<group name = 'sap-using'>
+{{ PortId }} {{ SvcId | DIGIT }} {{ InQos }} {{ InFilter }} {{ EgQos }} {{ EgFilter }} {{ Adm }} {{ Opr }}
+</group>

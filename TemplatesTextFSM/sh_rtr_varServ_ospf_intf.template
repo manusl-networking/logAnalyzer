@@ -1,0 +1,16 @@
+#Command: /show router \S+ ospf interface
+#If Name, Designated Rtr, Bkup Desig Rtr, Oper
+Value Filldown NAME (\S+)
+Value Filldown Serv (\S+)
+Value If_Name (.+)
+Value Designated_Rtr (\d+\.\d+\.\d+\.\d+)
+Value Bkup_Desig_Rtr (\d+\.\d+\.\d+\.\d+)
+Value Required Oper (\S+)
+
+Start
+  ^\w:${NAME}(#|>) /show router \S+ ospf interface
+  ^.?\w:${NAME}(#|>) /?show router \S+ ospf interface
+  ^Rtr ${Serv}.+
+  ^${If_Name}\s+\d+\.\d+\.\d+\.\d+\s+${Designated_Rtr}\s+${Bkup_Desig_Rtr}\s+\S+\s+${Oper} -> Continue.Record
+
+

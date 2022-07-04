@@ -1,0 +1,13 @@
+#Command: /show router isis \S+ interface
+Value NAME (\S+)
+Value Required Interface (\S+)
+Value Required,Filldown Instance (\S+)
+Value Level (\S+)
+Value Oper_state ([uU][pP]|[Dd][oO]?[wW][nN])
+Value L1_L2_Metric (\S+/\S+)
+
+Start
+  ^\w:${NAME}(#|>) /show router isis \S+ interface
+  ^.?\w:${NAME}(#|>) /?show router isis \S+ interface
+  ^Rtr.+Instance\s${Instance}.+
+  ^${Interface}\s+${Level}\s+\S+\s+${Oper_state}\s+${L1_L2_Metric}(\s+\S+)? -> Continue.Record

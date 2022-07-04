@@ -1,0 +1,21 @@
+#Command /show system cpu
+#Variables Router_Name CPU_Total_Time_uSec CPU_Usage_Total CPU_Idle_uSec CPU_Idle CPU_Usage_uSec CPU_Usage Port Busiest_Core_Utilization_uSec Busiest_Core_Utilization_Usage
+#Autor Manuel Saldivar manuelsaldivar@outlook.com.ar
+Value Filldown NAME (\S+)
+Value Required CPU_Total_Time_uSec (\S+)
+Value Required CPU_Usage_Total (\S+)
+Value Required CPU_Idle_uSec (\S+)
+Value Required CPU_Idle (\S+)
+Value Required CPU_Usage_uSec (\S+)
+Value Required CPU_Usage (\S+)
+Value Required Busiest_Core_Utilization_uSec (\S+)
+Value Required Busiest_Core_Utilization_Usage (\S+)
+
+Start
+  ^\w:${NAME}(#|>) /show system cpu
+  ^.\w:${NAME}(#|>) /show system cpu
+  ^Total\s+${CPU_Total_Time_uSec}\s+${CPU_Usage_Total}
+  ^\s+Idle\s+${CPU_Idle_uSec}\s+${CPU_Idle}
+  ^\s+Usage\s+${CPU_Usage_uSec}\s+${CPU_Usage}
+  ^Busiest\s+Core\s+Utilization\s+${Busiest_Core_Utilization_uSec}\s+${Busiest_Core_Utilization_Usage} -> Record
+

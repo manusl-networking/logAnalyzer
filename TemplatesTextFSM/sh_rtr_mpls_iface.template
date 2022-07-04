@@ -1,0 +1,10 @@
+#Command: /show router mpls interface
+Value NAME (\S+)
+Value Required Interface (\S+)
+Value Required Adm ([uU][pP]|[Dd][oO][wW][nN])
+Value Required Opr_v4v6 (\S+)
+
+Start
+  ^\w:${NAME}(#|>) /show router mpls interface
+  ^.?\w:${NAME}(#|>) /?show router mpls interface
+  ^${Interface}\s+\S+\s+${Adm}\s+${Opr_v4v6}(\s+\S+)? -> Continue.Record

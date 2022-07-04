@@ -1,0 +1,51 @@
+#Command: /oam svc-ping \S+ service svc \S+ \S+
+#Description: This template is used to see the result of ping over sdp tunnel
+#Variables: Router_Name Service_ID_INIT Type_Local Type_Remote Admin_State_Local Admin_State_Remoto Oper_State_Local Admin_State_Remoto Service_MTU_Local Service_MTU_Remoto IP_Interface_State Actual_IP_Addr_Local Actual_IP_Addr_Remoto SDP_Path_Used_Local SDP_ID_Local SDP_ID_Remoto SDP_Admin_State_Local SDP_Admin_State_Remoto SDP_Oper_State_Local SDP_Oper_State_Remoto Binding_VC_ID_Local Binding_VC_ID_Remoto Request_Result
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
+Value Filldown NAME (\S+)
+Value Key,Required Service_ID_INIT ([0-9]{1,15})
+Value Type_Local (\S+)
+Value Type_Remote (\S+)
+Value Admin_State_Local ([uU][pP]|[Dd][oO][wW][nN])
+Value Admin_State_Remoto (\S+)
+Value Oper_State_Local ([uU][pP]|[Dd][oO][wW][nN])
+Value Oper_State_Remoto (\S+)
+Value Service_MTU_Local ([0-9]{1,5})
+Value Service_MTU_Remoto (\S+)
+Value IP_Interface_State ([uU][pP]|[Dd][oO][wW][nN])
+Value Actual_IP_Addr_Local ([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})
+Value Actual_IP_Addr_Remoto ([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})
+Value SDP_Path_Used_Local (\S+)
+Value SDP_Path_Used_Remoto (\S+)
+Value SDP_ID_Local (\S+)
+Value SDP_ID_Remoto (\S+)
+Value SDP_Admin_State_Local ([uU][pP]|[Dd][oO][wW][nN])
+Value SDP_Admin_State_Remoto (\S+)
+Value SDP_Oper_State_Local ([uU][pP]|[Dd][oO][wW][nN])
+Value SDP_Oper_State_Remoto (\S+)
+Value Binding_VC_ID_Local ([0-9]{1,15})
+Value Binding_VC_ID_Remoto (\S+)
+Value Request_Result (.+)
+
+Start
+  ^\w:${NAME}(#|>) oam svc-ping [0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3} service \S+ local-sdp remote-sdp 
+  ^.\w:${NAME}(#|>) oam svc-ping [0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3} service \S+ local-sdp remote-sdp 
+  ^Service-ID:\s${Service_ID_INIT}
+  ^\s+Type:\s+${Type_Local}\s+${Type_Remote}
+  ^\s+Admin\sState:\s+${Admin_State_Local}\s+${Admin_State_Remoto} -> Continue
+  ^==>\sAdmin\sState:\s+${Admin_State_Local}\s+${Admin_State_Remoto} -> Continue
+  ^\s+Oper\sState:\s+${Oper_State_Local}\s+${Oper_State_Remoto} -> Continue
+  ^==>\sOper\sState:\s+${Oper_State_Local}\s+${Oper_State_Remoto} -> Continue
+  ^\s+Service-MTU:\s+${Service_MTU_Local}\s+${Service_MTU_Remoto}
+  ^\s+IP\sInterface\sState:\s+${IP_Interface_State}
+  ^\s+Actual\sIP\sAddr:\s+${Actual_IP_Addr_Local}\s+${Actual_IP_Addr_Remoto}
+  ^\s+SDP\sPath\sUsed:\s+${SDP_Path_Used_Local}\s+${SDP_Path_Used_Remoto}
+  ^==>\sSDP\sPath\sUsed:\s+${SDP_Path_Used_Local}\s+${SDP_Path_Used_Remoto}
+  ^\s+SDP-ID:\s+${SDP_ID_Local}\s+${SDP_ID_Remoto}
+  ^\s+Admin\sState:\s+${SDP_Admin_State_Local}\s+${SDP_Admin_State_Remoto}
+  ^==>\sAdmin\sState:\s+${SDP_Admin_State_Local}\s+${SDP_Admin_State_Remoto}
+  ^\s+Oper\sState:\s+${SDP_Oper_State_Local}\s+${SDP_Oper_State_Remoto}
+  ^==>\sOper\sState:\s+${SDP_Oper_State_Local}\s+${SDP_Oper_State_Remoto}
+  ^\s+Binding\sVC\sID:\s+${Binding_VC_ID_Local}\s+${Binding_VC_ID_Remoto}
+  ^Request\sResult:\s+${Request_Result} -> Record
+

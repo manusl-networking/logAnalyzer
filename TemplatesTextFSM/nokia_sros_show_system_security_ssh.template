@@ -1,0 +1,21 @@
+#Command: /show system security ssh
+#Description: This template is used to see the state of ssh protocol
+#Variables: Router_Name Administrative_State Operational_State Preserve_Key Key_re_exchange SSH_Protocol_Version_1 SSH_Protocol_Version_2
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
+Value NAME (\S+)
+Value Required Administrative_State (\S+)
+Value Operational_State (\S+)
+Value Preserve_Key (\S+)
+Value Key_re_exchange (\w+\s\S+\s.\s\w+\s\S+)
+Value SSH_Protocol_Version_1 (\S+)
+Value Required SSH_Protocol_Version_2 (\S+)
+
+Start
+  ^\w:${NAME}(#|>) /show system security ssh
+  ^.\w:${NAME}(#|>) /show system security ssh
+  ^Administrative\sState\s+:\s${Administrative_State}
+  ^Operational\sState\s+:\s${Operational_State}
+  ^Preserve\sKey\s+:\s${Preserve_Key}
+  ^Key-re-exchange\s+:\s${Key_re_exchange}
+  ^SSH\sProtocol\sVersion\s1\s+:\s${SSH_Protocol_Version_1}
+  ^SSH\sProtocol\sVersion\s2\s+:\s${SSH_Protocol_Version_2} -> Record

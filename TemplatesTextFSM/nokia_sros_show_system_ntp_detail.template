@@ -1,0 +1,16 @@
+#Command: /show system ntp detail
+Value NAME (\S+)
+Value Configured (\S+)
+Value Stratum (\S+)
+Value Admin_Status ([uU][pP]|[Dd][oO]?[wW][nN])
+Value Oper_Status ([uU][pP]|[Dd][oO]?[wW][nN])
+Value Clock_Source (\S+)
+Value Auth_check (\S+)
+
+Start
+  ^\w:${NAME}(#|>) /show system ntp detail
+  ^.?\w:${NAME}(#|>) /?show system ntp detail
+  ^Configured\s+.\s+${Configured}\s+Stratum\s+.\s+${Stratum}
+  ^Admin Status\s+.\s${Admin_Status}\s+Oper Status\s+.\s${Oper_Status}
+  ^Clock Source\s+.\s+${Clock_Source}
+  ^Auth Check\s+.\s+${Auth_check}

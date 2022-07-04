@@ -1,0 +1,11 @@
+#Command: /show router policy community
+#Description: This template is used to see policies seamless redistribute_loopback0 export_to_BGP_areaXXXX aigpImportToBGPxxx export_to_BGP_LU export_loopback0 this comman was created for specific configuration
+#Variables: Router_Name policy
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
+Value Filldown NAME (\S+)
+Value Required policy (seamless.+|redistribute.loopback0|export_to_BGP_area.+|aigpImportToBGP.+|export.to.BGP.LU|export.loopback0)
+
+Start
+  ^\w:${NAME}(#|>) /show router policy community
+  ^.\w:${NAME}(#|>) /show router policy community
+  ^${policy} -> Record

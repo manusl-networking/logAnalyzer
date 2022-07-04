@@ -1,3 +1,21 @@
+[3.1.1 - 2022-07-04]
+- Parameter `-json` with default = yes.
+- Updates on when platform is windows (equal to win64 or win32), to handle with paths correctly:
+    - In function `readLog()`: update of listContent.
+    - In function `main()`: condition to replace `/` in templateFolder
+
+[3.1.0 - 2022-07-03]
+
+- The folder of the templates can now be specified by the parameter `--templateFolder`. The default is `TemplatesTextFSM/`.
+- The file `--csvTemplate` is now optional. If omitted, then all the templates under the folder `--templateFolder` will be considered for parsing.
+- Templates can be of type `textFSM` or `ttp`. To choose, use the parameter `-te/--templateEngine`.
+    - Be sure to point to the correct folder of templates, when changing the engine.
+
+
+[3.0.0 - 2022-07-01]
+
+- ReWrite of functions `readTemplate()` , `readLog()` and `parseResults()`.
+
 [2.0.0 - 2022-06-24]
 
 - Starting major version `2.0.0`.

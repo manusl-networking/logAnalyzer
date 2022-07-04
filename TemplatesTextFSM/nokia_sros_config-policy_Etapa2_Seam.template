@@ -1,0 +1,52 @@
+#Command: /configure router policy-options
+#Description: This template is used to find out seamless policy configuration, this template was created for a specific configuration
+#Variables: Router_Name Prefix-list Prefix Community_Inter Community_Area 
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
+Value Filldown NAME (\S+)
+Value prefix_list (\S+)
+Value prefix ([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})
+Value communityINTER (\S+.\S+)
+Value communityarea_n (\S+.\S+)
+Value policy_statement (\S+)
+Value description (\S+|\S+\s\S+\s\S+\s\S+|\S+\s\S+\s\S+|\S+\s\S+\s\S+\s\S+\s\S+\s\S+)
+Value entry (\S+)
+Value protocol (\S+)
+Value cluster-id (\S+)
+Value community (\S+|\S+\s\S+)
+Value family (\S+)
+Value action (\S+)
+Value aigp_metric (\S+)
+Value community_add (\S+)
+Value next-hop-self (next-hop-self)
+Value default-action (\S+)
+
+Start
+  ^\w:${NAME}(#|>) /configure router policy-options
+  ^.\w:${NAME}(#|>) /configure router policy-options
+  ^\s+begin
+  ^\s+prefix-list\s${prefix_list}
+  ^\s+prefix\s${prefix}/32\sexact
+  ^\s+exit
+  ^\s+community\s"seamless_INTER"\smembers\s${communityINTER}
+  ^\s+community\s"seamless_area_[0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}"\smembers\s${communityarea_n}
+  ^#IP system del ABR
+  ^\s+policy-statement\s${policy_statement} -> Continue
+  ^\s+description\s${description} -> Continue
+  ^\s+entry\s${entry} -> Continue
+  ^\s+description\s${description} -> Continue
+  ^\s+from
+  ^\s+protocol\s${protocol} -> Continue
+  ^\s+cluster-id\s{cluster-id} -> Continue
+  ^\s+community\s{community} -> Continue
+  ^\s+family\s${family} -> Continue
+  ^\s+exit
+  ^\s+action\s${action} -> Continue
+  ^\s+aigp-metric\s${aigp_metric} -> Continue
+  ^\s+exit
+  ^\s+community\sadd\s${community_add} -> Continue
+  ^\s+{next-hop-self} -> Continue
+  ^\s+default-action\s{default-action} -> Continue.Record
+
+
+
+

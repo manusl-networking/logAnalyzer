@@ -1,0 +1,14 @@
+#Command: /show router mpls path
+Value NAME (\S+)
+Value Filldown Path_name (\S+)
+Value Filldown,Required Admin ([uU][pP]|[Dd][oO][wW][nN])
+Value Required Hop_index ([Nn][oO]\s[Hh][oO][Pp][Ss]|\d+)
+Value Required Strict_Loose (\S+)
+
+Start
+  ^\w:${NAME}(#|>) /show router mpls path
+  ^.?\w:${NAME}(#|>) /?show router mpls path
+  ^${Path_name}$$ -> Continue.Record
+  ^${Path_name}\s+${Admin}\s+\S+ -> Continue.Record
+  ^\s+${Admin}\s+${Hop_index}\s+\S+\s+${Strict_Loose} -> Continue.Record
+  ^${Hop_index}\s+\S+\s+${Strict_Loose} -> Continue.Record

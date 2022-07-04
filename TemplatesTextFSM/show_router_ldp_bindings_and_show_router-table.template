@@ -1,0 +1,13 @@
+#Command: /show router ldp bindings | match No. | /show router route-table | match No.
+#Description: This template is used to see the number of routes and active ldp bindings
+#Variables: Router_Name NO_PREFIX_ACTIVE_BINDINGS NO_OF_ROUTES
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
+Value Fillup NAME (\S+)
+Value NO_PREFIX_ACTIVE_BINDINGS ([0-9]{0,12})
+Value NO_OF_ROUTES ([0-9]{0,12})
+
+Start
+  ^\w:${NAME}(#|>) /show router route-table | match No 
+  ^.\w:${NAME}(#|>) /show router route-table | match No 
+  ^No.\sof\sPrefix\sActive\sBindings:\s${NO_PREFIX_ACTIVE_BINDINGS}
+  ^No.\sof\sRoutes:\s${NO_OF_ROUTES} <- Record

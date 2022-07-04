@@ -1,0 +1,19 @@
+#Command: /show router |\S+ route-table
+Value Filldown NAME (\S+)
+Value Filldown Service ([0-9]{1,12}|Base)
+Value Required Dest_Prefix ([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}/[0-9]{1,2}\s+\S+|[0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}/[0-9]{1,2})
+Value Type (\S+)
+Value Proto (\S+\s\S+|S+)
+Value Pref (\S+)
+Value Required Next_Hop ([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}\s+.\S+.|[0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}|\S+)
+Value Fillup NO_OF_ROUTES (\S+)
+
+Start
+  ^\w:${NAME}(#|>)\s/show\srouter\s|\S+\sroute-table -> Continue
+  ^.\w:${NAME}(#|>)\s/show\srouter\s|\S+\sroute-table -> Continue
+  ^Route\sTable\s.(Service:|Router:)\s${Service}. -> Continue.Record
+  ^${Dest_Prefix}\s+${Type}\s+${Proto}\s+\S+\s+${Pref}
+  ^\s+${Next_Hop} -> Continue.Record
+  ^No.\sof\sRoutes:\s${NO_OF_ROUTES} -> Record
+
+

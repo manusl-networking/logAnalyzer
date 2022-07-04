@@ -1,0 +1,12 @@
+#Command: /show system ntp peers
+#Description: This template is used to see ntp's clients 
+#Variables: Router_Name ClientsNTP DateConection
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
+Value Filldown NAME (\S+)
+Value Required ClientsNTP ([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})
+Value DateConection (\S+)
+
+Start
+  ^\w:${NAME}(#|>) /show system ntp peers
+  ^.\w:${NAME}(#|>) /show system ntp peers
+  ^\s+${ClientsNTP}\s+${DateConection}\s\S+ -> Continue.Record

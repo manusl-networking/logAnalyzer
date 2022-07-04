@@ -1,0 +1,15 @@
+#Command: /show router mpls.labels label.range
+Value NAME (\S+)
+Value Filldown Label (\S+)
+Value Type (\S+)
+Value Required Start_Label (\d+)
+Value End_Label (\d+)
+Value Aging (\S+)
+Value Available (\S+)
+Value Total (\S+)
+
+Start
+  ^\w:${NAME}(#|>) /show router mpls.labels label.range
+  ^.?\w:${NAME}(#|>) /?show router mpls.labels label.range
+  ^${Label}\s+${Start_Label}\s+${End_Label}\s+${Aging}\s+${Available}\s+${Total} -> Continue.Record
+  ^\s{4}${Type}\s+${Start_Label}\s+${End_Label}\s+${Aging}\s+${Available}\s+${Total} -> Continue.Record

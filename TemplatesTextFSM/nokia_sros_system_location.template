@@ -1,0 +1,11 @@
+#Command: /show system information
+#Description: This template is used to see system location
+#Variables: Router_Name Location
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
+Value Fillup NAME (\S+)
+Value Required Location (\S+|\S+\s\S+|\S+\s\S+\s\S+|\S+\s\S+\s\S+\s\S+|\S+\s\S+\s\S+\s\S+\s\S+)
+
+Start
+  ^\w:${NAME}(#|>) /show system information
+  ^.\w:${NAME}(#|>) /show system information
+  ^System Location\s+:\s+${Location}

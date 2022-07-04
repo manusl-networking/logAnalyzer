@@ -1,0 +1,13 @@
+<doc>
+Command: /show router interface
+Columns: IntName,IP,Adm,OprV4,OprV6,Mode,Port
+</doc>
+
+<vars>
+UPDOWN = "up|Up|down|Down"
+</vars>
+
+<group name = 'interfaces'>
+{{ IntName }} {{ Adm | re("UPDOWN") }} {{ OprV4 | re("UPDOWN") }}/{{ OprV6 | re("UPDOWN") }} {{ Mode }} {{ Port }}
+   {{ IP }} {{ pfxState }}
+</group>

@@ -1,0 +1,13 @@
+#Command: /show redundancy synchronization
+# Standby Status, Boot/Config Sync Mode, Boot/Config Sync Status
+Value NAME (\S+)
+Value Standby_Status (.+)
+Value Boot_Config_Sync_Mode (.+)
+Value Boot_Config_Sync_Status (.+)
+
+Start
+  ^.?\w:${NAME}(#|>) /show redundancy synchronization
+  ^.?\w:${NAME}(#|>) /?show redundancy synchronization
+  ^Standby Status\s+.\s+${Standby_Status}
+  ^Boot.Config Sync Mode\s+:\s+${Boot_Config_Sync_Mode}
+  ^Boot.Config Sync Status\s+:+\s+${Boot_Config_Sync_Status}

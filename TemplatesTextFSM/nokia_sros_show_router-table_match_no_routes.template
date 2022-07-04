@@ -1,0 +1,14 @@
+#Command: /show router route-table | match No.
+#Description: This template is used to see the number of base routes
+#Variables: Router_Name NO_OF_ROUTES
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
+Value Filldown NAME (\S+)
+Value Required command (router\sroute-table)
+Value Required NO_OF_ROUTES ([0-9]{0,10})
+
+Start
+  ^\w:${NAME}(#|>) /show router route-table | match No.
+  ^.\w:${NAME}(#|>) /show router route-table | match No.
+  ^/show\s${command} | match No. 
+  ^No.\sof\sRoutes:\s${NO_OF_ROUTES} -> Record
+

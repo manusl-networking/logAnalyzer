@@ -1,0 +1,10 @@
+#Command: /show router ldp interface
+Value NAME (\S+)
+Value Required Interface (\S+)
+Value Required Adm ([uU][pP]|[Dd][oO]?[wW]?[nN])
+Value Required Opr ([uU][pP]|[Dd][oO]?[wW]?[nN])
+
+Start
+  ^\w:${NAME}(#|>) /show router ldp interface
+  ^.?\w:${NAME}(#|>) /?show router ldp interface
+  ^${Interface}\s+${Adm}.${Opr} -> Continue.Record

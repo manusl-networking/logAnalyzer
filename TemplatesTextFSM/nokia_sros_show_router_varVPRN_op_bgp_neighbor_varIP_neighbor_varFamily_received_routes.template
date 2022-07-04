@@ -1,0 +1,30 @@
+#Command: /show router |\d+ bgp neighbor \S+ \S+ received-routes
+#Variables Router_Name VPRN IP_neighbor family BGP_Router_ID AS Local_AS Flag Network LocalPref MED Next_Hop Path_id Label As_Path
+#Autor Manuel Saldivar manuelsaldivar@outlook.com.ar
+Value Filldown NAME (\S+)
+Value Key,Filldown VPRN (\s|\S+)
+Value Filldown IP_neighbor ([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})
+Value Filldown family (\S+)
+Value Filldown BGP_Router_ID ([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})
+Value Filldown AS (\S+)
+Value Filldown Local_AS (\S+)
+Value Required Flag (.+|.+\S+|\S+)
+Value Required Network ([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}/[0-9]{1,2}\s+\S+|[0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}/[0-9]{1,2}|\S+.\S+.[0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}/[0-9]{1,2})
+Value LocalPref (\S+)
+Value MED (\S+)
+Value Required Next_Hop ([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}\s+.\S+.|[0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}|\S+)
+Value Path_id (\S+)
+Value Label (\S+)
+Value As_Path (\S+\s\S+|\S+)
+
+Start
+  ^\w:${NAME}(#|>)\s/show router ${VPRN} bgp neighbor ${IP_neighbor} ${family} received-routes -> Continue
+  ^.\w:${NAME}(#|>)\s/show router ${VPRN} bgp neighbor ${IP_neighbor} ${family} received-routes -> Continue
+  ^\w:${NAME}(#|>)\s/show router bgp neighbor ${IP_neighbor} ${family} received-routes -> Continue
+  ^.\w:${NAME}(#|>)\s/show router bgp neighbor ${IP_neighbor} ${family} received-routes -> Continue
+  ^\sBGP\sRouter\sID:${BGP_Router_ID}\s+AS:${AS}\s+Local\sAS:${Local_AS} -> Continue.Record
+  ^${Flag}\s+${Network}\s+${LocalPref}\s+${MED}
+  ^\s+${Next_Hop}\s+${Path_id}\s+${Label}
+  ^\s+${As_Path} -> Continue.Record
+
+

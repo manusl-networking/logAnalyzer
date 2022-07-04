@@ -1,0 +1,26 @@
+#Command: /show router ldp interface detail
+#Description: This template is used to see detail of ldp interface
+#Variables: Router_Name Interface Admin_State Oper_State IPv4_Admin_State IPv4_Oper_State Transport_Addr Active_Adjacencies Local_LSR_Type Local_LSR
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
+Value Filldown NAME (\S+)
+Value Key,Required Interface (\S+)
+Value Admin_State ([uU][pP]|[Dd][oO][wW][nN])
+Value Oper_State ([uU][pP]|[Dd][oO][wW][nN])
+Value IPv4_Admin_State ([uU][pP]|[Dd][oO][wW][nN])
+Value IPv4_Oper_State ([uU][pP]|[Dd][oO][wW][nN])
+Value Transport_Addr (\S+)
+Value Active_Adjacencies ([0-9]{1,3})
+Value Local_LSR_Type (\S+)
+Value Local_LSR (\S+)
+
+Start
+  ^\w:${NAME}(#|>) /show router ldp interface detail 
+  ^.\w:${NAME}(#|>) /show router ldp interface detail 
+  ^Interface\s${Interface}
+  ^Admin\sState\s+:\s${Admin_State}\s+Oper\sState\s+:\s${Oper_State}
+  ^IPv4\sAdmin\sState\s+:\s${IPv4_Admin_State}\s+IPv4\sOper\sState\s+:\s${IPv4_Oper_State}
+  ^Transport\sAddr\s+:\s${Transport_Addr}
+  ^Active\sAdjacencies\s:\s${Active_Adjacencies}
+  ^Local\sLSR\sType\s+:\s${Local_LSR_Type}
+  ^Local\sLSR\s+:\s${Local_LSR} -> Record
+

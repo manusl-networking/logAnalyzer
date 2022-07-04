@@ -1,0 +1,13 @@
+#Command: /show router policy \S+
+#Description: This template is used to see entry of policy statement, this template was created for specific configuration
+#Variables: Router_Name Policy_Statement entry
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
+Value Filldown NAME (\S+)
+Value Filldown Policy_Statement (\S+)
+Value Required entry (\d+)
+
+Start
+  ^\w:${NAME}(#|>)\s/show router policy\s${Policy_Statement} -> Continue.Record
+  ^.\w:${NAME}(#|>)\s/show router policy\s${Policy_Statement} -> Continue.Record
+  ^\s+entry\s${entry} -> Continue.Record
+

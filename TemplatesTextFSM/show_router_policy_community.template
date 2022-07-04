@@ -1,0 +1,11 @@
+#Command: /show router policy community
+#Description: This template is used to see community policies and name start with seamless, this template was created for specific configuration
+#Variables: Router_Name community
+#Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
+Value Filldown NAME (\S+)
+Value Required community (seamless.+)
+
+Start
+  ^\w:${NAME}(#|>)\s/show router policy community
+  ^.\w:${NAME}(#|>)\s/show router policy community
+  ^${community} -> Record

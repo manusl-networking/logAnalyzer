@@ -1,0 +1,11 @@
+#Command: /show service id \S+ fdb detail
+Value NAME (\S+)
+Value ServId (\d+)
+Value MAC (\S+)
+Value Src_Identifier (\S+)
+Value Type_Age (\S+)
+
+Start
+  ^\w:${NAME}(#|>) /show service id \S+ fdb detail
+  ^.?\w:${NAME}(#|>) /?show service id \S+ fdb detail
+  ^${ServId}\s+${MAC}\s+${Src_Identifier}\s+${Type_Age}\s+.+ -> Continue.Record

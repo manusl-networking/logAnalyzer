@@ -1,0 +1,54 @@
+#Command: /show system sync-if-timing
+Value Filldown NAME (\S+)
+Value Status_CPM (\S+\s\S+|\S+)
+Value Ref_Input_Mode (\S+)
+Value Quality_Level_Selection (Enabled|Disabled)
+Value Ref_Select (.+)
+Value Sys_Quality_Level (\S+)
+Value Current_Freq_Offset_ppm (.+)
+Value Input_Minimum_Quality_Level (\S+)
+Value WaitToRestore_Timer (\S+)
+Value Ref_Order (.+)
+Value Ref_Input (.+)
+Value Admin_Status ([uU][pP]|[Dd][oO][wW][nN])
+Value Rx_Quality_Level (\S+)
+Value Quality_Level_Override (\S+)
+Value Qualified_For_Use (\S+)
+Value Selected_For_Use (\S+)
+Value Not_Selected_Due_to (.+)
+Value Source_Port (\S+.\S+.\S+|\S+)
+Value Key Source_PTP_Clock (\S+)
+Value Type (.+)
+
+Start
+  ^\w:${NAME}(#|>) /show system sync-if-timing
+  ^.\w:${NAME}(#|>) /show system sync-if-timing
+  ^System\sStatus\sCPM\s\w\s+:\s${Status_CPM}
+  ^\s+Reference\sInput\sMode\s+:\s${Ref_Input_Mode}
+  ^\s+Quality\sLevel\sSelection\s+:\s${Quality_Level_Selection}
+  ^\s+Reference\sSelected\s+:\s${Ref_Select}
+  ^\s+System\sQuality\sLevel\s+:\s${Sys_Quality_Level}
+  ^\s+Current\sFrequency\sOffset\s.ppm.\s:\s${Current_Freq_Offset_ppm}
+  ^\s+Input\sMinimum\sQuality\sLevel\s+:\s${Input_Minimum_Quality_Level}
+  ^\s+Wait\sto\sRestore\sTimer\s+:\s${WaitToRestore_Timer}
+  ^Reference\sOrder\s+:\s${Ref_Order}
+  ^${Ref_Input}\sReference\sInput -> Continue
+  ^Reference\s${Ref_Input} -> Continue
+  ^\s+Admin\sStatus\s+:\s${Admin_Status} -> Continue
+  ^\s+Rx\sQuality\sLevel\s+:\s${Rx_Quality_Level} -> Continue
+  ^\s+Quality\sLevel\sOverride\s+:\s${Quality_Level_Override}
+  ^\s+Qualified\sFor\sUse\s+:\s${Qualified_For_Use} -> Continue
+  ^\s+Selected\sFor\sUse\s+:\s${Selected_For_Use} -> Continue
+  ^\s+Not\sSelected\sDue\sTo\s+:\s+${Not_Selected_Due_to}
+  ^\s+Source\sPort\s+:\s${Source_Port} -> Continue.Record
+  ^\s+Source\sPTP\sClock\s+:\s${Source_PTP_Clock}
+  ^\s+Type\s+:\s${Type}
+
+
+
+
+
+
+
+
+

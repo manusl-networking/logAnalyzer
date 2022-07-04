@@ -9,6 +9,7 @@
 # but WITHOUT ANY WARRANTY of any kind whatsoever.
 #
 
+from tarfile import DEFAULT_FORMAT
 import textfsm
 import pandas as pd
 import csv
@@ -29,7 +30,7 @@ def readTemplate(fileTemplate, templateFolder, templateEngine):
 	
 	if fileTemplate != '':
 		with open(fileTemplate,'r') as f:
-			templates = f.read().split('\n')[:-1]
+			templates = [x.replace('\n','') for x in f.readlines()]
 	else:
 		templates = [f.replace(templateFolder,'') for f in glob.glob(templateFolder + '*') if 'majorFile.yml' not in f]
 
@@ -144,7 +145,8 @@ def readLog(logFolder, formatJson):
 	elif _platform == "win64" or _platform == "win32":
     	# Windows 64-bit
 
-		listContent  = [f for f in glob.glob(logFolder  + ending)]
+		listContent  = [f.replace("\\", '/') for f in glob.glob(logFolder  + ending)]
+		print('\n\nlist content',listContent)
 	else:
 		print(str(_platform) + ": not a valid platform. Quitting....")
 		quit()
@@ -462,10 +464,10 @@ def main():
 	parser1.add_argument('-pre', '--preFolder',     type=str, required=True, help='Folder with PRE Logs. Must end in "/"',)
 	parser1.add_argument('-post','--postFolder' ,   type=str, default='',    help='Folder with POST Logs. Must end in "/"',)
 	parser1.add_argument('-csv', '--csvTemplate',   type=str, default='', help='CSV with list of templates names to be used in parsing. If the file is omitted, then all the templates inside --templateFolder, will be considered for parsing. Default=None.')
-	parser1.add_argument('-json', '--formatJson',   type=str, required=True, choices=['yes','no'], help='logs in json format: yes or no.')
+	parser1.add_argument('-json', '--formatJson',   type=str, default = 'yes', choices=['yes','no'], help='logs in json format: yes or no.')
 	parser1.add_argument('-tf', '--templateFolder', type=str, default='TemplatesTextFSM/', help='Folder where templates reside. Default=TemplatesTextFSM/')
 	parser1.add_argument('-te', '--templateEngine', choices=['ttp','textFSM'], default='textFSM', type=str, help='Engine for parsing.')
-	parser1.add_argument('-v'  ,'--version',        help='Version', action='version', version='Saldivar/Aimaretto - (c)2022 - Version: 3.1.0' )
+	parser1.add_argument('-v'  ,'--version',        help='Version', action='version', version='Saldivar/Aimaretto - (c)2022 - Version: 3.1.1' )
 
 	args           = parser1.parse_args()
 	preFolder      = args.preFolder
@@ -474,6 +476,9 @@ def main():
 	formatJson     = args.formatJson
 	templateFolder = args.templateFolder
 	templateEngine = args.templateEngine
+
+	if _platform == "win64" or _platform == "win32":
+		templateFolder = templateFolder.replace('/', '\\')
 
 	dTmplt = readTemplate(csvTemplate, templateFolder, templateEngine)
 

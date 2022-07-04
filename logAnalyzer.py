@@ -9,7 +9,6 @@
 # but WITHOUT ANY WARRANTY of any kind whatsoever.
 #
 
-from tarfile import DEFAULT_FORMAT
 import textfsm
 import pandas as pd
 import csv
@@ -146,7 +145,6 @@ def readLog(logFolder, formatJson):
     	# Windows 64-bit
 
 		listContent  = [f.replace("\\", '/') for f in glob.glob(logFolder  + ending)]
-		print('\n\nlist content',listContent)
 	else:
 		print(str(_platform) + ": not a valid platform. Quitting....")
 		quit()

@@ -1,3 +1,7 @@
+[3.1.2 - 2022-07-24]
+- In function `parseResults()`, better detection of `json` files.
+    - When the name had a dot `.` in its name, parsing was not being performed. Is solved now.
+
 [3.1.1 - 2022-07-04]
 - Parameter `-json` with default = yes.
 - Updates on when platform is windows (equal to win64 or win32), to handle with paths correctly:

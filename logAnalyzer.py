@@ -206,12 +206,12 @@ def parseResults(dTmpl, dLog, templateFolder, templateEngine):
 		for routerLogKey in dLog.keys():
 
 			routerLogFname  = routerLogKey.split("/")[-1]
-			fileType        = routerLogFname.split('.')[1]
 
 			print(routerLogFname , tmpltName)
 
-			if fileType == 'json': 
+			if '_rx.json' in routerLogFname: 
 				# If text format is json, else, we continue work with rx_txt
+				# TODO: better way to detect json format.
 
 				routerName = dLog[routerLogKey]['name']
 
@@ -466,7 +466,7 @@ def main():
 	parser1.add_argument('-json', '--formatJson',   type=str, default = 'yes', choices=['yes','no'], help='logs in json format: yes or no.')
 	parser1.add_argument('-tf', '--templateFolder', type=str, default='TemplatesTextFSM/', help='Folder where templates reside. Default=TemplatesTextFSM/')
 	parser1.add_argument('-te', '--templateEngine', choices=['ttp','textFSM'], default='textFSM', type=str, help='Engine for parsing.')
-	parser1.add_argument('-v'  ,'--version',        help='Version', action='version', version='Saldivar/Aimaretto - (c)2022 - Version: 3.1.1' )
+	parser1.add_argument('-v'  ,'--version',        help='Version', action='version', version='Saldivar/Aimaretto - (c)2022 - Version: 3.1.2' )
 
 	args           = parser1.parse_args()
 	preFolder      = args.preFolder

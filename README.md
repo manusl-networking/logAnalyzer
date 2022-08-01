@@ -103,11 +103,14 @@ optional arguments:
   -csv CSVTEMPLATE, --csvTemplate CSVTEMPLATE
                         CSV with list of templates names to be used in parsing. If the file is omitted, then all the templates inside --templateFolder, will be considered for parsing. Default=None.
   -json {yes,no}, --formatJson {yes,no}
-                        logs in json format: yes or no.
+                        logs in json format: yes or no. Default=yes.
   -tf TEMPLATEFOLDER, --templateFolder TEMPLATEFOLDER
-                        Folder where templates reside. Default=TemplatesTextFSM/
+                        Folder where templates reside. Used both for PRE and POST logs. Default=Templates/
+  -tf-post TEMPLATEFOLDERPOST, --templateFolderPost TEMPLATEFOLDERPOST
+                        If set, use this folder of templates for POST logs. Default=Templates/
   -te {ttp,textFSM}, --templateEngine {ttp,textFSM}
-                        Engine for parsing.
+                        Engine for parsing. Default=textFSM.
   -v, --version         Version
+
 
 ```

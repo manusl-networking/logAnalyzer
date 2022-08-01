@@ -1,3 +1,6 @@
+[3.2.1 - 2022-08-01]
+- Typo.
+
 [3.2.0 - 2022-08-01]
 - In the definition of the templates files, a new comment must be included `#majorDown:`. This comment should be followed by the keywords.
     - Example: `#majorDown: open,connect` will also count for major down on the analysis.

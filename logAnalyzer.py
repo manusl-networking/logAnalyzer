@@ -93,9 +93,6 @@ def readTemplate(fileTemplate, templateFolder, templateEngine):
 						d[tmpltName]['majorDown'].append(key)
 
 	print('#####Successfully Loaded Templates#####')
-	for k in d.keys():
-		print("-")
-		print(k,d[k])
 	return d 
 
 def makeParsed(nomTemplate, routerLog, templateFolder, templateEngine, columnss):
@@ -462,7 +459,7 @@ def main():
 	parser1.add_argument('-tf', '--templateFolder', type=str, default='Templates/', help='Folder where templates reside. Used both for PRE and POST logs. Default=Templates/')
 	parser1.add_argument('-tf-post', '--templateFolderPost', type=str, default='Templates/', help='If set, use this folder of templates for POST logs. Default=Templates/')
 	parser1.add_argument('-te', '--templateEngine', choices=['ttp','textFSM'], default='textFSM', type=str, help='Engine for parsing. Default=textFSM.')
-	parser1.add_argument('-v'  ,'--version',        help='Version', action='version', version='Saldivar/Aimaretto - (c)2022 - Version: 3.2.0' )
+	parser1.add_argument('-v'  ,'--version',        help='Version', action='version', version='Saldivar/Aimaretto - (c)2022 - Version: 3.2.1' )
 
 	args               = parser1.parse_args()
 	preFolder          = args.preFolder

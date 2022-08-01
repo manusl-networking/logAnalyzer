@@ -40,6 +40,7 @@ def readTemplate(fileTemplate, templateFolder, templateEngine):
 		d[tmpltName] = {
 			'listOfcolumns':[],
 			'commandKey':'',
+			'majorDown':['down']
 		}	
 
 		fName = templateFolder+tmpltName
@@ -53,6 +54,7 @@ def readTemplate(fileTemplate, templateFolder, templateEngine):
 
 				h1 = line.find('Value')
 				h2 = line.find('#Command:')
+				h3 = line.find('#majorDown:')
 				
 				if h1 != -1:
 					col = line.split(' ')[-2]
@@ -64,10 +66,16 @@ def readTemplate(fileTemplate, templateFolder, templateEngine):
 					#commandKey[i].append(cmd)
 					d[tmpltName]['commandKey'] = cmd
 
+				if h3 != -1:
+					keys = line.split(': ')[1].strip('\n').split(',')
+					for key in keys:
+						d[tmpltName]['majorDown'].append(key)
+
 			if templateEngine == 'ttp':
 
 				h1 = line.find('Columns: ')
 				h2 = line.find('Command: ')
+				h3 = line.find('majorDown: ')
 				
 				if h1 != -1:
 					col = line.split(': ')[1].strip('\n').split(",")
@@ -77,7 +85,12 @@ def readTemplate(fileTemplate, templateFolder, templateEngine):
 				if h2 != -1:
 					cmd = line.split(': ')[1].strip('\n')
 					#commandKey[i].append(cmd)
-					d[tmpltName]['commandKey'] = cmd				
+					d[tmpltName]['commandKey'] = cmd
+
+				if h3 != -1:
+					keys = line.split(': ')[1].strip('\n').split(',')
+					for key in keys:
+						d[tmpltName]['majorDown'].append(key)
 
 	print('#####Successfully Loaded Templates#####')
 	return d 
@@ -167,21 +180,6 @@ def readLog(logFolder, formatJson):
 
 	return d
 
-def verifyMajorFile(majorFile):
-	"""We verify the majorFile.yml before moving on.
-	Returns:
-		[dict]: [Dictionary with words of major information, for templates if have any words additional to down]
-	"""
-
-	try:
-		with open(majorFile,'r') as f:
-			majorMatrix = yaml.load(f, Loader=yaml.FullLoader)
-	except:
-		print("Missing " + majorFile + " file. Quitting..")
-		quit()
-
-	return majorMatrix
-
 def parseResults(dTmpl, dLog, templateFolder, templateEngine):
 	"""
 	Build the Dataframe from textFSM filter, index and router log
@@ -192,7 +190,7 @@ def parseResults(dTmpl, dLog, templateFolder, templateEngine):
 		templateFolder (str):   folder of templates
 
 	Returns:
-		_type_: _description_
+		datosEquipo (dict): Dictionary where keys are templateNames. For each key, a DF with parsed results.
 	"""
 
 	datosEquipo  = {}
@@ -286,52 +284,46 @@ def parseResults(dTmpl, dLog, templateFolder, templateEngine):
 
 	return datosEquipo
 
-def searchDiff(datosEquipoPre, datosEquipoPost):#Makes a new table, in which it brings the differences between two tables (post-pre)
+#Makes a new table, in which it brings the differences between two tables (post-pre)
+def searchDiff(datosEquipoPre, datosEquipoPost):
+	
 
 	countDif = {}	
 
-	for key in datosEquipoPre.keys():
+	for tmpltName in datosEquipoPre.keys():
 
-		dfUnion = pd.merge(datosEquipoPre[key], datosEquipoPost[key], how='outer', indicator='Where').drop_duplicates()
+		dfUnion = pd.merge(datosEquipoPre[tmpltName], datosEquipoPost[tmpltName], how='outer', indicator='Where').drop_duplicates()
 		dfInter = dfUnion[dfUnion.Where=='both']
 		dfCompl = dfUnion[~(dfUnion.isin(dfInter))].dropna(axis=0, how='all').drop_duplicates()
 		dfCompl['Where'] = dfCompl['Where'].str.replace('left_only','Pre')
 		dfCompl['Where'] = dfCompl['Where'].str.replace('right_only','Post')
 
-		countDif[key] = dfCompl.sort_values(by=['NAME'])
+		countDif[tmpltName] = dfCompl.sort_values(by=['NAME'])
 
 	return countDif
 
-def findMajor(count_dif, templateFolder):
-	#Makes a table from the results of searching for Major errors in the post table define in yml file for specific template, or down if is not define the words for the template, which are not in the Pre table
+def findMajor(count_dif, dTmplt):
+	#Makes a table from the results of searching for Major errors in the post table define in yml file for specific template, 
+	# or down if is not define the words for the template, which are not in the Pre table
 
 	countDown  = {}
-	majorWords = verifyMajorFile(templateFolder + 'majorFile.yml')
 
-	for key in count_dif.keys():
-		if key in majorWords:
-			majorWords[key].append('down')
-			df         = pd.DataFrame()
-			for j in majorWords[key]:
-				df1 = count_dif[key][count_dif[key]['Where']=='Post']
-				if len(df1) > 0:
-					df1 = df1[df1.apply(lambda r: r.str.contains(j, case=False).any(), axis=1)]
+	for tmpltName in count_dif.keys():
 
-				else:
-					df1 = pd.DataFrame(columns=count_dif[key].columns)
+		df         = pd.DataFrame()
 
-				df=pd.concat([df, df1])
-
-			countDown[key] = df
-
-		else:
-			df = count_dif[key][count_dif[key]['Where']=='Post']
-			if len(df) > 0:
-				df = df[df.apply(lambda r: r.str.contains('down', case=False).any(), axis=1)]
+		for majorWord in dTmplt[tmpltName]['majorDown']:
+			
+			df1 = count_dif[tmpltName][count_dif[tmpltName]['Where']=='Post']
+			
+			if len(df1) > 0:
+				df1 = df1[df1.apply(lambda r: r.str.contains(majorWord, case=False).any(), axis=1)]
 			else:
-				df = pd.DataFrame(columns=count_dif[key].columns)
+				df1 = pd.DataFrame(columns=count_dif[tmpltName].columns)
 
-			countDown[key] = df
+			df = pd.concat([df, df1])
+
+		countDown[tmpltName] = df
 
 	return countDown
 
@@ -340,11 +332,11 @@ def makeTable(datosEquipoPre, datosEquipoPost):#Sort the table pre and post to p
 	df_all          = {}
 	datosEquipoPre1 = datosEquipoPre.copy()
 	
-	for temp in datosEquipoPre.keys():
+	for tmpltName in datosEquipoPre.keys():
 
-		datosEquipoPre1[temp]['##']='##'
+		datosEquipoPre1[tmpltName]['##']='##'
 
-		df_all[temp] = pd.concat([datosEquipoPre1[temp], datosEquipoPost[temp]], axis=1, keys=('Pre-Check', 'Post-Check'))
+		df_all[tmpltName] = pd.concat([datosEquipoPre1[tmpltName], datosEquipoPost[tmpltName]], axis=1, keys=('Pre-Check', 'Post-Check'))
 
 	return df_all
 
@@ -463,53 +455,62 @@ def main():
 	parser1.add_argument('-pre', '--preFolder',     type=str, required=True, help='Folder with PRE Logs. Must end in "/"',)
 	parser1.add_argument('-post','--postFolder' ,   type=str, default='',    help='Folder with POST Logs. Must end in "/"',)
 	parser1.add_argument('-csv', '--csvTemplate',   type=str, default='', help='CSV with list of templates names to be used in parsing. If the file is omitted, then all the templates inside --templateFolder, will be considered for parsing. Default=None.')
-	parser1.add_argument('-json', '--formatJson',   type=str, default = 'yes', choices=['yes','no'], help='logs in json format: yes or no.')
-	parser1.add_argument('-tf', '--templateFolder', type=str, default='TemplatesTextFSM/', help='Folder where templates reside. Default=TemplatesTextFSM/')
-	parser1.add_argument('-te', '--templateEngine', choices=['ttp','textFSM'], default='textFSM', type=str, help='Engine for parsing.')
-	parser1.add_argument('-v'  ,'--version',        help='Version', action='version', version='Saldivar/Aimaretto - (c)2022 - Version: 3.1.2' )
+	parser1.add_argument('-json', '--formatJson',   type=str, default = 'yes', choices=['yes','no'], help='logs in json format: yes or no. Default=yes.')
+	parser1.add_argument('-tf', '--templateFolder', type=str, default='Templates/', help='Folder where templates reside. Used both for PRE and POST logs. Default=Templates/')
+	parser1.add_argument('-tf-post', '--templateFolderPost', type=str, default='Templates/', help='If set, use this folder of templates for POST logs. Default=Templates/')
+	parser1.add_argument('-te', '--templateEngine', choices=['ttp','textFSM'], default='textFSM', type=str, help='Engine for parsing. Default=textFSM.')
+	parser1.add_argument('-v'  ,'--version',        help='Version', action='version', version='Saldivar/Aimaretto - (c)2022 - Version: 3.2.1' )
 
-	args           = parser1.parse_args()
-	preFolder      = args.preFolder
-	postFolder     = args.postFolder
-	csvTemplate    = args.csvTemplate
-	formatJson     = args.formatJson
-	templateFolder = args.templateFolder
-	templateEngine = args.templateEngine
+	args               = parser1.parse_args()
+	preFolder          = args.preFolder
+	postFolder         = args.postFolder
+	csvTemplate        = args.csvTemplate
+	formatJson         = args.formatJson
+	templateFolder     = args.templateFolder
+	templateEngine     = args.templateEngine
+	templateFolderPost = args.templateFolderPost
 
 	if _platform == "win64" or _platform == "win32":
 		templateFolder = templateFolder.replace('/', '\\')
-
-	dTmplt = readTemplate(csvTemplate, templateFolder, templateEngine)
+		if templateFolderPost != '':
+			templateFolderPost = templateFolderPost.replace('/','\\')
 
 	if preFolder != '' and postFolder == '':
-		
-		dLog = readLog(preFolder, formatJson)
+
+		dTmplt = readTemplate(csvTemplate, templateFolder, templateEngine)
+		dLog   = readLog(preFolder, formatJson)
 
 		df_final    = parseResults(dTmplt, dLog, templateFolder, templateEngine)
 		count_dif   = {}
 		searchMajor = {}
 
-		for key in df_final.keys():
-			count_dif[key]   = pd.DataFrame(columns=df_final[key].columns)
-			searchMajor[key] = pd.DataFrame(columns=df_final[key].columns)
+		for tmpltName in df_final.keys():
+			count_dif[tmpltName]   = pd.DataFrame(columns=df_final[tmpltName].columns)
+			searchMajor[tmpltName] = pd.DataFrame(columns=df_final[tmpltName].columns)
 
 		constructExcel(df_final, count_dif, searchMajor, preFolder)
 
 	elif preFolder != '' and postFolder != '':
 
+		if templateFolder == templateFolderPost:
+			dTmpltPre = dTmpltPost = readTemplate(csvTemplate, templateFolder, templateEngine)
+		else:
+			dTmpltPre  = readTemplate(csvTemplate, templateFolder, templateEngine)
+			dTmpltPost = readTemplate(csvTemplate, templateFolderPost, templateEngine)
+
 		dLogPre  = readLog(preFolder, formatJson)
 		dLogPost = readLog(postFolder, formatJson)
 			
-		datosEquipoPre  = parseResults(dTmplt, dLogPre, templateFolder, templateEngine)
-		datosEquipoPost = parseResults(dTmplt, dLogPost, templateFolder, templateEngine)
+		datosEquipoPre  = parseResults(dTmpltPre,  dLogPre,  templateFolder,     templateEngine)
+		datosEquipoPost = parseResults(dTmpltPost, dLogPost, templateFolderPost, templateEngine)
 
 		count_dif       = searchDiff(datosEquipoPre, datosEquipoPost)
-		searchMajor     = findMajor(count_dif, templateFolder)
+		searchMajor     = findMajor(count_dif, dTmpltPre)
 		df_final        = makeTable(datosEquipoPre, datosEquipoPost)
 
 		constructExcel(df_final, count_dif, searchMajor, postFolder)
 
 	elif preFolder == '':
-		print('Incorrect Folder, Please Verify')
+		print('No PRE folder defined. Please Verify.')
 
 main()

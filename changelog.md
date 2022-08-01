@@ -1,3 +1,12 @@
+[3.2.1 - 2022-08-01]
+- Typo.
+
+[3.2.0 - 2022-08-01]
+- In the definition of the templates files, a new comment must be included `#majorDown:`. This comment should be followed by the keywords.
+    - Example: `#majorDown: open,connect` will also count for major down on the analysis.
+- The default folder for templates is `Templates/` under the option `-tf`
+- New options for folders: `-tf-post`. Some times, a different folder is needed for comparison, for example, when there is a operating system change between tasks. With this option, a different set of templates can be used for the `post` folder.
+
 [3.1.2 - 2022-07-24]
 - In function `parseResults()`, better detection of `json` files.
     - When the name had a dot `.` in its name, parsing was not being performed. Is solved now.

@@ -500,17 +500,23 @@ def main():
 		else:
 			dTmpltPre  = readTemplate(csvTemplate, templateFolder, templateEngine)
 			dTmpltPost = readTemplate(csvTemplate, templateFolderPost, templateEngine)
-			lPre = len(dTmpltPre.keys())
-			lPos = len(dTmpltPost.keys())
+			keysPre    = sorted(list(dTmpltPre.keys()))
+			keysPos    = sorted(list(dTmpltPost.keys()))
 
-			if lPre == lPos:
+			if keysPre == keysPos:
 				pass
 			else:
 				if csvTemplate == '':
-					print(f'The PRE template folder, {templateFolder}, has {lPre} templates.')
-					print(f'The POST template folder, {templateFolderPost}, has {lPos} templates.')
-					print('Make sure the amount of templates in each folder, is the same. Or use a CSV list of templates.\nQuitting...')
-					quit()
+					if len(keysPre) != len(keysPos):
+						print(f'The PRE template folder, {templateFolder}, has {len(keysPre)} templates.')
+						print(f'The POST template folder, {templateFolderPost}, has {len(keysPos)} templates.')
+						print('Make sure the amount of templates in each folder, is the same. Or use a CSV list of templates.\nQuitting...')
+						quit()
+					else:
+						print(f'The template folders {templateFolder} and {templateFolderPost} have the same amount of templates')
+						print('But there are differences among them.')
+						print('Check the contents. Quitting...')
+						quit()
 				else:
 					pass
 

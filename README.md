@@ -27,7 +27,7 @@ The program needs two mandatory inputs:
 
 ### Templates
 
-The templates are stored in the `Templates` folder. The script reads the CSV and uses the indicated templates to perform the function of parsing.
+The templates are stored by default under the `Templates/` folder. The script reads the CSV and uses the indicated templates to perform the function of parsing.
 
 ##### CSV
 
@@ -39,17 +39,6 @@ show_router_interface.template
 show_service_sdp.template
 ```
 If omitted, all the templates insisde the templates folder, will be used.
-
-##### Template Major Errors (V 0.3)
-
-The file `majorFile.yml`, stores the name of a template and the key-words of Major errors after the task, if you don't specify the template in the file yml, the program searches the word 'down' automatically. The file must be present under the folder of the templates.
-
-The format of file is:
-
-```yml
-show_router_ldp_session.template: ['down', 'Nonexistent', 'Initialized', 'OpenRecv', 'OpenSent']
-show_router_bgp_summary.template: ['down', 'connect', 'active']
-```
 
 ## Results
 

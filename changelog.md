@@ -1,3 +1,6 @@
+[3.2.2 - 2022-08-02]
+- When the amount of templates for pre vs post comparison is different, an exception ocurred. Either control this by using a csv file or having the same amount of templates in each template folder.
+
 [3.2.1 - 2022-08-01]
 - Typo.
 

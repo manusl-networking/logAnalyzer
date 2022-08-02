@@ -45,8 +45,12 @@ def readTemplate(fileTemplate, templateFolder, templateEngine):
 
 		fName = templateFolder+tmpltName
 
-		with open(fName) as f:
-			tmpltLines = f.readlines()
+		try:
+			with open(fName) as f:
+				tmpltLines = f.readlines()
+		except:
+			print(f'The template file {tmpltName} does not exist inside the folder {templateFolder}.\nPlease check.\nQuitting...')
+			quit()
 
 		for line in tmpltLines:
 
@@ -92,7 +96,7 @@ def readTemplate(fileTemplate, templateFolder, templateEngine):
 					for key in keys:
 						d[tmpltName]['majorDown'].append(key)
 
-	print('#####Successfully Loaded Templates#####')
+	print(f'##### Successfully Loaded Templates from folder {templateFolder} #####')
 	return d 
 
 def makeParsed(nomTemplate, routerLog, templateFolder, templateEngine, columnss):
@@ -176,7 +180,7 @@ def readLog(logFolder, formatJson):
 			with open(name) as f:
 				d[name] = f.read()
 
-	print('#########Logs Loaded Successfully#########')
+	print(f'##### Logs Loaded Successfully from folder {logFolder} #####')
 
 	return d
 
@@ -287,7 +291,6 @@ def parseResults(dTmpl, dLog, templateFolder, templateEngine):
 #Makes a new table, in which it brings the differences between two tables (post-pre)
 def searchDiff(datosEquipoPre, datosEquipoPost):
 	
-
 	countDif = {}	
 
 	for tmpltName in datosEquipoPre.keys():
@@ -459,7 +462,7 @@ def main():
 	parser1.add_argument('-tf', '--templateFolder', type=str, default='Templates/', help='Folder where templates reside. Used both for PRE and POST logs. Default=Templates/')
 	parser1.add_argument('-tf-post', '--templateFolderPost', type=str, default='Templates/', help='If set, use this folder of templates for POST logs. Default=Templates/')
 	parser1.add_argument('-te', '--templateEngine', choices=['ttp','textFSM'], default='textFSM', type=str, help='Engine for parsing. Default=textFSM.')
-	parser1.add_argument('-v'  ,'--version',        help='Version', action='version', version='Saldivar/Aimaretto - (c)2022 - Version: 3.2.1' )
+	parser1.add_argument('-v'  ,'--version',        help='Version', action='version', version='Saldivar/Aimaretto - (c)2022 - Version: 3.2.2' )
 
 	args               = parser1.parse_args()
 	preFolder          = args.preFolder
@@ -497,6 +500,19 @@ def main():
 		else:
 			dTmpltPre  = readTemplate(csvTemplate, templateFolder, templateEngine)
 			dTmpltPost = readTemplate(csvTemplate, templateFolderPost, templateEngine)
+			lPre = len(dTmpltPre.keys())
+			lPos = len(dTmpltPost.keys())
+
+			if lPre == lPos:
+				pass
+			else:
+				if csvTemplate == '':
+					print(f'The PRE template folder, {templateFolder}, has {lPre} templates.')
+					print(f'The POST template folder, {templateFolderPost}, has {lPos} templates.')
+					print('Make sure the amount of templates in each folder, is the same. Or use a CSV list of templates.\nQuitting...')
+					quit()
+				else:
+					pass
 
 		dLogPre  = readLog(preFolder, formatJson)
 		dLogPost = readLog(postFolder, formatJson)

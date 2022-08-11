@@ -248,7 +248,6 @@ def parseResults(dTmpl, dLog, templateFolder, templateEngine):
 						dfResult = makeParsed(tmpltName, routerLog, templateFolder, templateEngine, columnss)
 
 						dfResult['NAME'] = routerName
-
 						dfTemp = pd.concat([dfTemp, dfResult])
 
 			else:
@@ -288,8 +287,8 @@ def parseResults(dTmpl, dLog, templateFolder, templateEngine):
 
 	return datosEquipo
 
-#Makes a new table, in which it brings the differences between two tables (post-pre)
-def searchDiff(datosEquipoPre, datosEquipoPost):
+def searchDiff(datosEquipoPre, datosEquipoPost, dTmplt):
+	#Makes a new table, in which it brings the differences between two tables (post-pre)	
 	
 	countDif = {}	
 
@@ -301,7 +300,7 @@ def searchDiff(datosEquipoPre, datosEquipoPost):
 		dfCompl['Where'] = dfCompl['Where'].str.replace('left_only','Pre')
 		dfCompl['Where'] = dfCompl['Where'].str.replace('right_only','Post')
 
-		countDif[tmpltName] = dfCompl.sort_values(by=['NAME'])
+		countDif[tmpltName] = dfCompl.sort_values(by=dTmplt[tmpltName]['listOfcolumns'])
 
 	return countDif
 
@@ -325,6 +324,7 @@ def findMajor(count_dif, dTmplt):
 				df1 = pd.DataFrame(columns=count_dif[tmpltName].columns)
 
 			df = pd.concat([df, df1])
+			df = df.sort_values(by=dTmplt[tmpltName]['listOfcolumns'])
 
 		countDown[tmpltName] = df
 
@@ -462,7 +462,7 @@ def main():
 	parser1.add_argument('-tf', '--templateFolder', type=str, default='Templates/', help='Folder where templates reside. Used both for PRE and POST logs. Default=Templates/')
 	parser1.add_argument('-tf-post', '--templateFolderPost', type=str, default='Templates/', help='If set, use this folder of templates for POST logs. Default=Templates/')
 	parser1.add_argument('-te', '--templateEngine', choices=['ttp','textFSM'], default='textFSM', type=str, help='Engine for parsing. Default=textFSM.')
-	parser1.add_argument('-v'  ,'--version',        help='Version', action='version', version='Saldivar/Aimaretto - (c)2022 - Version: 3.2.2' )
+	parser1.add_argument('-v'  ,'--version',        help='Version', action='version', version='Saldivar/Aimaretto - (c)2022 - Version: 3.2.3' )
 
 	args               = parser1.parse_args()
 	preFolder          = args.preFolder
@@ -526,7 +526,7 @@ def main():
 		datosEquipoPre  = parseResults(dTmpltPre,  dLogPre,  templateFolder,     templateEngine)
 		datosEquipoPost = parseResults(dTmpltPost, dLogPost, templateFolderPost, templateEngine)
 
-		count_dif       = searchDiff(datosEquipoPre, datosEquipoPost)
+		count_dif       = searchDiff(datosEquipoPre, datosEquipoPost, dTmpltPre)
 		searchMajor     = findMajor(count_dif, dTmpltPre)
 		df_final        = makeTable(datosEquipoPre, datosEquipoPost)
 

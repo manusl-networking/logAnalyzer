@@ -1,3 +1,6 @@
+[3.2.3 - 2022-08-11]
+- Tables for differences and/or errors, are now sorted by all the column names defined under the template. This makes it easier to do the visual comparison of data.
+
 [3.2.2 - 2022-08-02]
 - When the amount of templates for pre vs post comparison is different, an exception ocurred. Either control this by using a csv file or having the same amount of templates in each template folder.
 

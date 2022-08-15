@@ -1,0 +1,14 @@
+#Command: /show time
+#Timos: 8
+#Version: 1.0.0
+Value Filldown NAME (\S+)
+Value wkDay (\S+)
+Value month (\S+)
+Value day (\S+)
+Value time (\S+)
+Value timeZone (\S+)
+Value Year (\d+) 
+
+Start
+  ^\?w:${NAME}(#|>) /?show time
+  ^${wkDay}\s+${month}\s+${day}\s+${time}\s+${timeZone}\s+${Year} -> Record

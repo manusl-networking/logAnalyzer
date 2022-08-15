@@ -1,0 +1,19 @@
+#Command: /show router bfd session
+#Timos: 6
+#Version: 1.0.0
+Value NAME (\S+)
+Value Required Session_ID (.+?)
+Value State ([uU][pP]|[Dd][oO]?[wW][nN])
+Value Required RemAddess (\d+\.\d+\.\d+\.\d+)
+Value Tx_Intvl (\d+)
+Value Rx_Intvl (\d+)
+Value Multipl (\d+)
+Value Protocols (\D+.+?)
+
+Start
+  ^.?\w:${NAME}(#|>) /?show router bfd session
+  ^${Session_ID}\s+${State}\s+\d+\s+\d+ -> Continue
+  ^\s{2}${RemAddess}\s+${Multipl}\s+${Tx_Intvl}\s+${Rx_Intvl} -> Continue
+  ^\s{2}${Protocols}\s+central\s+.+\s+.+ -> Record
+  ^${Session_ID}\s+${State} .\d+.\s+${Tx_Intvl}\s+${Rx_Intvl}\s+${Multipl} -> Continue
+  ^\s{3}${RemAddess}\s+${Protocols}\s+\d+\s+\d+.+ -> Record

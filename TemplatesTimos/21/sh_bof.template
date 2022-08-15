@@ -1,0 +1,23 @@
+#Command: /show bof
+#Timos: 21
+#Version: 1.0.0
+Value Filldown NAME (\S+)
+Value pr_image (.+)
+Value pr_config (.+)
+Value autonegotiate (autonegotiate)
+Value duplex (\S+)
+Value speed (\S+)
+Value wait (\S+)
+Value persist (\S+)
+Value console_speed (\S+)
+
+Start
+  ^\?w:${NAME}(#|>) /?show bof
+  ^\s+primary.image\s+${pr_image}
+  ^\s+primary.config\s+${pr_config}
+  ^\s+${autonegotiate}
+  ^\s+duplex\s+${duplex}
+  ^\s+speed\s+${speed}
+  ^\s+wait\s+${wait}
+  ^\s+persist\s+${persist}
+  ^\s+console.speed\s+${console_speed} -> Record

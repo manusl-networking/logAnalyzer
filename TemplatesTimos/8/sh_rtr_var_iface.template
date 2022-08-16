@@ -1,0 +1,20 @@
+#Command: /show router \S+ interface
+#Timos: 8
+#Version: 1.0.0
+Value Filldown NAME (\S+)
+Value Required Interf_Name (.+?)
+Value Filldown VPRN (\S+)
+Value Interf_ADM ([uU][pP]|[Dd][oO][wW][nN])
+Value Interf_OPR_IPV4 ([uU][pP]|[Dd][oO][wW][nN])
+Value Interf_OPR_IPV6 ([uU][pP]|[Dd][oO][wW][nN])
+Value Interf_Mode (\S+)
+Value Interf_Port (\S+)
+Value Required Interf_IP (\S+)
+Value Pfx_State (\S+)
+
+Start
+  ^.?\w:${NAME}(#|>) /?show router ${VPRN} interface
+  ^Interface\sTable\s.Service.\s${VPRN}.
+  ^${Interf_Name}\s+${Interf_ADM}\s+${Interf_OPR_IPV4}.${Interf_OPR_IPV6}\s+${Interf_Mode}\s+${Interf_Port} -> Continue
+  ^\s+${Interf_IP}\s+${Pfx_State} -> Record
+

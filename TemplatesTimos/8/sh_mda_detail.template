@@ -1,0 +1,15 @@
+#Command: /show mda detail
+#Timos: 8
+#Version: 1.0.0
+Value NAME (\S+)
+Value Slot_ID (\S+)
+Value MDA (\d+)
+Value Prov_Type (\S+)
+Value Eq_Type (\S+)
+Value Adm ([uU][pP]|[Dd][oO]?[wW][nN])
+Value Opr (\S+)
+
+Start
+  ^.?\w:${NAME}(#|>) /show mda detail
+  ^${Slot_ID}\s+${MDA}\s+${Prov_Type}\s+${Adm}\s+${Opr} -> Continue.Record
+  ^${Slot_ID}\s+${MDA}\s+${Prov_Type}\s+${Eq_Type}\s+${Adm}\s+${Opr} -> Record

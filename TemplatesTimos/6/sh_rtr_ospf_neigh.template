@@ -1,0 +1,17 @@
+#Command: /show router ospf neighbor
+#majorDown: Attempt,Init,Two Way,Exchange start,Exchange,Loading
+#Timos: 6
+#Version: 1.0.0
+Value Filldown NAME (\S+)
+Value Required Interface_Name (.+)
+Value Rtr_Id (\d+\.\d+\.\d+\.\d+)
+Value State (\S+)
+Value Pri (\d+)
+Value RetxQ (\d+)
+Value TTL (\d+)
+
+
+Start
+  ^\w:${NAME}(#|>) /show router \S+ ospf neighbor
+  ^.?\w:${NAME}(#|>) /?show router \S+ ospf neighbor
+  ^${Interface_Name}\s+${Rtr_Id}\s+${State}\s+${Pri}\s+${RetxQ}\s+${TTL} -> Continue.Record

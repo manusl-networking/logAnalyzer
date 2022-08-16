@@ -1,0 +1,12 @@
+#Command: /show uptime
+#Timos: 6
+#Version: 1.0.0
+Value Filldown NAME (\S+)
+Value days (\d+)
+Value hr (\d+)
+Value min (\d+)
+Value sec (\S+)
+
+Start
+  ^\?w:${NAME}(#|>) /?show uptime
+  ^System Up Time\s+.\s+${days} days.\s+${hr}.${min}.${sec}\s+.+

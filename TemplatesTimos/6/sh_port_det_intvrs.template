@@ -1,0 +1,24 @@
+#Command: /show port detail
+#Timos: 6
+#Version: 1.0.0
+#Comments: Version able to compare information between those Timos. However, this version didn't display all port detail information from timos 21.
+#Replace: (accs,access),(netw,network),(up,Up),(down,Down)
+Value Filldown NAME (\S+)
+Value Filldown Slot (\S+)
+Value Required PortID (\S+)
+Value AdminState ([uU][pP]|[Dd][oO][wW][nN])
+Value Link ((No)|(Yes))
+Value PortState (\S+)
+Value MTU (\d+)
+Value PortMode (\S+)
+Value PortEncp (\S+)
+Value PortType (\S+)
+
+Start
+  ^.?\w:${NAME}(#|>) /?show port detail
+  ^Interface\s+.\s+${PortID}.+ -> Continue
+  ^Admin State\s+.\s+${AdminState}.+ -> Continue
+  ^Oper State\s+.\s+${PortState}.+ -> Continue
+  ^Physical Link\s+.\s+${Link}\s+MTU\s+.\s+${MTU} -> Continue
+  ^Configured Mode\s+.\s+${PortMode}\s+Encap Type\s+.\s+${PortEncp} -> Continue.Record
+  ^${PortID}\s+${AdminState}\s+${Link}\s+${PortState}(\s+${MTU}\s+\S+\s+\S+\s+${PortMode}\s+${PortEncp}\s+${PortType}\s+(.+)?\s+?)? -> Continue.Record

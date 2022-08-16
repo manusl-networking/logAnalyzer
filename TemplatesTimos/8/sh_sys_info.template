@@ -1,0 +1,14 @@
+#Command: /show system information
+#Timos: 8
+#Version: 1.0.0
+Value NAME (\S+)
+Value SNMP_Oper_State (\S+)
+Value SNMP_Index_Boot_Status (\S+(\s\S+)?)
+Value SNMP_Sync_State (\S+)
+
+Start
+  ^\w:${NAME}(#|>) /show system information
+  ^.?\w:${NAME}(#|>) /?show system information
+  ^SNMP Oper State\s+.\s+${SNMP_Oper_State}
+  ^SNMP Index Boot Status\s+.\s+${SNMP_Index_Boot_Status}
+  ^SNMP Sync State\s+.\s+${SNMP_Sync_State}

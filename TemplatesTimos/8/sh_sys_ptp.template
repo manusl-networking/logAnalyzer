@@ -1,0 +1,17 @@
+#Command: /show system ptp
+#majorDown: Master Holdover,Master Free Run
+#Timos: 8
+#Version: 1.0.0
+Value Filldown NAME (\S+)
+Value Clk_Idx (\S+)
+Value Source_IP ((\d+\.\d+\.\d+.\d+)|(n/a))
+Value Clock_type (\S+)
+Value MDA (\S+)
+Value Admin_Status (\S+)
+Value PTP_Clock_ID (\S+)
+Value Node_ref (\S+)
+Value Time_ref_priority (\S+)
+
+Start
+  ^\?w:${NAME}(#|>) /?show system ptp
+  ^${Clk_Idx}\s+${Source_IP}\s+${Clock_type}\s+${MDA}\s+${Admin_Status}\s+${PTP_Clock_ID}\s+${Node_ref}?\s+${Time_ref_priority} -> Continue.Record

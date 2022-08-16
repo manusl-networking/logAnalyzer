@@ -1,0 +1,39 @@
+#Command: /show router \S+ route-table summary
+#Timos: 8
+#Version: 1.0.0
+Value Filldown NAME (\S+)
+Value Required Service (\S+)
+Value Act_Static (\d+)
+Value Av_Static (\d+)
+Value Act_Direct (\d+)
+Value Av_Direct (\d+)
+Value Act_Host (\d+)
+Value Av_Host (\d+)
+Value Act_BGP (\d+)
+Value Av_BGP (\d+)
+Value Act_BGP_VPN (\d+)
+Value Av_BGP_VPN (\d+)
+Value Act_OSPF (\d+)
+Value Av_OSPF (\d+)
+Value Act_ISIS (\d+)
+Value Av_ISIS (\d+)
+Value Act_RIP (\d+)
+Value Av_RIP (\d+)
+Value Act_Aggregate (\d+)
+Value Av_Aggregate (\d+)
+Value Act_Sub_Mgmt (\d+)
+Value Av_Sub_Mgmt (\d+)
+
+Start
+  ^.?\w:${NAME}(#|>) /?show router \S+ route.table summary
+  ^Route Table Summary .Service. ${Service}.
+  ^Static\s+${Act_Static}\s+${Av_Static}
+  ^Direct\s+${Act_Direct}\s+${Av_Direct}
+  ^Host\s+${Act_Host}\s+${Av_Host}  
+  ^BGP\s+${Act_BGP}\s+${Av_BGP}
+  ^BGP VPN\s+${Act_BGP_VPN}\s+${Av_BGP_VPN}
+  ^OSPF\s+${Act_OSPF}\s+${Av_OSPF}
+  ^ISIS\s+${Act_ISIS}\s+${Av_ISIS}
+  ^RIP\s+${Act_RIP}\s+${Av_RIP}
+  ^Aggregate\s+${Act_Aggregate}\s+${Av_Aggregate}
+  ^Sub\sMgmt\s+${Act_Sub_Mgmt}\s+${Av_Sub_Mgmt}

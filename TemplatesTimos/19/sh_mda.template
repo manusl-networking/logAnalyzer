@@ -1,0 +1,15 @@
+#Command: /show mda
+#Timos: 19
+#Version: 1.0.0
+Value NAME (\S+)
+Value Filldown Slot_ID (\S+)
+Value Required MDA (\S+)
+Value Prov_Type (\S+)
+Value Eq_Type (\S+)
+Value Adm ([uU][pP]|[Dd][oO]?[wW][nN])
+Value Opr (\S+)
+
+Start
+  ^.?\w:${NAME}(#|>) /show mda
+  ^${Slot_ID}\s+${MDA}\s+${Prov_Type}\s+${Adm}\s+${Opr} -> Continue.Record
+  ^\s+${MDA}\s+${Prov_Type}\s+${Adm}\s+${Opr}-> Continue.Record

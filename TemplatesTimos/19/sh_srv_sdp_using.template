@@ -1,0 +1,16 @@
+#Command: /show service sdp-using
+#Timos: 19
+#Version: 1.0.0
+Value Filldown NAME (\S+)
+Value Required SDP_SVC_ID ([0-9]{1,12})
+Value Required SDP_IDU ([0-9]{1,12}:[0-9]{1,12})
+Value Required SDP_TYPE (\S+)
+Value Required SDP_FAR_END ([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})
+Value Required SDP_OPR_STATE ([uU][pP]|[Dd][oO][wW][nN])
+
+Start
+  ^\w:${NAME}(#|>) /show service sdp-using
+  ^.\w:${NAME}(#|>) /show service sdp-using
+  ^${SDP_SVC_ID}\s+${SDP_IDU}\s+${SDP_TYPE}\s+${SDP_FAR_END}\s+${SDP_OPR_STATE} -> Record
+
+EOF

@@ -1,0 +1,15 @@
+#Command: /show router isis interface
+#Timos: 19
+#Version: 1.0.0
+Value NAME (\S+)
+Value Filldown Instance (\S+)
+Value Required Interface (\S+)
+Value Level (\S+)
+Value CircID (\S+)
+Value Oper_state ([uU][pP]|[Dd][oO]?[wW][nN])
+Value L1_L2_Metric (.+)
+
+Start
+  ^.?\w:${NAME}(#|>) /?show router isis ${Instance} interface
+  ^Rtr Base ISIS Instance ${Instance} Interfaces
+  ^${Interface}\s+${Level}\s+${CircID}\s+${Oper_state}\s+${L1_L2_Metric} -> Continue.Record

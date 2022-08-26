@@ -1,0 +1,14 @@
+#Command: /show router mpls interface
+#Timos: 19
+#Version: 1.0.0
+Value NAME (\S+)
+Value Required Interface (.+?)
+Value Port_ID (.+?)
+Value Required Adm ([uU][pP]|[Dd][oO][wW][nN])
+Value Required Opr_v4v6 (\S+)
+Value TE_Metric (\S+)
+
+Start
+  ^\w:${NAME}(#|>) /show router mpls interface
+  ^.?\w:${NAME}(#|>) /?show router mpls interface
+  ^${Interface}\s{2}\s+${Port_ID}\s{2}\s+${Adm}\s+${Opr_v4v6}\s+${TE_Metric}? -> Continue.Record

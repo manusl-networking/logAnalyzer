@@ -1,0 +1,15 @@
+#Command: /show card
+#Timos: 19
+#Version: 1.0.0
+Value NAME (\S+)
+Value Required Slot_ID (\S+)
+Value Prov_Type (\S+)
+Value Eq_Type (\S+)
+Value Adm ([uU][pP]|[Dd][oO]?[wW][nN])
+Value Opr (\S+)
+Value Comments (\S+)
+
+Start
+  ^.?\w:${NAME}(#|>) /show card
+  ^${Slot_ID}\s+${Prov_Type}\s+${Adm}\s+${Opr}\s+${Comments}? -> Continue.Record
+  ^${Slot_ID}\s+${Prov_Type}\s+${Eq_Type}\s+${Adm}\s+${Opr}\s+(\d+\s+)?(\d+\s+)?${Comments}? -> Continue.Record

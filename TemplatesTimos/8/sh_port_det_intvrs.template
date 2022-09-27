@@ -3,7 +3,6 @@
 #Version: 1.0.0
 #Comments: Version able to compare information between those Timos. However, this version didn't display all port detail information from timos 21.
 #Replace: (accs,access),(netw,network),(up,Up),(down,Down)
-Value Filldown NAME (\S+)
 Value Filldown Slot (\S+)
 Value Required PortID (\S+)
 Value AdminState ([uU][pP]|[Dd][oO][wW][nN])
@@ -15,7 +14,7 @@ Value PortEncp (\S+)
 Value PortType (\S+)
 
 Start
-  ^.?\w:${NAME}(#|>) /?show port detail
+  ^.?\w:\S+(#|>) /?show port detail
   ^Interface\s+.\s+${PortID}.+ -> Continue
   ^Admin State\s+.\s+${AdminState}.+ -> Continue
   ^Oper State\s+.\s+${PortState}.+ -> Continue

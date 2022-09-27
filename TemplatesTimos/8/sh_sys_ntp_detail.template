@@ -1,7 +1,6 @@
 #Command: /show system ntp detail
 #Timos: 8
 #Version: 1.0.0
-Value Filldown NAME (\S+)
 Value Enabled_Configured (\S+)
 Value Stratum (\S+)
 Value Admin_Status ([uU][pP]|[Dd][oO][wW][nN])
@@ -14,7 +13,7 @@ Value MDA_Timestamp (\S+)
 Value Required DateAndTime (\S+.\S+.\S+\s\S+.\S+.\S+\s\S+)
 
 Start
-  ^.?\w:${NAME}(#|>) /?show system ntp
+  ^.?\w:\S+(#|>) /?show system ntp
   ^Enabled\s+:\s${Enabled_Configured}\s+Stratum\s+:\s${Stratum}
   ^Configured\s+:\s${Enabled_Configured}\s+Stratum\s+:\s${Stratum}
   ^Admin\sStatus\s+:\s${Admin_Status}\s+Oper\sStatus\s+:\s${Oper_Status}

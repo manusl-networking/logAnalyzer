@@ -1,7 +1,6 @@
 #Command: /show router route-table summary
 #Timos: 8
 #Version: 1.0.0
-Value Filldown NAME (\S+)
 Value Required Router (\S+)
 Value Act_Aggregate (\d+)
 Value Av_Aggregate (\d+)
@@ -49,8 +48,8 @@ Value Act_VPN_Leak (\d+)
 Value Av_VPN_Leak (\d+)
 
 Start
-  ^\w:${NAME}(#|>) /show router route-table summary
-  ^.?\w:${NAME}(#|>) /?show router route.table summary
+  ^\w:\S+(#|>) /show router route-table summary
+  ^.?\w:\S+(#|>) /?show router route.table summary
   ^Route Table Summary .Router. ${Router}.
   ^Aggregate\s+${Act_Aggregate}\s+${Av_Aggregate}
   ^ARP-ND\s+${Act_APR_ND}\s+${Av_APR_ND}

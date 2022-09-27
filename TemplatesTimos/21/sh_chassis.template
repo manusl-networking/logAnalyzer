@@ -1,12 +1,11 @@
 #Command: /show chassis
 #Timos: 21
 #Version: 1.0.0
-Value NAME (\S+)
 Value Type (.+)
 Value MAC (\S+)
 
 Start
-  ^.?\w:${NAME}(#|>) /show chassis
-  ^\s+Name\s+:\s+${NAME}
+  ^.?\w:\S+(#|>) /show chassis
+  ^\s+Name\s+:\s+\S+
   ^\s{2,4}Type\s+:\s+${Type}
   ^\s+Base MAC address\s+:\s+${MAC}

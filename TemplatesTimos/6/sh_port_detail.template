@@ -1,7 +1,6 @@
 #Command: /show port detail
 #Timos: 6
 #Version: 1.0.0
-Value Filldown NAME (\S+)
 Value Filldown Slot (\S+)
 Value Required PortID (\S+)
 Value AdminState ([uU][pP]|[Dd][oO][wW][nN])
@@ -16,6 +15,6 @@ Value PortType (\S+)
 Value SPF_XPF_MDIMDX (.+?)
 
 Start
-  ^.?\w:${NAME}(#|>) /?show port detail
+  ^.?\w:\S+(#|>) /?show port detail
   ^Ports on Slot ${Slot}
   ^${PortID}\s+${AdminState}\s+${Link}\s+${PortState}(\s+${CfgMTU}\s+${OperMTU}\s+${Lag_Bndl}\s+${PortMode}\s+${PortEncp}\s+${PortType}\s+${SPF_XPF_MDIMDX}?\s+?)? -> Continue.Record

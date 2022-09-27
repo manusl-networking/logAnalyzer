@@ -2,7 +2,6 @@
 #Description: This template is used to see router's ntp configuration
 #Variables: Router_Name Configured Stratum Admin_Status Oper_Status Server_Enabled Server_Authenticate Clock_Source Auth_Check Auth_Check MDA_Timestamp DateAndTime
 #Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
-Value Filldown NAME (\S+)
 Value Configured (\S+)
 Value Stratum (\S+)
 Value Admin_Status ([uU][pP]|[Dd][oO][wW][nN])
@@ -15,8 +14,8 @@ Value MDA_Timestamp (\S+)
 Value Required DateAndTime (\S+.\S+.\S+\s\S+.\S+.\S+\s\S+)
 
 Start
-  ^\w:${NAME}(#|>) /show system ntp
-  ^.\w:${NAME}(#|>) /show system ntp
+  ^\w:\S+(#|>) /show system ntp
+  ^.\w:\S+(#|>) /show system ntp
   ^Configured\s+:\s${Configured}\s+Stratum\s+:\s${Stratum}
   ^Admin\sStatus\s+:\s${Admin_Status}\s+Oper\sStatus\s+:\s${Oper_Status}
   ^Server\sEnabled\s+:\s${Server_Enabled}\s+Server\sAuthenticate\s+:\s${Server_Authenticate}

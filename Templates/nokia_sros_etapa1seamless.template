@@ -2,7 +2,6 @@
 #Description: This template is used to find out version of TiMOS and BGP configuration, this template was created for a specific BGP configuration
 #Variables: Router_Name Version group family type import export bfd_7250 peer_as add_paths add_paths_conf add_paths_conf1 aigp neighbor description advertise_label family_label next_hop bfd_enable
 #Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
-Value Filldown NAME (\S+)
 Value Filldown Version (TiMOS\S+)
 Value group (\S+)
 Value family (ipv4)
@@ -23,8 +22,8 @@ Value next_hop (next-hop-self)
 Value bfd_enable (bfd-enable)
 
 Start
-  ^\w:${NAME}(#|>) /show version
-  ^.\w:${NAME}(#|>) /show version
+  ^\w:\S+(#|>) /show version
+  ^.\w:\S+(#|>) /show version
   ^${Version}
   ^\s+group\s${group}
   ^\s+family\s${family}
@@ -43,5 +42,5 @@ Start
   ^\s+family\s${family_label} -> Continue
   ^\s+${next_hop} -> Continue
   ^\s+${bfd_enable} -> Continue
-  ^\w:${NAME}#>config>router>bgp# exit -> Record
+  ^\w:\S+#>config>router>bgp# exit -> Record
 

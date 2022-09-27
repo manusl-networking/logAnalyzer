@@ -1,7 +1,6 @@
 #Command: /show router rsvp interface
 #Timos: 6
 #Version: 1.0.0
-Value NAME (\S+)
 Value Required Interface (.+?)
 Value Adm ([uU][pP]|[Dd][oO]?[wW][nN])
 Value Opr ([uU][pP]|[Dd][oO]?[wW][nN])
@@ -11,5 +10,5 @@ Value Total_BW (\d+|\-)
 Value Resv_BW (\d+|\-)
 
 Start
-  ^.?\w:${NAME}(#|>) /?show router rsvp interface
+  ^.?\w:\S+(#|>) /?show router rsvp interface
   ^${Interface}\s+?${Total}\s+${Active}\s+${Total_BW}\s+${Resv_BW}\s+${Adm}\s+${Opr} -> Continue.Record

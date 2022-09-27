@@ -1,0 +1,18 @@
+#Command: /show port 
+Value Filldown Slot (\S+)
+Value Required Port_ID (\S+)
+Value Adm_State ([uU][pP]|[Dd][oO][wW][nN])
+Value Link (\S+)
+Value Port_State ([uU][pP]|[Dd][oO][wW][nN])
+Value Cfg_MTU (\S+)
+Value Oper_MTU (\S+)
+Value LAG_Bndl (\S+|\-)
+Value Port_Mode (\S+)
+Value Port_Encp (\S+)
+Value Port_Type (\S+)
+Value C_QS_S_XP (.+)
+
+Start
+  ^.?\w:\S+(#|>) /?show port
+  ^Ports on Slot ${Slot} -> Continue.Record
+  ^${Port_ID}\s+${Adm_State}\s+${Link}\s+${Port_State}\s+${Cfg_MTU}\s+${Oper_MTU}\s+${LAG_Bndl}\s+${Port_Mode}\s+${Port_Encp}\s+${Port_Type}\s+${C_QS_S_XP} -> Continue.Record

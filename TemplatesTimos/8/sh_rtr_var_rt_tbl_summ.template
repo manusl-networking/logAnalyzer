@@ -1,7 +1,6 @@
 #Command: /show router \S+ route-table summary
 #Timos: 8
 #Version: 1.0.0
-Value Filldown NAME (\S+)
 Value Required Service (\S+)
 Value Act_Static (\d+)
 Value Av_Static (\d+)
@@ -25,7 +24,7 @@ Value Act_Sub_Mgmt (\d+)
 Value Av_Sub_Mgmt (\d+)
 
 Start
-  ^.?\w:${NAME}(#|>) /?show router \S+ route.table summary
+  ^.?\w:\S+(#|>) /?show router \S+ route.table summary
   ^Route Table Summary .Service. ${Service}.
   ^Static\s+${Act_Static}\s+${Av_Static}
   ^Direct\s+${Act_Direct}\s+${Av_Direct}

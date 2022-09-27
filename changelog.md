@@ -1,3 +1,8 @@
+[3.4.0 - 2022-09-27]
+- Control keywords for the templates to control the resulting columns in each report.
+- CLI paramter to control wether we want to use the name of the router, its IP adress, or both.
+- The variable `NAME` has bee removed from each and every template for the different Timos versions.
+
 [3.2.3 - 2022-08-11]
 - Tables for differences and/or errors, are now sorted by all the column names defined under the template. This makes it easier to do the visual comparison of data.
 

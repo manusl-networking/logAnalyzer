@@ -1,8 +1,8 @@
 #Command: /show router bgp summary
 #Description: This template is used to see BGP summary
-#Variables: Router_Name BGP_ROUTER_ID BGP_AS BGP_LOCAL_AS BGP_ADMIN_STATE BGP_OPER_STATE BGP_TOTAL_PEERS_GROUPS BGP_TOTAL_PEERS BGP_NEIGHBOR NEIGHBOR_NAME BGP_STATE BGP_STATUS_NEIGHBOR
 #Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
-Value Filldown NAME (\S+)
+#filterAction:exclude
+#filterColumns:
 Value BGP_ROUTER_ID ([0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3})
 Value BGP_AS ([0-9]{1,1500})
 Value BGP_LOCAL_AS ([0-9]{1,1500})
@@ -16,8 +16,8 @@ Value Required BGP_STATE (\S+)
 Value BGP_STATUS_NEIGHBOR (\S+)
 
 Start
-  ^\w:${NAME}(#|>) /show router bgp summary
-  ^.\w:${NAME}(#|>) /show router bgp summary
+  ^\w:\S+(#|>) /show router bgp summary
+  ^.\w:\S+(#|>) /show router bgp summary
   ^\sBGP\sRouter\sID:${BGP_ROUTER_ID}\s+AS:${BGP_AS}\s+Local\sAS:${BGP_LOCAL_AS}
   ^BGP\sAdmin\sState\s+:\s${BGP_ADMIN_STATE}\s+BGP\sOper\sState\s+:\s${BGP_OPER_STATE}
   ^Total\sPeer\sGroups\s+:\s${BGP_TOTAL_PEERS_GROUPS}\s+Total\sPeers\s+:\s${BGP_TOTAL_PEERS}

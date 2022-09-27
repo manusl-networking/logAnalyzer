@@ -1,13 +1,12 @@
 #Command: /show redundancy synchronization
 #Timos: 6
 #Version: 1.0.0
-Value NAME (\S+)
 Value Standby_Status (.+)
 Value Boot_Config_Sync_Mode (.+)
 Value Boot_Config_Sync_Status (.+)
 
 Start
-  ^.?\w:${NAME}(#|>) /?show redundancy synchronization
+  ^.?\w:\S+(#|>) /?show redundancy synchronization
   ^Standby Status\s+.\s+${Standby_Status}
   ^Boot.Config Sync Mode\s+:\s+${Boot_Config_Sync_Mode}
   ^Boot.Config Sync Status\s+:+\s+${Boot_Config_Sync_Status}

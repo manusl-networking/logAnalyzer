@@ -2,7 +2,6 @@
 #Description: This template is used to see ptp clock's configuration
 #Variables: Router_Name Nro_Clock Clock_Type Admin_State PTP_Profile Freq_Recovery_State Port Peer Slave Port_State
 #Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
-Value Filldown NAME (\S+)
 Value Filldown Nro_Clock ([0-9]{1,2})
 Value Filldown,Required Clock_Type (\S+.\S+|\S+)
 Value Filldown Admin_State ([uU][pP]|[Dd][oO][wW][nN])
@@ -14,8 +13,8 @@ Value Required Slave (\S+)
 Value Required Port_State (\S+)
 
 Start
-  ^\w:${NAME}(#|>)\s/show\ssystem\sptp\sclock\s${Nro_Clock}
-  ^.\w:${NAME}(#|>)\s/show\ssystem\sptp\sclock\s${Nro_Clock}
+  ^\w:\S+(#|>)\s/show\ssystem\sptp\sclock\s${Nro_Clock}
+  ^.\w:\S+(#|>)\s/show\ssystem\sptp\sclock\s${Nro_Clock}
   ^Clock\sType\s+:\s${Clock_Type}\s+Admin\sState\s+:\s${Admin_State}
   ^PTP\sProfile\s+:\s${PTP_Profile}
   ^Freq\sRecovery\sState\s+:\s${Freq_Recovery_State}

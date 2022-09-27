@@ -1,7 +1,6 @@
 #Command: /show bof
 #Timos: 6
 #Version: 1.0.0
-Value Filldown NAME (\S+)
 Value pr_image (.+)
 Value pr_config (.+)
 Value autonegotiate (autonegotiate)
@@ -12,7 +11,7 @@ Value persist (\S+)
 Value console_speed (\S+)
 
 Start
-  ^\?w:${NAME}(#|>) /?show bof
+  ^\?w:\S+(#|>) /?show bof
   ^\s+primary.image\s+${pr_image}
   ^\s+primary.config\s+${pr_config}
   ^\s+${autonegotiate}

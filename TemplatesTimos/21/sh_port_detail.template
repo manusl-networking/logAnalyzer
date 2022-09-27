@@ -1,7 +1,6 @@
 #Command: /show port detail
 #Timos: 21
 #Version: 1.0.0
-Value Filldown NAME (\S+)
 Value Required Interface (\S+)
 Value Description (.+)
 Value OperSpeed (.+)
@@ -36,8 +35,8 @@ Value RxInPwr_dBm_LowWarn (\S+)
 Value RxInPwr_dBm_LowAlarm (\S+)
 
 Start
-  ^\w:${NAME}(#|>) /show port detail
-  ^.\w:${NAME}(#|>) /?show port detail
+  ^\w:\S+(#|>) /show port detail
+  ^.\w:\S+(#|>) /?show port detail
   ^Description\s+:\s${Description}
   ^Interface\s+:\s${Interface}\s+Oper\sSpeed\s+:\s${OperSpeed}
   ^Link.level\s+:\s\S+\s+Config\sSpeed\s+:\s${ConfigSpeed}

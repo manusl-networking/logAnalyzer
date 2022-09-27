@@ -2,7 +2,6 @@
 #Description: This template is used to see the system sync if timing
 #Variables: Router_Name Status_CPM Ref_Input_Mode Quality_Level_Selection Ref_Select Sys_Quality_Level Ref_Order Ref_Order Ref_Input Admin_Status Rx_Quality_Level Qualified_For_Use Selected_For_Use Source_Port Source_PTP_Clock
 #Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
-Value Filldown NAME (\S+)
 Value Status_CPM (\S+\s\S+|\S+)
 Value Ref_Input_Mode (\S+)
 Value Quality_Level_Selection (Enabled|Disabled)
@@ -24,8 +23,8 @@ Value Key Source_PTP_Clock (\S+)
 Value Type (.+)
 
 Start
-  ^\w:${NAME}(#|>) /show system sync-if-timing
-  ^.\w:${NAME}(#|>) /show system sync-if-timing
+  ^\w:\S+(#|>) /show system sync-if-timing
+  ^.\w:\S+(#|>) /show system sync-if-timing
   ^System\sStatus\sCPM\s\w\s+:\s${Status_CPM}
   ^\s+Reference\sInput\sMode\s+:\s${Ref_Input_Mode}
   ^\s+Quality\sLevel\sSelection\s+:\s${Quality_Level_Selection}

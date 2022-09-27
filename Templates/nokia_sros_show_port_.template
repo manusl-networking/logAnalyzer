@@ -2,7 +2,6 @@
 #Description: This template is used to see the information about physical port
 #Variables: NAME, port, Description, OperSpeed, ConfigSpeed, AdminState, OperDuplex, OperState, ConfigDuplex, PhysicalLink, MTU, SingleFiberMode, ConfiguredMode, EncapType, AutoNegotiate, MDI_MDX, EgressRate, IngressRate, TransceiverType, ModelNumber, TXLaserWavelength, ConnectorCode, SerialNumber, PartNumber, OpticalCompliance, LinkLengthsupport, SFPSyncECapable, TxOutPwr_dBm_VALUE, TxOutPwr_dBm_HighAlarm, TxOutPwr_dBm_HighWarn, TxOutPwr_dBm_LowWarn, TxOutPwr_dBm_LowAlarm, RxInPwr_dBm_VALUE, RxInPwr_dBm_HighAlarm, RxInPwr_dBm_HighWarn, RxInPwr_dBm_LowWarn, RxInPwr_dBm_LowAlarm
 #Autor: Manuel Saldivar manuelsaldivar@outlook.com.ar
-Value Filldown NAME (\S+)
 Value Required port (\S+)
 Value Description (.+)
 Value OperSpeed (.+)
@@ -41,8 +40,8 @@ Value RxInPwr_dBm_LowWarn (\S+)
 Value RxInPwr_dBm_LowAlarm (\S+)
 
 Start
-  ^\w:${NAME}(#|>) /show port \S+
-  ^.\w:${NAME}(#|>) /show port \S+ 
+  ^\w:\S+(#|>) /show port \S+
+  ^.\w:\S+(#|>) /show port \S+ 
   ^Description\s+:\s${Description}
   ^Interface\s+:\s${port}\s+Oper\sSpeed\s+:\s${OperSpeed}
   ^Link.level\s+:\s\S+\s+Config\sSpeed\s+:\s${ConfigSpeed}

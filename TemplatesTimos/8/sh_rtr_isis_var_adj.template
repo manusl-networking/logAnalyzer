@@ -1,7 +1,6 @@
 #Command: /show router isis \S+ adjacency
 #Timos: 8
 #Version: 1.0.0
-Value NAME (\S+)
 Value Required,Filldown Instance (\S+)
 Value Required System_ID (\S+)
 Value Usage (\S+)
@@ -10,7 +9,7 @@ Value Hold (\S+)
 Value Interface (\S+)
 
 Start
-  ^\w:${NAME}(#|>) /show router isis \S+ adjacency
-  ^.?\w:${NAME}(#|>) /?show router isis \S+ adjacency
+  ^\w:\S+(#|>) /show router isis \S+ adjacency
+  ^.?\w:\S+(#|>) /?show router isis \S+ adjacency
   ^Rtr.+Instance\s${Instance}.+
   ^${System_ID}\s+${Usage}\s+${State}\s+${Hold}\s+${Interface}(\s+\S+)? -> Continue.Record
